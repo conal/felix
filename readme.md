@@ -1,3 +1,5 @@
+<div style="float:right; padding:10pt">[<img width="200" src="Felix-the-Cat.png"/></div>
+
 ## Felix: an Agda category theory for denotational design
 
 ## Introduction
