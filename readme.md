@@ -1,10 +1,10 @@
-<div style="float:right; padding:10pt">[<img width="200" src="Felix-the-Cat.png"/></div>
+<div style="float:right; padding:10pt"><img width="200" src="Felix-the-Cat.png"/></div>
 
 ## Felix: an Agda category theory for denotational design
 
 ## Introduction
 
-[This library replaces the overgrown denotational-hardware library, which had mixed general category theory with some functionality for hardware design.]
+This library replaces the overgrown denotational-hardware library, which had mixed general category theory with some functionality for hardware design.
 
 ## Dependencies
 
