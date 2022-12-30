@@ -16,3 +16,5 @@ import Felix.Subcategory
 -- import Felix.Free
 -- import Felix.Product
 -- import Felix.IdInstances
+
+import Felix.Instances.Function
