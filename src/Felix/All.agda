@@ -8,9 +8,9 @@ import Felix.Raw
 import Felix.Laws
 import Felix.Reasoning
 import Felix.Homomorphism
+import Felix.MakeLawful
+import Felix.Subcategory
 
--- import Felix.MakeLawful
--- import Felix.Subcategory
 -- import Felix.Comma
 -- import Felix.Arrow
 -- import Felix.Free

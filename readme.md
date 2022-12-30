@@ -2,6 +2,8 @@
 
 ## Introduction
 
+[This library replaces the overgrown denotational-hardware library, which had mixed general category theory with some functionality for hardware design.]
+
 ## Dependencies
 
 *   [Agda compiler](https://agda.readthedocs.io/en/latest/getting-started/installation.html#installing-the-agda-and-the-agda-mode-programs).
