@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This library replaces the overgrown denotational-hardware library, which had mixed general category theory with some functionality for hardware design.
+This library replaces the overgrown [denotational-hardware](https://github.com/conal/denotational-hardware) library, which had mixed general category theory with some functionality for hardware design.
 
 ## Dependencies
 
