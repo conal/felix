@@ -14,15 +14,6 @@ This library replaces the overgrown [denotational-hardware](https://github.com/c
     Known to work with version 1.7.
 *   Haskell [ieee754 package](https://github.com/agda/agda/issues/3619) (as described under Troubleshooting below)
 
-## Building
-
-Makefile targets:
-
-*   `compile`: compiles the `Test` module, but you can compile faster from within the Emacs mode (`∁-c C­x C-c`).
-*   `tests`: generates circuit diagrams in the `Figures` subdirectory (dot files and their PDF renderings).
-*   `listings`: renders source code to deeply hyper-linked HTML.
-    Start perusing at `html/Everything.html`.
-
 ## Summary of important modules
 
 ## Troubleshooting
