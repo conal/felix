@@ -1,8 +1,14 @@
--- *Full* subcategory or something like it. Note that the I → obj homomorphism
--- needn't be injective.
+-- *Full* subcategory or something like it.
 {-# OPTIONS --safe --without-K #-}
 
-open import Level
+-- Note that the J → obj homomorphism needn't be injective. Alternatively, we
+-- might take an object predicate (obj → Pred _), which is a more natural
+-- translation of the classic notion of subcategory from set theory to type
+-- theory. Usage seems more convenient for the formulation in this module but it
+-- may be worth studying more uses. Both style can be defined via the other,
+-- thanks to the power of dependent types.
+
+open import Level using (Level)
 
 open import Felix.Homomorphism
 open import Felix.Laws as L
