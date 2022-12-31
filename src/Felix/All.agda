@@ -9,7 +9,7 @@ import Felix.Laws
 import Felix.Reasoning
 import Felix.Homomorphism
 import Felix.MakeLawful
-import Felix.Subcategory
+import Felix.FullSubcategory
 
 -- import Felix.Comma
 -- import Felix.Arrow

@@ -9,7 +9,7 @@ open import Felix.Laws as L
        hiding (Category; Cartesian; CartesianClosed)
 open import Felix.Reasoning
 
-module Felix.Subcategory
+module Felix.FullSubcategory
   {j} (J : Set j)
   {o ℓ} {obj : Set o}
   (_↠_ : obj → obj → Set ℓ) (let infix 0 _↠_; _↠_ = _↠_)
