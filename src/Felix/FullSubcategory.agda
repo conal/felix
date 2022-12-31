@@ -11,8 +11,7 @@
 open import Level using (Level)
 
 open import Felix.Homomorphism
-open import Felix.Laws as L
-       hiding (Category; Cartesian; CartesianClosed)
+open import Felix.Laws as L hiding (Category; Cartesian; CartesianClosed)
 open import Felix.Reasoning
 
 module Felix.FullSubcategory
