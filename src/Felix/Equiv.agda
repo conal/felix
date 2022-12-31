@@ -74,7 +74,7 @@ import Relation.Binary.Construct.On as On
 H-equiv : {obj₁ : Set o₁} {_⇨₁_ : obj₁ → obj₁ → Set ℓ₁}
           {obj₂ : Set o₂} {_⇨₂_ : obj₂ → obj₂ → Set ℓ₂}
           {q : Level} ⦃ _ : Equivalent q _⇨₂_ ⦄
-          ⦃ _ : Homomorphismₒ obj₁ obj₂ ⦄
-          ⦃ _ : Homomorphism _⇨₁_ _⇨₂_ ⦄
+          ⦃ Hₒ : Homomorphismₒ obj₁ obj₂ ⦄
+          ⦃ H : Homomorphism _⇨₁_ _⇨₂_ ⦄
         → Equivalent q _⇨₁_
 H-equiv = record { equiv = On.isEquivalence Fₘ equiv }

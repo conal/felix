@@ -18,7 +18,7 @@ module Felix.FullSubcategory
   {j} (J : Set j)
   {o ℓ} {obj : Set o}
   (_↠_ : obj → obj → Set ℓ) (let infix 0 _↠_; _↠_ = _↠_)
-  ⦃ _ : Category _↠_ ⦄
+  ⦃ cat : Category _↠_ ⦄
   ⦃ Hₒ : Homomorphismₒ J obj ⦄
  where
 
