@@ -19,9 +19,3 @@ record Exponentials (obj : Set o) : Set o where
     _⇛_ : obj → obj → obj
 
 open Exponentials ⦃ … ⦄ public
-
--- record Boolean (obj : Set o) : Set o where
---   field
---     Bool : obj
--- 
--- open Boolean ⦃ … ⦄ public

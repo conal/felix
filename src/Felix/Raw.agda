@@ -111,7 +111,6 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
   inTranspose f = transpose ∘ f ∘ transpose
 
   infixr 4 _⦂_
-  -- _⦂_ : ⌞ a ⌟ → ⌞ b ⌟ → ⌞ a × b ⌟
   _⦂_ : (⊤ ⇨ a) → (⊤ ⇨ b) → (⊤ ⇨ a × b)
   a ⦂ b = (a ⊗ b) ∘ unitorⁱˡ
 
@@ -146,15 +145,3 @@ record CartesianClosed {obj : Set o}
   uncurry f = apply ∘ first f
 
 open CartesianClosed ⦃ … ⦄ public
-
-
--- record Logic {obj : Set o} ⦃ products : Products obj ⦄ ⦃ boolean : Boolean obj ⦄
---              (_⇨′_ : obj → obj → Set ℓ) : Set (o ⊔ ℓ) where
---   private infix 0 _⇨_; _⇨_ = _⇨′_
---   field
---     false true : ⊤ ⇨ Bool
---     not : Bool ⇨ Bool
---     ∧ ∨ xor : Bool × Bool ⇨ Bool
---     cond : Bool × (a × a) ⇨ a
-
--- open Logic ⦃ … ⦄ public

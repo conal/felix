@@ -250,15 +250,3 @@ record CartesianClosed {obj : Set o} ⦃ _ : Products obj ⦄
                      ≡⟨⟩
                        uncurry id
                      ∎)
-
--- record Logic {obj : Set o}
---              ⦃ _ : Products obj ⦄ ⦃ _ : Boolean obj ⦄
---              (_⇨′_ : obj → obj → Set ℓ) {q} ⦃ equiv : Equivalent q _⇨′_ ⦄
---              ⦃ _ : R.Category _⇨′_ ⦄ ⦃ _ : R.Cartesian _⇨′_ ⦄ ⦃ _ : R.Logic _⇨′_ ⦄
---              -- ⦃ _ : Category _⇨′_ ⦄
---        : Set (o ⊔ ℓ ⊔ q) where
---   private infix 0 _⇨_; _⇨_ = _⇨′_
---   field
---     f∘cond : {f : a ⇨ b} → f ∘ cond ≈ cond ∘ second (f ⊗ f)
-
--- open Logic ⦃ … ⦄ public

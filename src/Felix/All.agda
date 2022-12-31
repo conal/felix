@@ -13,7 +13,6 @@ import Felix.FullSubcategory
 
 -- import Felix.Comma
 -- import Felix.Arrow
--- import Felix.Free
 -- import Felix.Product
 -- import Felix.IdInstances
 

@@ -6,7 +6,6 @@ module Felix.Instances.Function.Raw (ℓ : Level) where
 
 import Function as F
 open import Data.Product as × using (_,_; proj₁; proj₂; <_,_>; ∃; ∃₂)
-import Data.Bool as B
 
 open import Felix.Raw
 open import Felix.Equiv
@@ -21,12 +20,6 @@ module →-raw-instances where instance
   cartesian : Cartesian _⇾_
   cartesian = record { _▵_ = <_,_> ; exl = proj₁ ; exr = proj₂ }
 
-  -- indexedCartesian : ∀ {I : Set ℓ} → IndexedCartesian I _⇾_
-  -- indexedCartesian = record
-  --   { △  = λ fs x i → fs i x
-  --   ; ex = λ i xs → xs i
-  --   }
-
   traced : Traced _⇾_
   traced = record
     { WF = λ {a} {s} {b} f → ∀ (x : a) → ∃₂ λ (y : b) (z : s) → f (x , z) ≡ (y , z)
@@ -35,17 +28,6 @@ module →-raw-instances where instance
 
   cartesianClosed : CartesianClosed _⇾_
   cartesianClosed = record { curry = ×.curry ; apply = ×.uncurry id }
-
-  -- logic : Logic _⇾_
-  -- logic = record
-  --           { false = λ tt → 𝕗
-  --           ; true  = λ tt → 𝕥
-  --           ; not   = lift₁ B.not
-  --           ; ∧     = uncurry (lift₂ B._∧_)
-  --           ; ∨     = uncurry (lift₂ B._∨_)
-  --           ; xor   = uncurry (lift₂ B._xor_)
-  --           ; cond  = λ (lift c , e , t) → B.if c then t else e
-  --           }
 
   open import Relation.Binary.PropositionalEquality as ≡ using (_≡_; _≗_)
 
