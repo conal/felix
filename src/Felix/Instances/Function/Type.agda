@@ -6,7 +6,7 @@ module Felix.Instances.Function.Type (ℓ : Level) where
 
 import Data.Unit as U
 open import Data.Unit.Polymorphic using () renaming (⊤ to ⊤′)
-open import Data.Product using () renaming (_×_ to _×′_)
+open import Data.Product using (_,_) renaming (_×_ to _×̇_)
 open import Data.Fin using (Fin)
 open import Data.Fin.Patterns using (0F; 1F)
 
@@ -74,7 +74,7 @@ module →-instances where
   instance
 
     products : Products (Set ℓ)
-    products = record { ⊤ = ⊤′ ; _×_ = _×′_ }
+    products = record { ⊤ = ⊤′ ; _×_ = _×̇_ }
 
     exponentials : Exponentials (Set ℓ)
     exponentials = record { _⇛_ = _⇾_ }
