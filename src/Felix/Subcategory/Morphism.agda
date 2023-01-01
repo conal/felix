@@ -7,7 +7,7 @@ open import Data.Product using (∃; _,_; proj₁; proj₂)
 open import Felix.Homomorphism
 import Felix.Laws as L
 
-module Felix.Subcategory.MOrphism {o ℓ} {obj : Set o}
+module Felix.Subcategory.Morphism {o ℓ} {obj : Set o}
   (_↠_ : obj → obj → Set ℓ) {m} (M : {a b : obj} → Pred (a ↠ b) m)
   {q} ⦃ _ : Equivalent q _↠_ ⦄ ⦃ _ : Category _↠_ ⦄
  where
@@ -32,7 +32,7 @@ private
     f ≈ id ∘ f
   sym-identityˡ↠ = sym L.identityˡ
 
-module subcat-instances ⦃ _ : Categoryᴾ _↠_ M ⦄ where instance
+module subcat-instances ⦃ _ : Categoryᴾ M ⦄ where instance
 
   Hₒ : Homomorphismₒ obj obj
   Hₒ = id-Hₒ
@@ -52,7 +52,7 @@ module subcat-instances ⦃ _ : Categoryᴾ _↠_ M ⦄ where instance
   catH : CategoryH _⇨_ _↠_
   catH = record { F-id = refl↠ ; F-∘ = refl↠ }
 
-  module _  ⦃ _ : Products obj ⦄ ⦃ _ : Cartesian _↠_ ⦄ ⦃ _ : Cartesianᴾ _↠_ M ⦄ where instance
+  module _  ⦃ _ : Products obj ⦄ ⦃ _ : Cartesian _↠_ ⦄ ⦃ _ : Cartesianᴾ M ⦄ where instance
 
     prodH : ProductsH obj _↠_
     prodH = id-ProductsH
