@@ -1,4 +1,4 @@
--- *Full* subcategory or something like it.
+-- Subcategory by mapping objects (similar to a full subcategory)
 {-# OPTIONS --safe --without-K #-}
 
 -- Note that the J → obj homomorphism needn't be injective. Alternatively, we
@@ -14,7 +14,7 @@ open import Felix.Homomorphism
 open import Felix.Laws as L hiding (Category; Cartesian; CartesianClosed)
 open import Felix.Reasoning
 
-module Felix.FullSubcategory
+module Felix.Subcategory.Object
   {j} (J : Set j)
   {o ℓ} {obj : Set o}
   (_↠_ : obj → obj → Set ℓ) (let infix 0 _↠_; _↠_ = _↠_)
