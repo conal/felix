@@ -4,7 +4,8 @@ module Felix.Homomorphism where
 
 open import Level
 
-open import Felix.Raw public
+open import Felix.Equiv  public
+open import Felix.Raw
 open import Felix.Laws as L hiding (Category; Cartesian; CartesianClosed)
 open import Felix.Reasoning
 
@@ -13,8 +14,6 @@ private
     o ℓ o₁ ℓ₁ o₂ ℓ₂ : Level
     obj₁ obj₂ : Set o
     a b c d : obj₁
-
-open import Felix.Equiv  public
 
 open ≈-Reasoning
 
