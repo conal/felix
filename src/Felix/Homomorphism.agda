@@ -17,6 +17,7 @@ private
 
 open ≈-Reasoning
 
+
 -- Category homomorphism (functor)
 record CategoryH {obj₁ : Set o₁} (_⇨₁_ : obj₁ → obj₁ → Set ℓ₁)
                  {obj₂ : Set o₂} (_⇨₂_ : obj₂ → obj₂ → Set ℓ₂)
@@ -290,6 +291,49 @@ id-CartesianH = record
   ; F-exl = identityʳ
   ; F-exr = identityʳ
   }
+
+
+record CoproductsH
+    (obj₁ : Set o₁) ⦃ _ : Coproducts obj₁ ⦄
+    {obj₂ : Set o₂} ⦃ _ : Coproducts obj₂ ⦄
+    (_⇨₂′_ : obj₂ → obj₂ → Set ℓ₂)
+    ⦃ Hₒ : Homomorphismₒ obj₁ obj₂ ⦄
+    : Set (o₁ ⊔ o₂ ⊔ ℓ₂) where
+  private infix 0 _⇨₂_; _⇨₂_ = _⇨₂′_
+  field
+    δ⁻¹ : ⊥ ⇨₂ Fₒ ⊥
+    ν⁻¹ : {a b : obj₁} → Fₒ a ⊎ Fₒ b ⇨₂ Fₒ (a ⊎ b)
+
+    δ : Fₒ ⊥ ⇨₂ ⊥
+    ν : {a b : obj₁} → Fₒ (a ⊎ b) ⇨₂ Fₒ a ⊎ Fₒ b
+
+open CoproductsH ⦃ … ⦄ public
+
+id-CoproductsH :
+  {obj : Set o} ⦃ _ : Coproducts obj ⦄
+  {_⇨_ : obj → obj → Set ℓ} ⦃ _ : Category _⇨_ ⦄ →
+  CoproductsH obj _⇨_ ⦃ Hₒ = id-Hₒ ⦄
+id-CoproductsH = record { ε = id ; μ = id ; ε⁻¹ = id ; μ⁻¹ = id }
+
+-- Cocartesian homomorphism (cocartesian functor)
+record CocartesianH
+         {obj₁ : Set o₁} ⦃ _ : Coproducts obj₁ ⦄ (_⇨₁_ : obj₁ → obj₁ → Set ℓ₁)
+         {obj₂ : Set o₂} ⦃ _ : Coproducts obj₂ ⦄ (_⇨₂_ : obj₂ → obj₂ → Set ℓ₂)
+         {q} ⦃ _ : Equivalent q _⇨₂_ ⦄
+         ⦃ _ : Category _⇨₁_ ⦄ ⦃ _ : Cocartesian _⇨₁_ ⦄
+         ⦃ _ : Category _⇨₂_ ⦄ ⦃ _ : Cocartesian _⇨₂_ ⦄
+         ⦃ Hₒ : Homomorphismₒ obj₁ obj₂ ⦄
+         ⦃ H : Homomorphism _⇨₁_ _⇨₂_ ⦄
+         ⦃ pH : CoproductsH obj₁ _⇨₂_ ⦄
+       : Set (o₁ ⊔ ℓ₁ ⊔ o₂ ⊔ ℓ₂ ⊔ q) where
+  field
+    F-¡   : ∀ {b : obj₁} → Fₘ {b = b} ¡ ≈ ¡ ∘ δ
+    F-▿   : ∀ {a b c} {f : a ⇨₁ c} {g : b ⇨₁ c} → Fₘ (f ▿ g) ≈ (Fₘ f ▿ Fₘ g) ∘ ν
+    F-inl : ∀ {a b : obj₁} → ν {a = a}{b} ∘ Fₘ inl ≈ inl
+    F-inr : ∀ {a b : obj₁} → ν {a = a}{b} ∘ Fₘ inr ≈ inr
+
+open CocartesianH ⦃ … ⦄ public
+
 
 record ExponentialsH
     (obj₁ : Set o₁) ⦃ _ : Exponentials obj₁ ⦄

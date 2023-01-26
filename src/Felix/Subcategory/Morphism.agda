@@ -1,9 +1,11 @@
+{-# OPTIONS --safe --without-K #-}
 -- Subcategory restricting only morphisms, i.e., complement to full subcategory, which I might rename SubO.
 
 open import Level using (_⊔_)
 open import Relation.Unary using (Pred)
 open import Data.Product using (∃; _,_; proj₁; proj₂)
 
+open import Felix.Raw
 open import Felix.Homomorphism
 import Felix.Laws as L
 

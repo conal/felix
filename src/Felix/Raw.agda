@@ -117,6 +117,26 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
 open Cartesian ⦃ … ⦄ public
 
 
+record Cocartesian {obj : Set o} ⦃ _ : Coproducts obj ⦄
+         (_⇨′_ : obj → obj → Set ℓ)
+         ⦃ _ : Category _⇨′_ ⦄
+    : Set (o ⊔ ℓ) where
+  private infix 0 _⇨_; _⇨_ = _⇨′_
+  infixr 7 _▿_
+  field
+    ¡   : ⊥ ⇨ a
+    _▿_ : (a ⇨ c) → (b ⇨ c) → (a ⊎ b ⇨ c)
+    inl : ∀ {a b} → a ⇨ a ⊎ b
+    inr : ∀ {a b} → b ⇨ a ⊎ b
+
+  jam : a ⊎ a ⇨ a
+  jam = id ▿ id
+
+open Cocartesian ⦃ … ⦄ public
+
+-- TODO: Factor a bunch of functionality out of Cartesian and some out of Cocartesian in Monoidal.
+
+
 record Traced {obj : Set o} ⦃ _ : Products obj ⦄
          (_⇨′_ : obj → obj → Set ℓ)
          ⦃ _ : Category _⇨′_ ⦄
