@@ -313,7 +313,7 @@ id-CoproductsH :
   {obj : Set o} ⦃ _ : Coproducts obj ⦄
   {_⇨_ : obj → obj → Set ℓ} ⦃ _ : Category _⇨_ ⦄ →
   CoproductsH obj _⇨_ ⦃ Hₒ = id-Hₒ ⦄
-id-CoproductsH = record { ε = id ; μ = id ; ε⁻¹ = id ; μ⁻¹ = id }
+id-CoproductsH = record { δ = id ; ν = id ; δ⁻¹ = id ; ν⁻¹ = id }
 
 -- Cocartesian homomorphism (cocartesian functor)
 record CocartesianH
