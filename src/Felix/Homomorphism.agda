@@ -342,9 +342,9 @@ record ExponentialsH
     : Set (o₁ ⊔ o₂ ⊔ ℓ₂) where
   private infix 0 _⇨₂_; _⇨₂_ = _⇨₂′_
   field
-    ν : {a b : obj₁} → (Fₒ a ⇛ Fₒ b) ⇨₂ Fₒ (a ⇛ b)
+    ζ : {a b : obj₁} → (Fₒ a ⇛ Fₒ b) ⇨₂ Fₒ (a ⇛ b)
     -- *Strong*?
-    ν⁻¹ : {a b : obj₁} → Fₒ (a ⇛ b) ⇨₂ (Fₒ a ⇛ Fₒ b)
+    ζ⁻¹ : {a b : obj₁} → Fₒ (a ⇛ b) ⇨₂ (Fₒ a ⇛ Fₒ b)
 
 open ExponentialsH ⦃ … ⦄ public
 

@@ -10,10 +10,6 @@ open import Data.Product using (_,_) renaming (_×_ to _×̇_)
 open import Data.Fin using (Fin)
 open import Data.Fin.Patterns using (0F; 1F)
 
-⟨→⟩ : Set ℓ → Set ℓ → Set ℓ
-⟨→⟩ a b = a → b
-
--- TODO: phase out "⟨→⟩" and "Function" in favor of _⇾_
 infixr 0 _⇾_
 _⇾_ : Set ℓ → Set ℓ → Set ℓ
 A ⇾ B = A → B

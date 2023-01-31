@@ -12,7 +12,7 @@ open import Level using (Level)
 
 open import Felix.Raw
 open import Felix.Homomorphism
-open import Felix.Laws as L hiding (Category; Cartesian; CartesianClosed)
+import Felix.Laws as L
 open import Felix.Reasoning
 
 module Felix.Subcategory.Object
@@ -43,6 +43,15 @@ module subcategory-instances where instance
                      ; exl = mk (exl ∘ μ⁻¹)
                      ; exr = mk (exr ∘ μ⁻¹)
                      }
+
+  cocartesian : ⦃ _ : Coproducts obj ⦄ ⦃ _ : Cocartesian _↠_ ⦄
+                ⦃ _ : Coproducts J ⦄ ⦃ _ : CoproductsH J _↠_ ⦄ →
+                Cocartesian _⇨_
+  cocartesian = record { ¡   = mk (¡ ∘ δ)
+                       ; _▿_ = λ (mk f) (mk g) → mk ((f ▿ g) ∘ ν)
+                       ; inl = mk (ν⁻¹ ∘ inl)
+                       ; inr = mk (ν⁻¹ ∘ inr)
+                       }
 
   traced : ⦃ _ : Products obj ⦄ ⦃ _ : Traced _↠_ ⦄
            ⦃ _ : Products J ⦄ ⦃ _ : ProductsH J _↠_ ⦄ →

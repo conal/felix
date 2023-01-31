@@ -125,7 +125,7 @@ record Cocartesian {obj : Set o} ⦃ _ : Coproducts obj ⦄
   infixr 7 _▿_
   field
     ¡   : ⊥ ⇨ a
-    _▿_ : (a ⇨ c) → (b ⇨ c) → (a ⊎ b ⇨ c)
+    _▿_ : ∀ {a b c} → (a ⇨ c) → (b ⇨ c) → (a ⊎ b ⇨ c)
     inl : ∀ {a b} → a ⇨ a ⊎ b
     inr : ∀ {a b} → b ⇨ a ⊎ b
 
