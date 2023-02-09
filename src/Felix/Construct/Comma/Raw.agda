@@ -46,15 +46,15 @@ module comma-cat where
   id′ = mk id id (elimʳ F-id ; introˡ F-id)
 
   -- comp : ∀ {a b c} → (b ⇨ c) → (a ⇨ b) → (a ⇨ c)
-  -- comp {a}{b}{c} (mk g₁ g₂ comm-g) (mk f₁ f₂ comm-f) =
+  -- comp {a}{b}{c} (mk g₁ g₂ ↻-g) (mk f₁ f₂ ↻-f) =
   --   mk (g₁ ∘ f₁) (g₂ ∘ f₂)
   --     (begin
   --        h c ∘ Fₘ (g₁ ∘ f₁)
   --      ≈⟨ ∘≈ʳ F-∘ ⟩
   --        h c ∘ (Fₘ g₁ ∘ Fₘ f₁)
-  --      ≈⟨ ∘-assocˡ′ comm-g ⟩
+  --      ≈⟨ ∘-assocˡ′ ↻-g ⟩
   --        (Fₘ g₂ ∘ h b) ∘ Fₘ f₁
-  --      ≈⟨ ∘-assocʳ′ comm-f ⟩
+  --      ≈⟨ ∘-assocʳ′ ↻-f ⟩
   --        Fₘ g₂ ∘ (Fₘ f₂ ∘ h a)
   --      ≈⟨ ∘-assocˡ′ (sym F-∘) ⟩
   --        Fₘ (g₂ ∘ f₂) ∘ h a
@@ -62,9 +62,9 @@ module comma-cat where
   -- -- 35s
 
   comp : ∀ {a b c} → (b ⇨ c) → (a ⇨ b) → (a ⇨ c)
-  comp (mk g₁ g₂ comm-g) (mk f₁ f₂ comm-f) =
+  comp (mk g₁ g₂ ↻-g) (mk f₁ f₂ ↻-f) =
     mk (g₁ ∘ f₁) (g₂ ∘ f₂)
-       (∘≈ʳ F-∘ ; ∘-assocˡ′ comm-g ; ∘-assocʳ′ comm-f ; ∘-assocˡ′ (sym F-∘))
+       (∘≈ʳ F-∘ ; ∘-assocˡ′ ↻-g ; ∘-assocʳ′ ↻-f ; ∘-assocˡ′ (sym F-∘))
 
   instance
 
@@ -106,13 +106,13 @@ module comma-products
   !′ = mk ! ! (∘≈ʳ F-! ; cancelInner ε⁻¹∘ε ; ∘≈ʳ (sym ∀⊤) ; ∘-assocˡ′ (sym F-!))
 
   -- fork : ∀ {a c d} → (a ⇨ c) → (a ⇨ d) → (a ⇨ c × d)
-  -- fork {a}{c}{d} (mk f₁ f₂ comm-f) (mk g₁ g₂ comm-g) =
+  -- fork {a}{c}{d} (mk f₁ f₂ ↻-f) (mk g₁ g₂ ↻-g) =
   --   mk (f₁ ▵ g₁) (f₂ ▵ g₂)
   --     (begin
   --        h (c × d) ∘ Fₘ (f₁ ▵ g₁)
   --      ≈⟨ ∘≈ ∘-assocˡ F-▵ ; cancelInner μ⁻¹∘μ ⟩
   --        (μ ∘ (h c ⊗ h d)) ∘ (Fₘ f₁ ▵ Fₘ g₁)
-  --      ≈⟨ ∘-assocʳ′ (⊗∘▵ ; ▵≈ comm-f comm-g ; sym ▵∘) ⟩
+  --      ≈⟨ ∘-assocʳ′ (⊗∘▵ ; ▵≈ ↻-f ↻-g ; sym ▵∘) ⟩
   --        μ ∘ ((Fₘ f₂ ▵ Fₘ g₂) ∘ h a)
   --      ≈⟨ ∘-assocˡ′ (sym F-▵) ⟩
   --        Fₘ (f₂ ▵ g₂) ∘ h a
@@ -120,11 +120,11 @@ module comma-products
   -- -- 1m ?
 
   fork : ∀ {a c d} → (a ⇨ c) → (a ⇨ d) → (a ⇨ c × d)
-  fork (mk f₁ f₂ comm-f) (mk g₁ g₂ comm-g) =
+  fork (mk f₁ f₂ ↻-f) (mk g₁ g₂ ↻-g) =
     mk (f₁ ▵ g₁) (f₂ ▵ g₂)
        ( ∘≈ ∘-assocˡ F-▵
        ; cancelInner μ⁻¹∘μ
-       ; ∘-assocʳ′ (⊗∘▵ ; ▵≈ comm-f comm-g ; sym ▵∘)
+       ; ∘-assocʳ′ (⊗∘▵ ; ▵≈ ↻-f ↻-g ; sym ▵∘)
        ; ∘-assocˡ′ (sym F-▵)
        )
 

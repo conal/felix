@@ -18,3 +18,4 @@ import Felix.Construct.Product
 import Felix.Construct.Comma
 
 import Felix.Instances.Function
+import Felix.Instances.Identity

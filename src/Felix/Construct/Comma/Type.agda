@@ -30,12 +30,12 @@ record Obj : Set (o₁ ⊔ o₂ ⊔ ℓ₀) where
 open Obj
 
 infix 0 _⇨_
-record _⇨_ (a : Obj) (b : Obj) : Set (q ⊔ ℓ₁ ⊔ ℓ₂) where
+record _⇨_ (a b : Obj) : Set (q ⊔ ℓ₁ ⊔ ℓ₂) where
   constructor mk
   field
     f₁ : τ₁ a ⇨₁ τ₁ b
     f₂ : τ₂ a ⇨₂ τ₂ b
-    commute : h b ∘ Fₘ f₁ ≈ Fₘ f₂ ∘ h a
+    ↻  : h b ∘ Fₘ f₁ ≈ Fₘ f₂ ∘ h a
 
 open _⇨_
 
@@ -46,8 +46,6 @@ _⇉_ : ∀ {σ₁ τ₁ : obj₁}{σ₂ τ₂ : obj₂}
 g ⇉ h = mkO g ⇨ mkO h
 
 module comma-type-instances where
-
-  open import Felix.Equiv
 
   instance
   
