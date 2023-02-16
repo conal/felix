@@ -6,8 +6,8 @@ open import Felix.Raw
 open import Felix.Homomorphism
 
 module Felix.Construct.Product
-  {o₁} {obj₁ : Set o₁} {ℓ₁} (_⇨₁_ : obj₁ → obj₁ → Set ℓ₁) ⦃ _ : Category _⇨₁_ ⦄
-  {o₂} {obj₂ : Set o₂} {ℓ₂} (_⇨₂_ : obj₂ → obj₂ → Set ℓ₂) ⦃ _ : Category _⇨₂_ ⦄
+  {o₁} {obj₁ : Set o₁} {ℓ₁} {_⇨₁_ : obj₁ → obj₁ → Set ℓ₁} ⦃ _ : Category _⇨₁_ ⦄
+  {o₂} {obj₂ : Set o₂} {ℓ₂} {_⇨₂_ : obj₂ → obj₂ → Set ℓ₂} ⦃ _ : Category _⇨₂_ ⦄
  where
 
 open import Level using (_⊔_)

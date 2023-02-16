@@ -28,10 +28,10 @@ module comma-homomorphism-instances where
 
     open import Felix.Homomorphism
 
-    categoryH₁ : CategoryH _⇨_ _⇨₁_
+    categoryH₁ : CategoryH _↬_ _⇨₁_
     categoryH₁ = record { F-id = refl ; F-∘ = refl }
 
-    categoryH₂ : CategoryH _⇨_ _⇨₂_
+    categoryH₂ : CategoryH _↬_ _⇨₂_
     categoryH₂ = record { F-id = refl ; F-∘ = refl }
 
     -- Also CartesianH, CartesianClosedH, and LogicH

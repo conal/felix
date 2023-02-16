@@ -27,11 +27,11 @@ open import Felix.Construct.Comma.Type _⇨₀_ _⇨₁_ _⇨₂_
 
 open Obj
 
+variable a b c d : Obj
+
 module comma-cat where
 
-  -- variable a : Obj  --  "No instance of type CategoryH _⇨₂_ _⇨₀_ was found in scope."
-
-  -- id′ : ∀ {a} → a ⇨ a
+  -- id′ : a ↬ a
   -- id′ {a} = mk id id
   --   (begin
   --      h a ∘ Fₘ id
@@ -42,10 +42,10 @@ module comma-cat where
   --    ∎)
   -- -- 4.5s
 
-  id′ : ∀ {a} → a ⇨ a
+  id′ : a ↬ a
   id′ = mk id id (elimʳ F-id ; introˡ F-id)
 
-  -- comp : ∀ {a b c} → (b ⇨ c) → (a ⇨ b) → (a ⇨ c)
+  -- comp : (b ↬ c) → (a ↬ b) → (a ↬ c)
   -- comp {a}{b}{c} (mk g₁ g₂ ↻-g) (mk f₁ f₂ ↻-f) =
   --   mk (g₁ ∘ f₁) (g₂ ∘ f₂)
   --     (begin
@@ -61,14 +61,14 @@ module comma-cat where
   --      ∎)
   -- -- 35s
 
-  comp : ∀ {a b c} → (b ⇨ c) → (a ⇨ b) → (a ⇨ c)
+  comp : (b ↬ c) → (a ↬ b) → (a ↬ c)
   comp (mk g₁ g₂ ↻-g) (mk f₁ f₂ ↻-f) =
     mk (g₁ ∘ f₁) (g₂ ∘ f₂)
        (∘≈ʳ F-∘ ; ∘-assocˡ′ ↻-g ; ∘-assocʳ′ ↻-f ; ∘-assocˡ′ (sym F-∘))
 
   instance
 
-    category : Category _⇨_
+    category : Category _↬_
     category = record { id = id′ ; _∘_ = comp }
 
 module comma-products
@@ -87,7 +87,7 @@ module comma-products
                       ; _×_ = λ (mkO h) (mkO k) → mkO (μ ∘ (h ⊗ k) ∘ μ⁻¹)
                       }
 
-  -- !′ : ∀ {a} → a ⇨ ⊤
+  -- !′ : a ↬ ⊤
   -- !′ {a} = mk ! !
   --   (begin
   --      h ⊤ ∘ Fₘ !
@@ -102,10 +102,10 @@ module comma-products
   --    ∎)
   -- -- 23s
 
-  !′ : ∀ {a} → a ⇨ ⊤
+  !′ : a ↬ ⊤
   !′ = mk ! ! (∘≈ʳ F-! ; cancelInner ε⁻¹∘ε ; ∘≈ʳ (sym ∀⊤) ; ∘-assocˡ′ (sym F-!))
 
-  -- fork : ∀ {a c d} → (a ⇨ c) → (a ⇨ d) → (a ⇨ c × d)
+  -- fork : (a ↬ c) → (a ↬ d) → (a ↬ c × d)
   -- fork {a}{c}{d} (mk f₁ f₂ ↻-f) (mk g₁ g₂ ↻-g) =
   --   mk (f₁ ▵ g₁) (f₂ ▵ g₂)
   --     (begin
@@ -119,7 +119,7 @@ module comma-products
   --      ∎)
   -- -- 1m ?
 
-  fork : ∀ {a c d} → (a ⇨ c) → (a ⇨ d) → (a ⇨ c × d)
+  fork : (a ↬ c) → (a ↬ d) → (a ↬ c × d)
   fork (mk f₁ f₂ ↻-f) (mk g₁ g₂ ↻-g) =
     mk (f₁ ▵ g₁) (f₂ ▵ g₂)
        ( ∘≈ ∘-assocˡ F-▵
@@ -128,7 +128,7 @@ module comma-products
        ; ∘-assocˡ′ (sym F-▵)
        )
 
-  -- exl′ : ∀ {a b} → a × b ⇨ a
+  -- exl′ : a × b ↬ a
   -- exl′ {a}{b} = mk exl exl
   --   (begin
   --      h a ∘ Fₘ exl
@@ -141,14 +141,14 @@ module comma-products
   --    ∎)
   -- -- 45s
 
-  exl′ : ∀ {a b} → a × b ⇨ a
+  exl′ : a × b ↬ a
   exl′ = mk exl exl
     ( ∘≈ʳ (introʳ μ∘μ⁻¹ ; ∘-assocˡ′ F-exl)
     ; ∘-assocˡʳ′ (sym exl∘▵)
     ; sym (∘-assocˡ′ F-exl)
     )
 
-  -- exr′ : ∀ {a b} → a × b ⇨ b
+  -- exr′ : a × b ↬ b
   -- exr′ {a}{b} = mk exr exr
   --   (begin
   --      h b ∘ Fₘ exr
@@ -161,7 +161,7 @@ module comma-products
   --    ∎)
   -- -- 45s
 
-  exr′ : ∀ {a b} → a × b ⇨ b
+  exr′ : a × b ↬ b
   exr′ = mk exr exr
     ( ∘≈ʳ (introʳ μ∘μ⁻¹ ; ∘-assocˡ′ F-exr)
     ; ∘-assocˡʳ′ (sym exr∘▵)
@@ -170,7 +170,7 @@ module comma-products
 
   instance
 
-    cartesian : Cartesian _⇨_
+    cartesian : Cartesian _↬_
     cartesian = record { ! = !′ ; _▵_ = fork ; exl = exl′ ; exr = exr′ }
 
 
@@ -195,7 +195,7 @@ module comma-products
 --     boolean : Boolean Obj
 --     boolean = record { Bool = mkO (β ∘ β⁻¹) }
 
---   -- false′ : ⊤ ⇨ Bool
+--   -- false′ : ⊤ ↬ Bool
 --   -- false′ = mk false false
 --   --   (begin
 --   --     h Bool ∘ Fₘ false
@@ -216,14 +216,14 @@ module comma-products
 --   --     Fₘ false ∘ h ⊤
 --   --    ∎)
 
---   false′ : ⊤ ⇨ Bool
+--   false′ : ⊤ ↬ Bool
 --   false′ = mk false false
 --     ( ∘≈ʳ F-false′
 --     ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
 --     ; sym (∘≈ˡ (F-false′ ; ∘-assocˡ) ; cancelInner ε⁻¹∘ε ; ∘-assocʳ)
 --     )
 
---   true′ : ⊤ ⇨ Bool
+--   true′ : ⊤ ↬ Bool
 --   true′ = mk true true
 --     ( ∘≈ʳ F-true′
 --     ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
@@ -243,14 +243,14 @@ module comma-products
 --   --      Fₘ not ∘ (β ∘ β⁻¹)
 --   --    ∎)
 
---   not′ : Bool ⇨ Bool
+--   not′ : Bool ↬ Bool
 --   not′ = mk not not
 --     ( ∘≈ʳ F-not′
 --     ; cancelInner β⁻¹∘β
 --     ; sym (∘-assocˡʳ′ F-not)
 --     )
 
---   -- ∧′ : Bool × Bool ⇨ Bool
+--   -- ∧′ : Bool × Bool ↬ Bool
 --   -- ∧′ = mk ∧ ∧
 --   --   (begin
 --   --      h Bool ∘ Fₘ ∧
@@ -272,7 +272,7 @@ module comma-products
 --   --      Fₘ ∧ ∘ h (Bool × Bool)
 --   --    ∎)
 
---   ∧′ : Bool × Bool ⇨ Bool
+--   ∧′ : Bool × Bool ↬ Bool
 --   ∧′ = mk ∧ ∧
 --           ( ∘≈ʳ F-∧′
 --           ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
@@ -281,7 +281,7 @@ module comma-products
 --           ; ∘≈ʳ² (∘-assocˡ′ ⊗∘⊗)
 --           )
 
---   ∨′ : Bool × Bool ⇨ Bool
+--   ∨′ : Bool × Bool ↬ Bool
 --   ∨′ = mk ∨ ∨
 --           ( ∘≈ʳ F-∨′
 --           ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
@@ -290,7 +290,7 @@ module comma-products
 --           ; ∘≈ʳ² (∘-assocˡ′ ⊗∘⊗)
 --           )
 
---   xor′ : Bool × Bool ⇨ Bool
+--   xor′ : Bool × Bool ↬ Bool
 --   xor′ = mk xor xor
 --             ( ∘≈ʳ F-xor′
 --             ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
@@ -299,7 +299,7 @@ module comma-products
 --             ; ∘≈ʳ² (∘-assocˡ′ ⊗∘⊗)
 --             )
 
---   -- cond′ : ∀ {a} → Bool × (a × a) ⇨ a
+--   -- cond′ : Bool × (a × a) ↬ a
 --   -- cond′ {a} = mk cond cond
 --   --   (begin
 --   --      h a ∘ Fₘ cond
@@ -327,7 +327,7 @@ module comma-products
 --   --      Fₘ cond ∘ h (Bool × (a × a))
 --   --    ∎)
 
---   cond′ : ∀ {a} → Bool × (a × a) ⇨ a
+--   cond′ : Bool × (a × a) ↬ a
 --   cond′ {a} = mk cond cond
 --     ( ∘≈ʳ F-cond′
 --     ; ∘-assocˡ′ f∘cond ; ∘-assocʳ
@@ -339,7 +339,7 @@ module comma-products
 
 --   instance
 
---     logic : Logic _⇨_
+--     logic : Logic _↬_
 --     logic = record { false = false′
 --                    ; true  = true′
 --                    ; not   = not′

@@ -16,6 +16,7 @@ import Felix.Subcategory.Morphism
 
 import Felix.Construct.Product
 import Felix.Construct.Comma
+import Felix.Construct.Arrow
 
 import Felix.Instances.Function
 import Felix.Instances.Identity
