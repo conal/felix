@@ -16,13 +16,13 @@ A ⇾ B = A → B
 
 pattern tt = lift U.tt
 
-lift₁ : ∀ {a b}{A : Set a}{B : Set b}{a′ b′}
-      → (A → B) → (Lift a′ A → Lift b′ B)
-lift₁ f (lift x) = lift (f x)
+-- lift₁ : ∀ {a b} {A : Set a} {B : Set b} {a′ b′}
+--       → (A → B) → (Lift a′ A → Lift b′ B)
+-- lift₁ f (lift x) = lift (f x)
 
-lift₂ : ∀ {a b c}{A : Set a}{B : Set b}{C : Set c}{a′ b′ c′}
-      → (A → B → C) → (Lift a′ A → Lift b′ B → Lift c′ C)
-lift₂ f (lift x) (lift y) = lift (f x y)
+-- lift₂ : ∀ {a b c} {A : Set a} {B : Set b} {C : Set c} {a′ b′ c′}
+--       → (A → B → C) → (Lift a′ A → Lift b′ B → Lift c′ C)
+-- lift₂ f (lift x) (lift y) = lift (f x y)
 
 open import Function
 open import Relation.Binary.PropositionalEquality

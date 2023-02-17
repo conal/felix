@@ -32,6 +32,13 @@ module function-lift-instances where instance
     ; ε⁻¹ = λ { (lift tt) → tt }
     ; μ⁻¹ = λ (lift (x , y)) → lift x , lift y }
 
+  spH : StrongProductsH (Set a) (_⇾_ {a ⊔ b})
+  spH = record
+    { ε⁻¹∘ε = λ _ → refl
+    ; ε∘ε⁻¹ = λ _ → refl
+    ; μ⁻¹∘μ = λ _ → refl
+    ; μ∘μ⁻¹ = λ _ → refl }
+
   cartH : CartesianH (_⇾_ {a}) (_⇾_ {a ⊔ b})
   cartH = record
      { F-!   = λ _ → refl

@@ -4,6 +4,8 @@
 open import Felix.Object
 open import Felix.Raw
 open import Felix.Homomorphism
+open import Felix.Laws as L
+  hiding (Category; Cartesian; CartesianClosed) -- ; Logic
 
 module Felix.Construct.Product
   {o₁} {obj₁ : Set o₁} {ℓ₁} {_⇨₁_ : obj₁ → obj₁ → Set ℓ₁} ⦃ _ : Category _⇨₁_ ⦄
@@ -20,9 +22,7 @@ infix 0 _⇨_
 _⇨_ : Obj → Obj → Set (ℓ₁ ⊔ ℓ₂)
 (a₁ , a₂) ⇨ (b₁ , b₂) = (a₁ ⇨₁ b₁) ×̇ (a₂ ⇨₂ b₂)
 
-module product-instances where
-
- instance
+module product-instances where instance
 
   category : Category _⇨_
   category = record { id = id , id ; _∘_ = λ (g₁ , g₂) (f₁ , f₂) → (g₁ ∘ f₁) , (g₂ ∘ f₂) }
@@ -77,9 +77,6 @@ module product-instances where
        }
     }
 
-  open import Felix.Laws as L
-     hiding (Category; Cartesian; CartesianClosed) -- ; Logic
-
   l-category : ∀ {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
                ⦃ _ : L.Category _⇨₁_ ⦄ ⦃ _ : L.Category _⇨₂_ ⦄
              → L.Category _⇨_
@@ -130,7 +127,7 @@ module product-instances where
   --         → L.Logic _⇨_
   -- l-logic = record { f∘cond = f∘cond , f∘cond }
 
-  -- Homomorphisms
+module product-homomorphisms where instance
 
   Hₒ₁ : Homomorphismₒ Obj obj₁
   Hₒ₁ = record { Fₒ = proj₁ }
@@ -151,7 +148,7 @@ module product-instances where
   catH₂ = record { F-id = refl ; F-∘ = refl }
 
   pH₁ : ∀ ⦃ _ : Products obj₁ ⦄ ⦃ _ : Products obj₂ ⦄ → ProductsH Obj _⇨₁_
-  pH₁ = record { ε = id ; μ = id ; ε⁻¹ = id ; μ⁻¹ = id}
+  pH₁ = record { ε = id ; μ = id ; ε⁻¹ = id ; μ⁻¹ = id }
 
   spH₁ : ∀ {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄
     ⦃ _ : Products obj₁ ⦄ ⦃ _ : Products obj₂ ⦄
@@ -160,8 +157,7 @@ module product-instances where
   spH₁ = record { ε⁻¹∘ε = identityˡ
                 ; ε∘ε⁻¹ = identityˡ
                 ; μ⁻¹∘μ = identityˡ
-                ; μ∘μ⁻¹ = identityˡ
-                }
+                ; μ∘μ⁻¹ = identityˡ }
 
   pH₂ : ∀ ⦃ _ : Products obj₁ ⦄ ⦃ _ : Products obj₂ ⦄ → ProductsH Obj _⇨₂_
   pH₂ = record { ε = id ; μ = id ; ε⁻¹ = id ; μ⁻¹ = id}
@@ -173,8 +169,7 @@ module product-instances where
   spH₂ = record { ε⁻¹∘ε = identityˡ
                 ; ε∘ε⁻¹ = identityˡ
                 ; μ⁻¹∘μ = identityˡ
-                ; μ∘μ⁻¹ = identityˡ
-                }
+                ; μ∘μ⁻¹ = identityˡ }
 
   cartesianH₁ : ∀ {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄
       ⦃ _ : Products  obj₁ ⦄ ⦃ _ : Products  obj₂ ⦄
@@ -184,8 +179,7 @@ module product-instances where
     { F-!   = sym identityˡ
     ; F-▵   = sym identityˡ
     ; F-exl = identityʳ
-    ; F-exr = identityʳ
-    }
+    ; F-exr = identityʳ }
 
   cartesianH₂ : ∀ {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
       ⦃ _ : Products  obj₁ ⦄ ⦃ _ : Products  obj₂ ⦄
@@ -195,8 +189,7 @@ module product-instances where
     { F-!   = sym identityˡ
     ; F-▵   = sym identityˡ
     ; F-exl = identityʳ
-    ; F-exr = identityʳ
-    }
+    ; F-exr = identityʳ }
 
 --   booleanH₁ :
 --       ∀ {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ ⦃ _ : Boolean obj₁ ⦄ ⦃ _ : Boolean obj₂ ⦄

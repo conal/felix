@@ -204,11 +204,54 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
   -- TODO: redefine first f and second g via ▵ to avoid id ∘ exr and id ∘ exl.
   -- There many be broad consequences.
 
-  -- unitorᵉˡ∘unitorⁱˡ : unitorᵉˡ ∘ unitorⁱˡ ≈ id
-  -- unitorᵉˡ∘unitorⁱˡ = exr∘▵
+  unitorᵉˡ∘unitorⁱˡ : ∀ {a : obj} → unitorᵉˡ ∘ unitorⁱˡ {a = a} ≈ id
+  unitorᵉˡ∘unitorⁱˡ = exr∘▵
 
-  -- unitorᵉʳ∘unitorⁱʳ : unitorᵉʳ ∘ unitorⁱʳ ≈ id
-  -- unitorᵉʳ∘unitorⁱʳ = exl∘▵
+  unitorᵉʳ∘unitorⁱʳ : ∀ {a : obj} → unitorᵉʳ ∘ unitorⁱʳ {a = a} ≈ id
+  unitorᵉʳ∘unitorⁱʳ = exl∘▵
+
+  unitorⁱˡ∘unitorᵉˡ : ∀ {a : obj} → unitorⁱˡ ∘ unitorᵉˡ {a = a} ≈ id
+  unitorⁱˡ∘unitorᵉˡ = ▵∘ ; ▵≈ ∀⊤ identityˡ ; ▵≈ˡ (sym ∀⊤) ; exl▵exr
+
+  --   (! ▵ id) ∘ exr
+  -- ≈ ! ∘ exr ▵ id ∘ exr
+  -- ≈ ! ▵ exr
+  -- ≈ exl ▵ exr
+  -- ≈ id
+
+  unitorⁱʳ∘unitorᵉʳ : ∀ {a : obj} → unitorⁱʳ ∘ unitorᵉʳ {a = a} ≈ id
+  unitorⁱʳ∘unitorᵉʳ = ▵∘ ; ▵≈ identityˡ ∀⊤ ; ▵≈ʳ (sym ∀⊤) ; exl▵exr
+
+  --   (id ▵ !) ∘ exl
+  -- ≈ id ∘ exl ▵ ! ∘ exl
+  -- ≈ exl ▵ !
+  -- ≈ exl ▵ exr
+  -- ≈ id
+
+  -- swap : a × b ⇨ b × a
+  -- swap = exr ▵ exl
+
+  exl∘swap : ∀ {a b : obj} → exl ∘ swap {a = a} {b} ≈ exr
+  exl∘swap = exl∘▵
+
+  exr∘swap : ∀ {a b : obj} → exr ∘ swap {a = a} {b} ≈ exl
+  exr∘swap = exr∘▵
+
+  swap∘swap : ∀ {a b : obj} → swap ∘ swap ≈ id {a = a × b}
+  swap∘swap = ▵∘ ; ▵≈ exr∘swap exl∘swap ; exl▵exr
+
+  -- swap∘swap =
+  --   begin
+  --     swap ∘ swap
+  --   ≡⟨⟩
+  --     (exr ▵ exl) ∘ swap
+  --   ≈⟨ ▵∘ ⟩
+  --     exr ∘ swap ▵ exl ∘ swap
+  --   ≈⟨ ▵≈ exr∘swap exl∘swap ⟩
+  --     exl ▵ exr
+  --   ≈⟨ exl▵exr ⟩
+  --     id
+  --   ∎
 
 open Cartesian ⦃ … ⦄ public
 

@@ -8,7 +8,9 @@ open import Felix.Raw
 open import Felix.Laws as L hiding (Category; Cartesian; CartesianClosed)
 
 module Felix.Reasoning
-    {o}{obj : Set o} {ℓ} {_⇨_ : obj → obj → Set ℓ} ⦃ _ : Category _⇨_ ⦄
+    {o}{obj : Set o} {ℓ} {_⇨′_ : obj → obj → Set ℓ}
+    (let infix 0 _⇨_ ; _⇨_ = _⇨′_)
+    ⦃ _ : Category _⇨_ ⦄
     {q} ⦃ _ : Equivalent q _⇨_ ⦄ ⦃ _ : L.Category _⇨_ ⦄
   where
 
@@ -357,7 +359,7 @@ module Assoc
   --     assocˡ ∘ first f
   --   ∎
 
-  first-first : ∀ {b c : obj}{f : a ⇨ d}
+  first-first : ∀ {b c : obj} {f : a ⇨ d}
     → first {b = c} (first {b = b} f) ≈ assocˡ ∘ first f ∘ assocʳ -- inAssocʳ f
   first-first {f = f} =
     begin
@@ -367,5 +369,63 @@ module Assoc
     ≈⟨ ∘-assocˡʳ′ first-first∘assocˡ ⟩
       assocˡ ∘ first f ∘ assocʳ
     ∎
+
+  inAssocˡ′-inverse : ∀
+    {f : (a × b) × c ⇨ (a′ × b′) × c′} {f⁻¹ : (a′ × b′) × c′ ⇨ (a × b) × c} →
+    f⁻¹ ∘ f ≈ id → inAssocˡ′ f⁻¹ ∘ inAssocˡ′ f ≈ id
+  inAssocˡ′-inverse {f = f} {f⁻¹} f⁻¹∘f≈id =
+    begin
+      inAssocˡ′ f⁻¹ ∘ inAssocˡ′ f
+    ≡⟨⟩
+      (assocʳ ∘ f⁻¹ ∘ assocˡ) ∘ (assocʳ ∘ f ∘ assocˡ)
+    ≈⟨ (∘≈ˡ ∘-assocˡ ; cancelInner assocˡ∘assocʳ) ⟩
+      (assocʳ ∘ f⁻¹) ∘ (f ∘ assocˡ)
+    ≈⟨ cancelInner f⁻¹∘f≈id ⟩
+      assocʳ ∘ assocˡ
+    ≈⟨ assocʳ∘assocˡ ⟩
+      id
+    ∎
+
+  inAssocʳ′-inverse : ∀
+    {f : a × (b × c) ⇨ a′ × (b′ × c′)} {f⁻¹ : a′ × (b′ × c′) ⇨ a × (b × c)} →
+    f⁻¹ ∘ f ≈ id → inAssocʳ′ f⁻¹ ∘ inAssocʳ′ f ≈ id
+  inAssocʳ′-inverse {f = f} {f⁻¹} f⁻¹∘f≈id =
+    begin
+      inAssocʳ′ f⁻¹ ∘ inAssocʳ′ f
+    ≡⟨⟩
+      (assocˡ ∘ f⁻¹ ∘ assocʳ) ∘ (assocˡ ∘ f ∘ assocʳ)
+    ≈⟨ (∘≈ˡ ∘-assocˡ ; cancelInner assocʳ∘assocˡ) ⟩
+      (assocˡ ∘ f⁻¹) ∘ (f ∘ assocʳ)
+    ≈⟨ cancelInner f⁻¹∘f≈id ⟩
+      assocˡ ∘ assocʳ
+    ≈⟨ assocˡ∘assocʳ ⟩
+      id
+    ∎
+
+  inAssocˡ-inverse : ∀ {c : obj} {f : a × b ⇨ a′ × b′} {f⁻¹ : a′ × b′ ⇨ a × b} →
+    f⁻¹ ∘ f ≈ id → inAssocˡ {c = c} f⁻¹ ∘ inAssocˡ f ≈ id
+  inAssocˡ-inverse {c = c} {f} {f⁻¹} f⁻¹∘f≈id =
+    begin
+      inAssocˡ {c = c} f⁻¹ ∘ inAssocˡ f
+    ≡⟨⟩
+      inAssocˡ′ (first f⁻¹) ∘ inAssocˡ′ (first f)
+    ≈⟨ inAssocˡ′-inverse (first-inverse f⁻¹∘f≈id) ⟩
+      id
+    ∎
+
+  inAssocʳ-inverse : ∀ {a : obj} {f : b × c ⇨ b′ × c′} {f⁻¹ : b′ × c′ ⇨ b × c} →
+    f⁻¹ ∘ f ≈ id → inAssocʳ {a = a} f⁻¹ ∘ inAssocʳ f ≈ id
+  inAssocʳ-inverse {a = a} {f} {f⁻¹} f⁻¹∘f≈id =
+    begin
+      inAssocʳ {a = a} f⁻¹ ∘ inAssocʳ f
+    ≡⟨⟩
+      inAssocʳ′ (second f⁻¹) ∘ inAssocʳ′ (second f)
+    ≈⟨ inAssocʳ′-inverse (second-inverse f⁻¹∘f≈id) ⟩
+      id
+    ∎
+
+  transpose∘transpose : ∀ {a b c d : obj} →
+    transpose ∘ transpose {a = a} {b} {c} {d} ≈ id
+  transpose∘transpose = inAssocʳ-inverse (inAssocˡ-inverse swap∘swap)
 
 open Assoc public
