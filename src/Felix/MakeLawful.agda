@@ -1,4 +1,4 @@
--- {-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K #-}
 
 -- Laws from homomorphisms. Given a homomorphism with lawful target, prove the
 -- source to be lawful, assuming that source equivalence is defined

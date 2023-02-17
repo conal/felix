@@ -1,5 +1,5 @@
 -- {-# OPTIONS --safe --without-K #-}
-{-# OPTIONS --allow-unsolved-metas #-}
+-- {-# OPTIONS --allow-unsolved-metas #-}
 
 -- Product a category with itself, with a special functor to that category
 
@@ -21,6 +21,18 @@ open import Data.Product using (_,_)
 open import Felix.Construct.Product {_⇨₁_ = _↠_} {_⇨₂_ = _↠_}
   hiding (module product-homomorphisms) public
 
+
+private
+
+  -- I'm working on these lemmas in Felix.Reasoning
+  postulate
+    [exl⊗exl]∘transpose : ∀ {a b c d : obj} →
+      (exl ⊗ exl) ∘ transpose {a = a} {b} {c} {d} ≈ exl
+    [exr⊗exr]∘transpose : ∀ {a b c d : obj} →
+      (exr ⊗ exr) ∘ transpose {a = a} {b} {c} {d} ≈ exr
+
+open import Felix.Reasoning
+
 module product-same-homomorphisms where instance
 
   Hₒ : Homomorphismₒ Obj obj
@@ -34,8 +46,6 @@ module product-same-homomorphisms where instance
 
   pH : ProductsH Obj _↠_
   pH = record { ε = unitorⁱʳ ; μ = transpose ; ε⁻¹ = unitorᵉʳ ; μ⁻¹ = transpose }
-
-  open import Felix.Reasoning
 
   spH : StrongProductsH Obj _↠_
   spH = record { ε⁻¹∘ε = unitorᵉʳ∘unitorⁱʳ

@@ -1,4 +1,4 @@
--- {-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K #-}
 
 -- Utilities for reasoning about morphism equivalence.
 -- Inspired by Categories.Morphism.Reasoning in agda-categories.
@@ -517,8 +517,6 @@ module Assoc
       (f₁ ▵ g₁) ⊗ (f₂ ▵ g₂)
     ∎
 
--- F-exl : (exl ⊗ exl) ∘ transpose ≈ exl
-
   -- transpose≡ : ∀ {a b c d : obj} →
   --   transpose {a = a} {b} {c} {d} ≈ {!!}
   -- transpose≡ =
@@ -628,11 +626,11 @@ module Assoc
 
   -- For now
 
-  postulate
-    [exl⊗exl]∘transpose : ∀ {a b c d : obj} →
-      (exl ⊗ exl) ∘ transpose {a = a} {b} {c} {d} ≈ exl
-    [exr⊗exr]∘transpose : ∀ {a b c d : obj} →
-      (exr ⊗ exr) ∘ transpose {a = a} {b} {c} {d} ≈ exr
+  -- postulate
+  --   [exl⊗exl]∘transpose : ∀ {a b c d : obj} →
+  --     (exl ⊗ exl) ∘ transpose {a = a} {b} {c} {d} ≈ exl
+  --   [exr⊗exr]∘transpose : ∀ {a b c d : obj} →
+  --     (exr ⊗ exr) ∘ transpose {a = a} {b} {c} {d} ≈ exr
 
 
 -- F-exr : (exr ⊗ exr) ∘ transpose ≈ exr
