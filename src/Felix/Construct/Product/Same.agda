@@ -1,4 +1,6 @@
-{-# OPTIONS --safe --without-K #-}
+-- {-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --allow-unsolved-metas #-}
+
 -- Product a category with itself, with a special functor to that category
 
 open import Felix.Object
@@ -40,3 +42,9 @@ module product-same-homomorphisms where instance
                ; ε∘ε⁻¹ = unitorⁱʳ∘unitorᵉʳ
                ; μ⁻¹∘μ = transpose∘transpose
                ; μ∘μ⁻¹ = transpose∘transpose }
+
+  cartH : CartesianH _⇨_ _↠_
+  cartH = record { F-!   = !⊗!
+                 ; F-▵   = sym transpose∘▵⊗▵
+                 ; F-exl = [exl⊗exl]∘transpose
+                 ; F-exr = [exr⊗exr]∘transpose }

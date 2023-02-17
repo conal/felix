@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K #-}
+-- {-# OPTIONS --safe --without-K #-}
 -- Some convenient identity instances.
 
 module Felix.Instances.Identity

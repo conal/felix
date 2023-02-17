@@ -237,17 +237,31 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
   exr∘swap : ∀ {a b : obj} → exr ∘ swap {a = a} {b} ≈ exl
   exr∘swap = exr∘▵
 
+  swap∘▵ : ∀ {a c d} {f : a ⇨ c} {g : a ⇨ d} → swap ∘ (f ▵ g) ≈ g ▵ f
+  swap∘▵ = ▵∘ ; ▵≈ exr∘▵ exl∘▵
+
+  -- swap∘▵ {f = f} {g} =
+  --   begin
+  --     swap ∘ (f ▵ g)
+  --   ≡⟨⟩
+  --     (exr ▵ exl) ∘ (f ▵ g)
+  --   ≈⟨ ▵∘ ⟩
+  --     exr ∘ (f ▵ g) ▵ exl ∘ (f ▵ g)
+  --   ≈⟨ ▵≈ exr∘▵ exl∘▵ ⟩
+  --     g ▵ f
+  --   ∎
+
+  -- TODO: Revisit swap∘swap given swap∘▵
+
   swap∘swap : ∀ {a b : obj} → swap ∘ swap ≈ id {a = a × b}
-  swap∘swap = ▵∘ ; ▵≈ exr∘swap exl∘swap ; exl▵exr
+  swap∘swap = swap∘▵ ; exl▵exr
 
   -- swap∘swap =
   --   begin
   --     swap ∘ swap
   --   ≡⟨⟩
-  --     (exr ▵ exl) ∘ swap
-  --   ≈⟨ ▵∘ ⟩
-  --     exr ∘ swap ▵ exl ∘ swap
-  --   ≈⟨ ▵≈ exr∘swap exl∘swap ⟩
+  --     swap ∘ (exr ▵ exl)
+  --   ≈⟨ swap∘▵ ⟩
   --     exl ▵ exr
   --   ≈⟨ exl▵exr ⟩
   --     id
