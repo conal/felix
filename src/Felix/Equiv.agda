@@ -9,7 +9,7 @@ import Relation.Binary.Reasoning.Setoid as SetoidR
 
 private
   variable
-    o ℓ o₁ ℓ₁ o₂ ℓ₂ : Level
+    o ℓ o₁ ℓ₁ o₂ ℓ₂ o₃ ℓ₃ : Level
     obj : Set o
     a b : obj
 
@@ -56,6 +56,12 @@ open Homomorphismₒ ⦃ … ⦄ public
 id-Hₒ : Homomorphismₒ obj obj
 id-Hₒ = record { Fₒ = id }
 
+infixr 9 _∘Hₒ_
+_∘Hₒ_ : ∀ {obj₁ : Set o₁} {obj₂ : Set o₂} {obj₃ : Set o₃} →
+  Homomorphismₒ obj₂ obj₃ → Homomorphismₒ obj₁ obj₂ →
+  Homomorphismₒ obj₁ obj₃
+record { Fₒ = Gₒ } ∘Hₒ record { Fₒ = Fₒ } = record { Fₒ = Gₒ ∘ Fₒ }
+
 record Homomorphism
   {obj₁ : Set o₁} (_⇨₁_ : obj₁ → obj₁ → Set ℓ₁)
   {obj₂ : Set o₂} (_⇨₂_ : obj₂ → obj₂ → Set ℓ₂)
@@ -68,6 +74,17 @@ open Homomorphism ⦃ … ⦄ public
 
 id-H : {obj : Set o} {_⇨_ : obj → obj → Set ℓ} → Homomorphism _⇨_ _⇨_ ⦃ Hₒ = id-Hₒ ⦄
 id-H = record { Fₘ = id }
+
+infixr 9 _∘H_
+_∘H_ : ∀
+  {obj₁ : Set o₁} {_⇨₁_ : obj₁ → obj₁ → Set ℓ₁}
+  {obj₂ : Set o₂} {_⇨₂_ : obj₂ → obj₂ → Set ℓ₂}
+  {obj₃ : Set o₃} {_⇨₃_ : obj₃ → obj₃ → Set ℓ₃}
+  ⦃ Hₒ₁₂ : Homomorphismₒ obj₁ obj₂ ⦄ ⦃ Hₒ₂₃ : Homomorphismₒ obj₂ obj₃ ⦄ →
+  Homomorphism _⇨₂_ _⇨₃_ → Homomorphism _⇨₁_ _⇨₂_ →
+  Homomorphism _⇨₁_ _⇨₃_ ⦃ Hₒ = Hₒ₂₃ ∘Hₒ Hₒ₁₂ ⦄
+record { Fₘ = Gₘ } ∘H record { Fₘ = Fₘ } = record { Fₘ = Gₘ ∘ Fₘ }
+
 
 import Relation.Binary.Construct.On as On
 

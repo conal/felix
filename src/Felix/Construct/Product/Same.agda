@@ -58,3 +58,12 @@ module product-same-homomorphisms where instance
                  ; F-▵   = sym transpose∘▵⊗▵
                  ; F-exl = [exl⊗exl]∘transpose
                  ; F-exr = [exr⊗exr]∘transpose }
+
+
+open import Felix.Instances.CAT
+
+-- same-Hom : Hom
+-- same-Hom = hom _⇨_
+
+same-⤇ : hom _⇨_ ⤇ hom _↠_
+same-⤇ = it-⤇

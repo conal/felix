@@ -53,8 +53,8 @@ module arrow-products ⦃ p : Products obj ⦄ ⦃ c : Cartesian _↠_ ⦄ ⦃ l
 
 
 -- Transposition
-_ᵀ : ∀ {a b} ((mk f₁ f₂ _) : a ↬ b) → (f₁ ⇉ f₂)
-_ᵀ {mkO h} {mkO h′} (mk _ _ commute) = mk h h′ (sym commute)
+_ᵀ : ∀ {a b} ((mkᵐ f₁ f₂ _) : a ↬ b) → (f₁ ⇉ f₂)
+_ᵀ {mkᵒ h} {mkᵒ h′} (mkᵐ _ _ commute) = mkᵐ h h′ (sym commute)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
@@ -63,6 +63,6 @@ infixr 9 _◎_
 _◎_ : ∀ {τ₁ τ₂ τ₃ : obj} {τ₁′ τ₂′ τ₃′ : obj}
         {h : τ₁ ↠ τ₂} {h′ : τ₁′ ↠ τ₂′}
         {k : τ₂ ↠ τ₃} {k′ : τ₂′ ↠ τ₃′}
-        ((mk fₖ₁ _ _) : k ⇉ k′) ((mk _ fₕ₂ _) : h ⇉ h′) → ⦃ fₖ₁ ≡ fₕ₂ ⦄
+        ((mkᵐ fₖ₁ _ _) : k ⇉ k′) ((mkᵐ _ fₕ₂ _) : h ⇉ h′) → ⦃ fₖ₁ ≡ fₕ₂ ⦄
     → k ∘ h ⇉ k′ ∘ h′
 (G ◎ F) ⦃ refl ⦄ = (G ᵀ ∘ F ᵀ) ᵀ

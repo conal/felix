@@ -32,7 +32,7 @@ variable a b c d : Obj
 module comma-cat where
 
   -- id′ : a ↬ a
-  -- id′ {a} = mk id id
+  -- id′ {a} = mkᵐ id id
   --   (begin
   --      h a ∘ Fₘ id
   --    ≈⟨ elimʳ F-id ⟩
@@ -43,11 +43,11 @@ module comma-cat where
   -- -- 4.5s
 
   id′ : a ↬ a
-  id′ = mk id id (elimʳ F-id ; introˡ F-id)
+  id′ = mkᵐ id id (elimʳ F-id ; introˡ F-id)
 
   -- comp : (b ↬ c) → (a ↬ b) → (a ↬ c)
-  -- comp {a}{b}{c} (mk g₁ g₂ ↻-g) (mk f₁ f₂ ↻-f) =
-  --   mk (g₁ ∘ f₁) (g₂ ∘ f₂)
+  -- comp {a}{b}{c} (mkᵐ g₁ g₂ ↻-g) (mkᵐ f₁ f₂ ↻-f) =
+  --   mkᵐ (g₁ ∘ f₁) (g₂ ∘ f₂)
   --     (begin
   --        h c ∘ Fₘ (g₁ ∘ f₁)
   --      ≈⟨ ∘≈ʳ F-∘ ⟩
@@ -62,8 +62,8 @@ module comma-cat where
   -- -- 35s
 
   comp : (b ↬ c) → (a ↬ b) → (a ↬ c)
-  comp (mk g₁ g₂ ↻-g) (mk f₁ f₂ ↻-f) =
-    mk (g₁ ∘ f₁) (g₂ ∘ f₂)
+  comp (mkᵐ g₁ g₂ ↻-g) (mkᵐ f₁ f₂ ↻-f) =
+    mkᵐ (g₁ ∘ f₁) (g₂ ∘ f₂)
        (∘≈ʳ F-∘ ; ∘-assocˡ′ ↻-g ; ∘-assocʳ′ ↻-f ; ∘-assocˡ′ (sym F-∘))
 
   instance
@@ -83,12 +83,12 @@ module comma-products
   instance
 
     products : Products Obj
-    products = record { ⊤   = mkO (ε ∘ ε⁻¹)
-                      ; _×_ = λ (mkO h) (mkO k) → mkO (μ ∘ (h ⊗ k) ∘ μ⁻¹)
+    products = record { ⊤   = mkᵒ (ε ∘ ε⁻¹)
+                      ; _×_ = λ (mkᵒ h) (mkᵒ k) → mkᵒ (μ ∘ (h ⊗ k) ∘ μ⁻¹)
                       }
 
   -- !′ : a ↬ ⊤
-  -- !′ {a} = mk ! !
+  -- !′ {a} = mkᵐ ! !
   --   (begin
   --      h ⊤ ∘ Fₘ !
   --    ≡⟨⟩
@@ -103,11 +103,11 @@ module comma-products
   -- -- 23s
 
   !′ : a ↬ ⊤
-  !′ = mk ! ! (∘≈ʳ F-! ; cancelInner ε⁻¹∘ε ; ∘≈ʳ (sym ∀⊤) ; ∘-assocˡ′ (sym F-!))
+  !′ = mkᵐ ! ! (∘≈ʳ F-! ; cancelInner ε⁻¹∘ε ; ∘≈ʳ (sym ∀⊤) ; ∘-assocˡ′ (sym F-!))
 
   -- fork : (a ↬ c) → (a ↬ d) → (a ↬ c × d)
-  -- fork {a}{c}{d} (mk f₁ f₂ ↻-f) (mk g₁ g₂ ↻-g) =
-  --   mk (f₁ ▵ g₁) (f₂ ▵ g₂)
+  -- fork {a}{c}{d} (mkᵐ f₁ f₂ ↻-f) (mkᵐ g₁ g₂ ↻-g) =
+  --   mkᵐ (f₁ ▵ g₁) (f₂ ▵ g₂)
   --     (begin
   --        h (c × d) ∘ Fₘ (f₁ ▵ g₁)
   --      ≈⟨ ∘≈ ∘-assocˡ F-▵ ; cancelInner μ⁻¹∘μ ⟩
@@ -120,8 +120,8 @@ module comma-products
   -- -- 1m ?
 
   fork : (a ↬ c) → (a ↬ d) → (a ↬ c × d)
-  fork (mk f₁ f₂ ↻-f) (mk g₁ g₂ ↻-g) =
-    mk (f₁ ▵ g₁) (f₂ ▵ g₂)
+  fork (mkᵐ f₁ f₂ ↻-f) (mkᵐ g₁ g₂ ↻-g) =
+    mkᵐ (f₁ ▵ g₁) (f₂ ▵ g₂)
        ( ∘≈ ∘-assocˡ F-▵
        ; cancelInner μ⁻¹∘μ
        ; ∘-assocʳ′ (⊗∘▵ ; ▵≈ ↻-f ↻-g ; sym ▵∘)
@@ -129,7 +129,7 @@ module comma-products
        )
 
   -- exl′ : a × b ↬ a
-  -- exl′ {a}{b} = mk exl exl
+  -- exl′ {a}{b} = mkᵐ exl exl
   --   (begin
   --      h a ∘ Fₘ exl
   --    ≈⟨ ∘≈ʳ (introʳ μ∘μ⁻¹ ; ∘-assocˡ′ F-exl) ⟩
@@ -142,14 +142,14 @@ module comma-products
   -- -- 45s
 
   exl′ : a × b ↬ a
-  exl′ = mk exl exl
+  exl′ = mkᵐ exl exl
     ( ∘≈ʳ (introʳ μ∘μ⁻¹ ; ∘-assocˡ′ F-exl)
     ; ∘-assocˡʳ′ (sym exl∘▵)
     ; sym (∘-assocˡ′ F-exl)
     )
 
   -- exr′ : a × b ↬ b
-  -- exr′ {a}{b} = mk exr exr
+  -- exr′ {a}{b} = mkᵐ exr exr
   --   (begin
   --      h b ∘ Fₘ exr
   --    ≈⟨ ∘≈ʳ (introʳ μ∘μ⁻¹ ; ∘-assocˡ′ F-exr) ⟩
@@ -162,7 +162,7 @@ module comma-products
   -- -- 45s
 
   exr′ : a × b ↬ b
-  exr′ = mk exr exr
+  exr′ = mkᵐ exr exr
     ( ∘≈ʳ (introʳ μ∘μ⁻¹ ; ∘-assocˡ′ F-exr)
     ; ∘-assocˡʳ′ (sym exr∘▵)
     ; sym (∘-assocˡ′ F-exr)
@@ -193,10 +193,10 @@ module comma-products
 --   instance
 
 --     boolean : Boolean Obj
---     boolean = record { Bool = mkO (β ∘ β⁻¹) }
+--     boolean = record { Bool = mkᵒ (β ∘ β⁻¹) }
 
 --   -- false′ : ⊤ ↬ Bool
---   -- false′ = mk false false
+--   -- false′ = mkᵐ false false
 --   --   (begin
 --   --     h Bool ∘ Fₘ false
 --   --    ≡⟨⟩
@@ -217,20 +217,20 @@ module comma-products
 --   --    ∎)
 
 --   false′ : ⊤ ↬ Bool
---   false′ = mk false false
+--   false′ = mkᵐ false false
 --     ( ∘≈ʳ F-false′
 --     ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
 --     ; sym (∘≈ˡ (F-false′ ; ∘-assocˡ) ; cancelInner ε⁻¹∘ε ; ∘-assocʳ)
 --     )
 
 --   true′ : ⊤ ↬ Bool
---   true′ = mk true true
+--   true′ = mkᵐ true true
 --     ( ∘≈ʳ F-true′
 --     ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
 --     ; sym (∘≈ˡ (F-true′ ; ∘-assocˡ) ; cancelInner ε⁻¹∘ε ; ∘-assocʳ)
 --     )
 
---   -- not′ = mk not not
+--   -- not′ = mkᵐ not not
 --   --   (begin
 --   --      h Bool ∘ Fₘ not
 --   --    ≡⟨⟩
@@ -244,14 +244,14 @@ module comma-products
 --   --    ∎)
 
 --   not′ : Bool ↬ Bool
---   not′ = mk not not
+--   not′ = mkᵐ not not
 --     ( ∘≈ʳ F-not′
 --     ; cancelInner β⁻¹∘β
 --     ; sym (∘-assocˡʳ′ F-not)
 --     )
 
 --   -- ∧′ : Bool × Bool ↬ Bool
---   -- ∧′ = mk ∧ ∧
+--   -- ∧′ = mkᵐ ∧ ∧
 --   --   (begin
 --   --      h Bool ∘ Fₘ ∧
 --   --    ≡⟨⟩
@@ -273,7 +273,7 @@ module comma-products
 --   --    ∎)
 
 --   ∧′ : Bool × Bool ↬ Bool
---   ∧′ = mk ∧ ∧
+--   ∧′ = mkᵐ ∧ ∧
 --           ( ∘≈ʳ F-∧′
 --           ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
 --           ; ∘-assocˡ′ (sym F-∧)
@@ -282,7 +282,7 @@ module comma-products
 --           )
 
 --   ∨′ : Bool × Bool ↬ Bool
---   ∨′ = mk ∨ ∨
+--   ∨′ = mkᵐ ∨ ∨
 --           ( ∘≈ʳ F-∨′
 --           ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
 --           ; ∘-assocˡ′ (sym F-∨)
@@ -291,7 +291,7 @@ module comma-products
 --           )
 
 --   xor′ : Bool × Bool ↬ Bool
---   xor′ = mk xor xor
+--   xor′ = mkᵐ xor xor
 --             ( ∘≈ʳ F-xor′
 --             ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
 --             ; ∘-assocˡ′ (sym F-xor)
@@ -300,7 +300,7 @@ module comma-products
 --             )
 
 --   -- cond′ : Bool × (a × a) ↬ a
---   -- cond′ {a} = mk cond cond
+--   -- cond′ {a} = mkᵐ cond cond
 --   --   (begin
 --   --      h a ∘ Fₘ cond
 --   --    ≈⟨ ∘≈ʳ F-cond′ ⟩
@@ -328,7 +328,7 @@ module comma-products
 --   --    ∎)
 
 --   cond′ : Bool × (a × a) ↬ a
---   cond′ {a} = mk cond cond
+--   cond′ {a} = mkᵐ cond cond
 --     ( ∘≈ʳ F-cond′
 --     ; ∘-assocˡ′ f∘cond ; ∘-assocʳ
 --     ; ∘≈ʳ (∘-assocˡ′ ⊗∘⊗ ; ∘≈ˡ (⊗≈ˡ identityˡ))

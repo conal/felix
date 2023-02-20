@@ -21,7 +21,7 @@ module Felix.Construct.Comma.Type
 -- TODO: Define some bundles to reduce syntactic clutter.
 
 record Obj : Set (o₁ ⊔ o₂ ⊔ ℓ₀) where
-  constructor mkO
+  constructor mkᵒ
   field
     { τ₁ } : obj₁
     { τ₂ } : obj₂
@@ -31,7 +31,7 @@ open Obj
 
 infix 0 _↬_
 record _↬_ (a b : Obj) : Set (q ⊔ ℓ₁ ⊔ ℓ₂) where
-  constructor mk
+  constructor mkᵐ
   field
     f₁ : τ₁ a ⇨₁ τ₁ b
     f₂ : τ₂ a ⇨₂ τ₂ b
@@ -43,7 +43,7 @@ open _↬_
 infix 0 _⇉_
 _⇉_ : ∀ {σ₁ τ₁ : obj₁}{σ₂ τ₂ : obj₂}
     → (Fₒ σ₁ ⇨₀ Fₒ σ₂) → (Fₒ τ₁ ⇨₀ Fₒ τ₂) → Set (ℓ₁ ⊔ ℓ₂ ⊔ q)
-g ⇉ h = mkO g ↬ mkO h
+g ⇉ h = mkᵒ g ↬ mkᵒ h
 
 module comma-type-instances where
 
@@ -55,10 +55,10 @@ module comma-type-instances where
     import Felix.Construct.Product as ×
     
     Hₒ× : Homomorphismₒ Obj ×.Obj
-    Hₒ× = record { Fₒ = λ (mkO {τ₁} {τ₂} _) → τ₁ , τ₂}
+    Hₒ× = record { Fₒ = λ (mkᵒ {τ₁} {τ₂} _) → τ₁ , τ₂}
 
     H× : Homomorphism _↬_ ×._⇨_
-    H× = record { Fₘ = λ (mk f₁ f₂ _) → f₁ , f₂ }
+    H× = record { Fₘ = λ (mkᵐ f₁ f₂ _) → f₁ , f₂ }
     
     -- "Domain functor"
     Hₒ₁ : Homomorphismₒ Obj obj₁
