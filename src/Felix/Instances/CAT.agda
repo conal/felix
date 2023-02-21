@@ -16,38 +16,38 @@ private module F {ℓ} where open import Felix.Instances.Function ℓ public
 open F
 
 
-record Hom : Set (suc (o ⊔ ℓ)) where
-  constructor hom
+record CAT : Set (suc (o ⊔ ℓ)) where
+  constructor cat
   field
     {obj} : Set o
     mor : obj → obj → Set ℓ
 
 infix 0 _⤇_
-record _⤇_ (𝐴₁ 𝐴₂ : Hom) : Set (o ⊔ ℓ) where
+record _⤇_ (𝐴₁ 𝐴₂ : CAT) : Set (o ⊔ ℓ) where
   constructor mk⤇
-  open Hom 𝐴₁ renaming (obj to obj₁; mor to _⇨₁_)
-  open Hom 𝐴₂ renaming (obj to obj₂; mor to _⇨₂_)
+  open CAT 𝐴₁ renaming (obj to obj₁; mor to _⇨₁_)
+  open CAT 𝐴₂ renaming (obj to obj₂; mor to _⇨₂_)
   field
     Fₒ : obj₁ → obj₂
     Fₘ : ∀ {a b : obj₁} → (a ⇨₁ b) → (Fₒ a ⇨₂ Fₒ b)
 
 module CAT-instances where instance
 
-  cat : Category _⤇_
-  cat = record
+  category : Category _⤇_
+  category = record
     { id = mk⤇ id id
     ; _∘_ = λ (mk⤇ Gₒ Gₘ) (mk⤇ Fₒ Fₘ) → mk⤇ (Gₒ ∘ Fₒ) (Gₘ ∘ Fₘ)
     }
 
-  products : Products Hom
+  products : Products CAT
   products = record
-    { ⊤ = hom {⊤} λ { tt tt → ⊤ }
-    ; _×_ = λ (hom {obj₁} _⇨₁_) (hom {obj₂} _⇨₂_) →
-        hom {obj₁ × obj₂} λ (a₁ , a₂) (b₁ , b₂) → (a₁ ⇨₁ b₁) × (a₂ ⇨₂ b₂)
+    { ⊤ = cat {⊤} λ { tt tt → ⊤ }
+    ; _×_ = λ (cat {obj₁} _⇨₁_) (cat {obj₂} _⇨₂_) →
+        cat {obj₁ × obj₂} λ (a₁ , a₂) (b₁ , b₂) → (a₁ ⇨₁ b₁) × (a₂ ⇨₂ b₂)
     }
 
-  cart : Cartesian _⤇_
-  cart = record
+  cartesian : Cartesian _⤇_
+  cartesian = record
     { ! = mk⤇ ! !
     ; _▵_ = λ (mk⤇ Fₒ Fₘ) (mk⤇ Gₒ Gₘ) → mk⤇ (Fₒ ▵ Gₒ) (Fₘ ▵ Gₘ)
     ; exl = mk⤇ exl exl
@@ -57,11 +57,11 @@ module CAT-instances where instance
 
 -- Temporary (I think) bridge to Homomorphism etc
 
-private variable A B : Hom
+private variable A B : CAT
 
 open import Felix.Homomorphism
 
-open Hom
+open CAT
 open _⤇_
 
 toHₒ : (A ⤇ B) → Homomorphismₒ (obj A) (obj B)
@@ -74,6 +74,6 @@ it-⤇ : ∀
   {obj₁ : Set o} {_⇨₁_ : obj₁ → obj₁ → Set ℓ}
   {obj₂ : Set o} {_⇨₂_ : obj₂ → obj₂ → Set ℓ}
   ⦃ Hₒ : Homomorphismₒ obj₁ obj₂ ⦄ ⦃ H : Homomorphism _⇨₁_ _⇨₂_ ⦄ → 
-  hom _⇨₁_ ⤇ hom _⇨₂_
+  cat _⇨₁_ ⤇ cat _⇨₂_
 it-⤇ ⦃ Hₒ = Hₒ ⦄ ⦃ H = H ⦄ = mk⤇ (Homomorphismₒ.Fₒ Hₒ) (Homomorphism.Fₘ H)
 

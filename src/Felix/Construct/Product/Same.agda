@@ -62,8 +62,8 @@ module product-same-homomorphisms where instance
 
 open import Felix.Instances.CAT
 
--- same-Hom : Hom
--- same-Hom = hom _⇨_
+-- same-Hom : CAT
+-- same-Hom = cat _⇨_
 
-same-⤇ : hom _⇨_ ⤇ hom _↠_
+same-⤇ : cat _⇨_ ⤇ cat _↠_
 same-⤇ = it-⤇
