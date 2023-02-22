@@ -15,6 +15,7 @@ import Felix.Subcategory.Object
 import Felix.Subcategory.Morphism
 
 import Felix.Construct.Product
+import Felix.Construct.Squared
 import Felix.Construct.Comma
 import Felix.Construct.Arrow
 
