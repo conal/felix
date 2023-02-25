@@ -141,11 +141,11 @@ module product-homomorphisms where instance
   H₂ : Homomorphism _⇨_ _⇨₂_
   H₂ = record { Fₘ = proj₂ }
 
-  catH₁ : ∀ {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ → CategoryH _⇨_ _⇨₁_
-  catH₁ = record { F-id = refl ; F-∘ = refl }
+  catH₁ : ∀ {q₁ q₂} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ ⦃ _ : Equivalent q₂ _⇨₂_ ⦄ → CategoryH _⇨_ _⇨₁_
+  catH₁ = record { F-cong = proj₁ ; F-id = refl ; F-∘ = refl }
 
-  catH₂ : ∀ {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄ → CategoryH _⇨_ _⇨₂_
-  catH₂ = record { F-id = refl ; F-∘ = refl }
+  catH₂ : ∀ {q₁ q₂} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ ⦃ _ : Equivalent q₂ _⇨₂_ ⦄ → CategoryH _⇨_ _⇨₂_
+  catH₂ = record { F-cong = proj₂ ; F-id = refl ; F-∘ = refl }
 
   pH₁ : ∀ ⦃ _ : Products obj₁ ⦄ ⦃ _ : Products obj₂ ⦄ → ProductsH Obj _⇨₁_
   pH₁ = record { ε = id ; μ = id ; ε⁻¹ = id ; μ⁻¹ = id }
@@ -171,7 +171,7 @@ module product-homomorphisms where instance
                 ; μ⁻¹∘μ = identityˡ
                 ; μ∘μ⁻¹ = identityˡ }
 
-  cartesianH₁ : ∀ {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄
+  cartesianH₁ : ∀ {q₁ q₂} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
       ⦃ _ : Products  obj₁ ⦄ ⦃ _ : Products  obj₂ ⦄
       ⦃ _ : Cartesian _⇨₁_ ⦄ ⦃ _ : Cartesian _⇨₂_ ⦄ ⦃ _ : L.Category _⇨₁_ ⦄
     → CartesianH _⇨_ _⇨₁_
@@ -181,7 +181,7 @@ module product-homomorphisms where instance
     ; F-exl = identityʳ
     ; F-exr = identityʳ }
 
-  cartesianH₂ : ∀ {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
+  cartesianH₂ : ∀ {q₁ q₂} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
       ⦃ _ : Products  obj₁ ⦄ ⦃ _ : Products  obj₂ ⦄
       ⦃ _ : Cartesian _⇨₁_ ⦄ ⦃ _ : Cartesian _⇨₂_ ⦄ ⦃ _ : L.Category _⇨₂_ ⦄
     → CartesianH _⇨_ _⇨₂_

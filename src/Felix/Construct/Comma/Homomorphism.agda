@@ -12,8 +12,8 @@ module Felix.Construct.Comma.Homomorphism
    {o₁}{obj₁ : Set o₁} {ℓ₁} (_⇨₁_ : obj₁ → obj₁ → Set ℓ₁) ⦃ _ : Category _⇨₁_ ⦄
    {o₂}{obj₂ : Set o₂} {ℓ₂} (_⇨₂_ : obj₂ → obj₂ → Set ℓ₂) ⦃ _ : Category _⇨₂_ ⦄
    {q₀} ⦃ _ : Equivalent q₀ _⇨₀_ ⦄ ⦃ _ : L.Category _⇨₀_ ⦄
-   {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ ⦃ _ : L.Category _⇨₁_ ⦄
-   {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄ ⦃ _ : L.Category _⇨₂_ ⦄
+   {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ -- ⦃ _ : L.Category _⇨₁_ ⦄
+   {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄ -- ⦃ _ : L.Category _⇨₂_ ⦄
    ⦃ _ : Homomorphismₒ obj₁ obj₀ ⦄ ⦃ _ : Homomorphism _⇨₁_ _⇨₀_ ⦄
      ⦃ catH₁ : CategoryH _⇨₁_ _⇨₀_ ⦄
    ⦃ _ : Homomorphismₒ obj₂ obj₀ ⦄ ⦃ _ : Homomorphism _⇨₂_ _⇨₀_ ⦄
@@ -26,12 +26,13 @@ module comma-homomorphism-instances where
 
   instance
 
+    open import Data.Product using (_,_; proj₁; proj₂)
     open import Felix.Homomorphism
 
     categoryH₁ : CategoryH _↬_ _⇨₁_
-    categoryH₁ = record { F-id = refl ; F-∘ = refl }
+    categoryH₁ = record { F-cong = proj₁ ; F-id = refl ; F-∘ = refl }
 
     categoryH₂ : CategoryH _↬_ _⇨₂_
-    categoryH₂ = record { F-id = refl ; F-∘ = refl }
+    categoryH₂ = record { F-cong = proj₂ ; F-id = refl ; F-∘ = refl }
 
     -- Also CartesianH, CartesianClosedH, and LogicH

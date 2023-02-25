@@ -1,4 +1,4 @@
--- {-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Level
 
@@ -23,10 +23,10 @@ record CAT : Set (suc (o ⊔ ℓ)) where
     mor : obj → obj → Set ℓ
 
 infix 0 _⤇_
-record _⤇_ (𝐴₁ 𝐴₂ : CAT) : Set (o ⊔ ℓ) where
+record _⤇_ (𝒜₁ 𝒜₂ : CAT) : Set (o ⊔ ℓ) where
   constructor mk⤇
-  open CAT 𝐴₁ renaming (obj to obj₁; mor to _⇨₁_)
-  open CAT 𝐴₂ renaming (obj to obj₂; mor to _⇨₂_)
+  open CAT 𝒜₁ renaming (obj to obj₁; mor to _⇨₁_)
+  open CAT 𝒜₂ renaming (obj to obj₂; mor to _⇨₂_)
   field
     Fₒ : obj₁ → obj₂
     Fₘ : ∀ {a b : obj₁} → (a ⇨₁ b) → (Fₒ a ⇨₂ Fₒ b)
@@ -77,3 +77,39 @@ it-⤇ : ∀
   cat _⇨₁_ ⤇ cat _⇨₂_
 it-⤇ ⦃ Hₒ = Hₒ ⦄ ⦃ H = H ⦄ = mk⤇ (Homomorphismₒ.Fₒ Hₒ) (Homomorphism.Fₘ H)
 
+
+-- Experiment: functor classes
+
+open import Felix.Homomorphism
+
+module _ {𝒜₁ 𝒜₂ : CAT} (F : 𝒜₁ ⤇ 𝒜₂)
+    (let open CAT 𝒜₁ renaming (obj to obj₁; mor to _⇨₁_)
+         open CAT 𝒜₂ renaming (obj to obj₂; mor to _⇨₂_))
+    ⦃ _ : Category _⇨₁_ ⦄ ⦃ _ : Category _⇨₂_ ⦄
+    { q₁ } ⦃ _ : Equivalent q₁ _⇨₁_ ⦄
+    { q₂ } ⦃ _ : Equivalent q₂ _⇨₂_ ⦄ where
+  private
+    instance _ = toHₒ F ; _ = toH F
+
+
+
+  record Functor : Set (o ⊔ ℓ ⊔ q₁ ⊔ q₂) where
+    field
+      catH : CategoryH _⇨₁_ _⇨₂_
+
+  module _  ⦃ _ : Products obj₁ ⦄ ⦃ _ : Cartesian _⇨₁_ ⦄
+            ⦃ _ : Products obj₂ ⦄ ⦃ _ : Cartesian _⇨₂_ ⦄
+            ⦃ _ : ProductsH obj₁ _⇨₂_ ⦄ where
+
+    record CartesianFunctor : Set (o ⊔ ℓ ⊔ q₁ ⊔ q₂) where
+      field
+        -- Should the ProductsH go here instead?
+        cartH : CartesianH _⇨₁_ _⇨₂_
+
+  -- Next: (cartesian) functors compose
+
+
+  -- module functor-instances where instance
+
+  --   category : Category Functor
+  --   category = ?

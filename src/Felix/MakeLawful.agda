@@ -10,7 +10,7 @@ open import Felix.Homomorphism
 module Felix.MakeLawful
          {o₁}{obj₁ : Set o₁} {ℓ₁}(_⇨₁_ : obj₁ → obj₁ → Set ℓ₁)
          {o₂}{obj₂ : Set o₂} {ℓ₂}(_⇨₂_ : obj₂ → obj₂ → Set ℓ₂)
-         {q : Level} ⦃ _ : Equivalent q _⇨₂_ ⦄
+         {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
          ⦃ _ : Homomorphismₒ obj₁ obj₂ ⦄
          ⦃ H : Homomorphism _⇨₁_ _⇨₂_ ⦄
  where

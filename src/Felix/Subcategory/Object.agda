@@ -75,7 +75,7 @@ module subcategory-instances where instance
       equivalent = H-equiv
 
       categoryH : CategoryH _⇨_ _↠_
-      categoryH = record { F-id = refl↠ ; F-∘ = refl↠ }
+      categoryH = record { F-cong = λ ~ → ~ ; F-id = refl↠ ; F-∘ = refl↠ }
 
       cartesianH :
         ⦃ _ : Products obj ⦄ ⦃ _ : Cartesian _↠_ ⦄ ⦃ _ : L.Category _↠_ ⦄

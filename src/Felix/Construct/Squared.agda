@@ -15,7 +15,7 @@ module Felix.Construct.Squared
   {q} ⦃ _ : Equivalent q _⇨_ ⦄ ⦃ _ : L.Category _⇨_ ⦄ ⦃ _ : L.Cartesian _⇨_ ⦄
  where
 
-open import Data.Product using (_,_)
+open import Data.Product using (_,_) renaming (map to _⊗̇_; uncurry to uncurry′)
 
 
 open import Felix.Construct.Product {_⇨₁_ = _⇨_} {_⇨₂_ = _⇨_}
@@ -50,7 +50,7 @@ module product-same-homomorphisms where instance
   -- H = record { Fₘ = λ (f , g) → f ⊗ g }
 
   catH : CategoryH _⇨²_ _⇨_
-  catH = record { F-id = id⊗id ; F-∘ = sym ⊗∘⊗ }
+  catH = record { F-cong = uncurry′ ⊗≈ ; F-id = id⊗id ; F-∘ = sym ⊗∘⊗ }
 
   pH : ProductsH Obj _⇨_
   pH = record { ε = unitorⁱʳ ; μ = transpose ; ε⁻¹ = unitorᵉʳ ; μ⁻¹ = transpose }

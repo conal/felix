@@ -52,7 +52,7 @@ module subcat-instances ⦃ _ : Categoryᴾ M ⦄ where instance
     }
 
   catH : CategoryH _⇨_ _↠_
-  catH = record { F-id = refl↠ ; F-∘ = refl↠ }
+  catH = record { F-cong = λ ~ → ~ ; F-id = refl↠ ; F-∘ = refl↠ }
 
   module _  ⦃ _ : Products obj ⦄ ⦃ _ : Cartesian _↠_ ⦄ ⦃ _ : Cartesianᴾ M ⦄ where instance
 

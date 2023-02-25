@@ -3,6 +3,8 @@
 module Felix.Homomorphism where
 
 open import Level
+open import Function using () renaming (id to id′; _∘_ to _∘̇_)
+-- Maybe import Felix.Raw for id & ∘ on functions
 
 open import Felix.Equiv  public
 open import Felix.Raw
@@ -11,7 +13,7 @@ open import Felix.Reasoning
 
 private
   variable
-    o ℓ o₁ ℓ₁ o₂ ℓ₂ : Level
+    o ℓ o₁ ℓ₁ o₂ ℓ₂ o₃ ℓ₃ : Level
     obj₁ obj₂ : Set o
     a b c d : obj₁
 
@@ -19,15 +21,15 @@ open ≈-Reasoning
 
 
 -- Category homomorphism (functor)
-record CategoryH {obj₁ : Set o₁} (_⇨₁_ : obj₁ → obj₁ → Set ℓ₁)
-                 {obj₂ : Set o₂} (_⇨₂_ : obj₂ → obj₂ → Set ℓ₂)
-                 {q} ⦃ _ : Equivalent q _⇨₂_ ⦄
-                 ⦃ _ : Category _⇨₁_ ⦄
-                 ⦃ _ : Category _⇨₂_ ⦄
-                 ⦃ Hₒ : Homomorphismₒ obj₁ obj₂ ⦄
-                 ⦃ H : Homomorphism _⇨₁_ _⇨₂_ ⦄
-       : Set (o₁ ⊔ ℓ₁ ⊔ o₂ ⊔ ℓ₂ ⊔ q) where
+record CategoryH
+  {obj₁ : Set o₁} (_⇨₁_ : obj₁ → obj₁ → Set ℓ₁) {q₁} ⦃ eq₁ : Equivalent q₁ _⇨₁_ ⦄
+  {obj₂ : Set o₂} (_⇨₂_ : obj₂ → obj₂ → Set ℓ₂) {q₂} ⦃ eq₂ : Equivalent q₂ _⇨₂_ ⦄
+  ⦃ _ : Category _⇨₁_ ⦄ ⦃ _ : Category _⇨₂_ ⦄
+  ⦃ Hₒ : Homomorphismₒ obj₁ obj₂ ⦄
+  ⦃ H : Homomorphism _⇨₁_ _⇨₂_ ⦄
+       : Set (o₁ ⊔ ℓ₁ ⊔ q₁ ⊔ o₂ ⊔ ℓ₂ ⊔ q₂) where
   field
+    F-cong : ∀ {a b} {f g : a ⇨₁ b} → f ≈ g → Fₘ f ≈ Fₘ g
     F-id : Fₘ (id {_⇨_ = _⇨₁_}{a = a}) ≈ id
     F-∘  : ∀ {a b c} {g : b ⇨₁ c} {f : a ⇨₁ b} → Fₘ (g ∘ f) ≈ Fₘ g ∘ Fₘ f
     -- TODO: make g and f explicit arguments? Wait and see.
@@ -63,7 +65,50 @@ id-CategoryH : {obj : Set o} {_⇨_ : obj → obj → Set ℓ}
                {q : Level} ⦃ _ : Equivalent q _⇨_ ⦄
                ⦃ _ : Category _⇨_ ⦄
              → CategoryH _⇨_ _⇨_ ⦃ Hₒ = id-Hₒ ⦄ ⦃ H = id-H ⦄
-id-CategoryH = record { F-id = refl ; F-∘ = refl }
+id-CategoryH = record { F-cong = id′ ; F-id = refl ; F-∘ = refl }
+
+infixr 9 _∘-CategoryH_
+_∘-CategoryH_ :
+   {obj₁ : Set o₁} {_⇨₁_ : obj₁ → obj₁ → Set ℓ₁}
+   {obj₂ : Set o₂} {_⇨₂_ : obj₂ → obj₂ → Set ℓ₂}
+   {obj₃ : Set o₃} {_⇨₃_ : obj₃ → obj₃ → Set ℓ₃}
+   {q₁ : Level} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄
+   {q₂ : Level} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
+   {q₃ : Level} ⦃ _ : Equivalent q₃ _⇨₃_ ⦄
+   ⦃ _ : Category _⇨₁_ ⦄ ⦃ _ : Category _⇨₂_ ⦄ ⦃ _ : Category _⇨₃_ ⦄
+   ⦃ Fₒ : Homomorphismₒ obj₁ obj₂ ⦄ ⦃ Fₘ : Homomorphism _⇨₁_ _⇨₂_ ⦄
+   ⦃ Gₒ : Homomorphismₒ obj₂ obj₃ ⦄ ⦃ Gₘ : Homomorphism _⇨₂_ _⇨₃_ ⦄
+   (G : CategoryH _⇨₂_ _⇨₃_) (F : CategoryH _⇨₁_ _⇨₂_)
+  → CategoryH _⇨₁_ _⇨₃_ ⦃ Hₒ = Gₒ ∘Hₒ Fₒ ⦄ ⦃ H = Gₘ ∘H Fₘ ⦄
+G ∘-CategoryH F  = record
+  { F-cong = G.F-cong ∘̇ F.F-cong
+  ; F-id   = G.F-cong F.F-id ; G.F-id
+  ; F-∘    = G.F-cong F.F-∘  ; G.F-∘
+  }
+ where module F = CategoryH F ; module G = CategoryH G
+
+open import Data.Product using (_,_) renaming (_×_ to _×̇_; <_,_> to _▵̇_)
+
+-- infixr 7 _▵-CategoryH_
+-- _▵-CategoryH_ :
+--    {obj₁ : Set o₁} {_⇨₁_ : obj₁ → obj₁ → Set ℓ₁}
+--    {obj₂ : Set o₂} {_⇨₂_ : obj₂ → obj₂ → Set ℓ₂}
+--    {obj₃ : Set o₃} {_⇨₃_ : obj₃ → obj₃ → Set ℓ₃}
+--    {q₁ : Level} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄
+--    {q₂ : Level} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
+--    {q₃ : Level} ⦃ _ : Equivalent q₃ _⇨₃_ ⦄
+--    ⦃ _ : Category _⇨₁_ ⦄ ⦃ _ : Category _⇨₂_ ⦄ ⦃ _ : Category _⇨₃_ ⦄
+--    ⦃ Fₒ : Homomorphismₒ obj₁ obj₂ ⦄ ⦃ Fₘ : Homomorphism _⇨₁_ _⇨₂_ ⦄
+--    ⦃ Gₒ : Homomorphismₒ obj₁ obj₃ ⦄ ⦃ Gₘ : Homomorphism _⇨₁_ _⇨₃_ ⦄
+--    (F : CategoryH _⇨₁_ _⇨₂_) (G : CategoryH _⇨₁_ _⇨₃_)
+--   → CategoryH _⇨₁_ (λ (a₂ , a₃) (b₂ , b₃) → (a₂ ⇨₂ b₂) ×̇ (a₃ ⇨₃ b₃)) ⦃ Hₒ = Fₒ ▵Hₒ Gₒ ⦄ ⦃ H = Fₘ ▵H Gₘ ⦄
+-- G ▵-CategoryH F  = record
+--   { F-cong = ? -- G.F-cong ▵̇ F.F-cong
+--   ; F-id   = ? -- G.F-cong F.F-id ; G.F-id
+--   ; F-∘    = ? -- G.F-cong F.F-∘  ; G.F-∘
+--   }
+--  where module F = CategoryH F ; module G = CategoryH G
+
 
 record ProductsH
     (obj₁ : Set o₁) ⦃ _ : Products obj₁ ⦄
@@ -124,15 +169,15 @@ id-StrongProductsH =
 
 -- Cartesian homomorphism (cartesian functor)
 record CartesianH
-         {obj₁ : Set o₁} ⦃ _ : Products obj₁ ⦄ (_⇨₁_ : obj₁ → obj₁ → Set ℓ₁)
-         {obj₂ : Set o₂} ⦃ _ : Products obj₂ ⦄ (_⇨₂_ : obj₂ → obj₂ → Set ℓ₂)
-         {q} ⦃ _ : Equivalent q _⇨₂_ ⦄
-         ⦃ _ : Category _⇨₁_ ⦄ ⦃ _ : Cartesian _⇨₁_ ⦄
-         ⦃ _ : Category _⇨₂_ ⦄ ⦃ _ : Cartesian _⇨₂_ ⦄
-         ⦃ Hₒ : Homomorphismₒ obj₁ obj₂ ⦄
-         ⦃ H : Homomorphism _⇨₁_ _⇨₂_ ⦄
-         ⦃ pH : ProductsH obj₁ _⇨₂_ ⦄
-       : Set (o₁ ⊔ ℓ₁ ⊔ o₂ ⊔ ℓ₂ ⊔ q) where
+  {obj₁ : Set o₁} ⦃ _ : Products obj₁ ⦄ (_⇨₁_ : obj₁ → obj₁ → Set ℓ₁)
+  {obj₂ : Set o₂} ⦃ _ : Products obj₂ ⦄ (_⇨₂_ : obj₂ → obj₂ → Set ℓ₂)
+  {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
+  ⦃ _ : Category _⇨₁_ ⦄ ⦃ _ : Cartesian _⇨₁_ ⦄
+  ⦃ _ : Category _⇨₂_ ⦄ ⦃ _ : Cartesian _⇨₂_ ⦄
+  ⦃ Hₒ : Homomorphismₒ obj₁ obj₂ ⦄
+  ⦃ H : Homomorphism _⇨₁_ _⇨₂_ ⦄
+  ⦃ pH : ProductsH obj₁ _⇨₂_ ⦄
+       : Set (o₁ ⊔ ℓ₁ ⊔ q₁ ⊔ o₂ ⊔ ℓ₂ ⊔ q₂) where
   field
     F-!   : ∀ {a : obj₁} → Fₘ {a = a} ! ≈ ε ∘ !
     F-▵   : ∀ {a c d} {f : a ⇨₁ c}{g : a ⇨₁ d} → Fₘ (f ▵ g) ≈ μ ∘ (Fₘ f ▵ Fₘ g)
