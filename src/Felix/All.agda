@@ -1,4 +1,4 @@
--- {-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Felix.All where
 

@@ -1,7 +1,5 @@
--- {-# OPTIONS --safe --without-K #-}
--- {-# OPTIONS --allow-unsolved-metas #-}
-
 -- Product a category with itself, with a special functor to that category
+{-# OPTIONS --safe --without-K #-}
 
 open import Felix.Object
 open import Felix.Raw
@@ -17,20 +15,8 @@ module Felix.Construct.Squared
 
 open import Data.Product using (_,_) renaming (map to _⊗̇_; uncurry to uncurry′)
 
-
 open import Felix.Construct.Product {_⇨₁_ = _⇨_} {_⇨₂_ = _⇨_}
   hiding (module product-homomorphisms) renaming (_⇨_ to _⇨²_) public
-
-
-private
-
-  -- I'm working on these lemmas in Felix.Reasoning
-  postulate
-    [exl⊗exl]∘transpose : ∀ {a b c d : obj} →
-      (exl ⊗ exl) ∘ transpose {a = a} {b} {c} {d} ≈ exl
-    [exr⊗exr]∘transpose : ∀ {a b c d : obj} →
-      (exr ⊗ exr) ∘ transpose {a = a} {b} {c} {d} ≈ exr
-
 
 open import Felix.Instances.CAT
 
@@ -66,3 +52,11 @@ module product-same-homomorphisms where instance
                  ; F-▵   = sym transpose∘▵⊗▵
                  ; F-exl = [exl⊗exl]∘transpose
                  ; F-exr = [exr⊗exr]∘transpose }
+
+  equivalent : Equivalent q _⇨²_
+  equivalent = H-equiv
+
+  open import Felix.MakeLawful _⇨²_ _⇨_
+
+  catL : L.Category _⇨²_
+  catL = LawfulCategoryᶠ

@@ -258,7 +258,7 @@ module Assoc
     -- ≈⟨ ▵≈ˡ (sym ▵∘) ⟩
     --   (exl ▵ exr) ∘ exl ▵ exr
     -- ≈⟨ ▵≈ˡ (∘≈ˡ exl▵exr ; identityˡ) ⟩
-    ≈⟨ ▵≈ˡ (sym ▵∘ ; ∘≈ˡ exl▵exr ; identityˡ) ⟩
+    ≈⟨ ▵≈ˡ (sym ▵∘ ; elimˡ exl▵exr) ⟩
       exl ▵ exr
     ≈⟨ exl▵exr ⟩
       id
@@ -279,7 +279,7 @@ module Assoc
       exl ∘ second exl ▵ (exl ∘ exr ▵ exr ∘ exr)
     ≈⟨ ▵≈ exl∘second (sym ▵∘) ⟩
       exl ▵ (exl ▵ exr) ∘ exr
-    ≈⟨ ▵≈ʳ (∘≈ˡ exl▵exr ; identityˡ) ⟩
+    ≈⟨ ▵≈ʳ (elimˡ exl▵exr) ⟩
       exl ▵ exr
     ≈⟨ exl▵exr ⟩
       id
@@ -455,10 +455,6 @@ module Assoc
       id
     ∎
 
-  transpose∘transpose : ∀ {a b c d : obj} →
-    transpose ∘ transpose {a = a} {b} {c} {d} ≈ id
-  transpose∘transpose = inAssocʳ-inverse (inAssocˡ-inverse swap∘swap)
-
   !⊗! : ∀ {a b : obj} → ! {a = a} ⊗ ! {a = b} ≈ unitorⁱʳ ∘ !
   !⊗! {a} {b} =
     begin
@@ -475,29 +471,65 @@ module Assoc
       unitorⁱʳ ∘ !
     ∎
 
-  transpose∘▵▵▵ : ∀ {a c₁ c₂ d₁ d₂ : obj}
-    {f₁ : a ⇨ c₁} {f₂ : a ⇨ c₂} {g₁ : a ⇨ d₁} {g₂ : a ⇨ d₂} →
+  [exl⊗exl]∘transpose : ∀ {a b c d : obj} →
+    (exl ⊗ exl) ∘ transpose {a = a} {b} {c} {d} ≈ exl
+  [exl⊗exl]∘transpose =
+    begin
+      (exl ⊗ exl) ∘ transpose
+    ≡⟨⟩
+      (exl ⊗ exl) ∘ ((exl ∘ exl ▵ exl ∘ exr) ▵ (exr ∘ exl ▵ exr ∘ exr))
+    ≈⟨ ⊗∘▵ ⟩
+      exl ∘ (exl ∘ exl ▵ exl ∘ exr) ▵ exl ∘ (exr ∘ exl ▵ exr ∘ exr)
+    ≈⟨ ▵≈ exl∘▵ exl∘▵ ⟩
+      exl ∘ exl ▵ exr ∘ exl
+    ≈⟨ sym ▵∘ ⟩
+      (exl ▵ exr) ∘ exl
+    ≈⟨ elimˡ exl▵exr ⟩
+      exl
+    ∎
+
+  [exr⊗exr]∘transpose : ∀ {a b c d : obj} →
+    (exr ⊗ exr) ∘ transpose {a = a} {b} {c} {d} ≈ exr
+  [exr⊗exr]∘transpose =
+    begin
+      (exr ⊗ exr) ∘ transpose
+    ≡⟨⟩
+      (exr ⊗ exr) ∘ ((exl ∘ exl ▵ exl ∘ exr) ▵ (exr ∘ exl ▵ exr ∘ exr))
+    ≈⟨ ⊗∘▵ ⟩
+      exr ∘ (exl ∘ exl ▵ exl ∘ exr) ▵ exr ∘ (exr ∘ exl ▵ exr ∘ exr)
+    ≈⟨ ▵≈ exr∘▵ exr∘▵ ⟩
+      exl ∘ exr ▵ exr ∘ exr
+    ≈⟨ sym ▵∘ ⟩
+      (exl ▵ exr) ∘ exr
+    ≈⟨ elimˡ exl▵exr ⟩
+      exr
+    ∎
+
+  transpose∘▵▵▵ : ∀ {a₁ c₁ c₂ d₁ d₂ : obj}
+    {f₁ : a₁ ⇨ c₁} {f₂ : a₁ ⇨ c₂} {g₁ : a₁ ⇨ d₁} {g₂ : a₁ ⇨ d₂} →
     transpose ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂)) ≈ (f₁ ▵ g₁) ▵ (f₂ ▵ g₂)
   transpose∘▵▵▵ {f₁ = f₁} {f₂} {g₁} {g₂} =
     begin
       transpose ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂))
     ≡⟨⟩
-      inAssocʳ (inAssocˡ swap) ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂))
-    ≡⟨⟩
-      (assocˡ ∘ second (inAssocˡ swap) ∘ assocʳ) ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂))
-    ≈⟨ ∘-assocʳ³ ⟩
-      assocˡ ∘ second (inAssocˡ swap) ∘ assocʳ ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂))
-    ≈⟨ ∘≈ʳ² assocʳ∘▵ ⟩
-      assocˡ ∘ second (inAssocˡ swap) ∘ (f₁ ▵ (f₂ ▵ (g₁ ▵ g₂)))
-    ≈⟨ ∘≈ʳ second∘▵ ⟩
-      assocˡ ∘ (f₁ ▵ (inAssocˡ swap) ∘ (f₂ ▵ (g₁ ▵ g₂)))
-    ≡⟨⟩
-      assocˡ ∘ (f₁ ▵ (assocʳ ∘ first swap ∘ assocˡ) ∘ (f₂ ▵ (g₁ ▵ g₂)))
-    ≈⟨ ∘≈ʳ (▵≈ʳ (∘-assocʳ³ ; ∘≈ʳ² assocˡ∘▵)) ⟩
-      assocˡ ∘ (f₁ ▵ assocʳ ∘ first swap ∘ ((f₂ ▵ g₁) ▵ g₂))
-    ≈⟨ ∘≈ʳ (▵≈ʳ (∘≈ʳ (first∘▵ ; ▵≈ˡ swap∘▵) ; assocʳ∘▵)) ⟩
-      assocˡ ∘ (f₁ ▵ (g₁ ▵ (f₂ ▵ g₂)))
-    ≈⟨ assocˡ∘▵ ⟩
+      ((exl ∘ exl ▵ exl ∘ exr) ▵ (exr ∘ exl ▵ exr ∘ exr)) ∘
+      ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂))
+    ≈⟨ ▵∘ ⟩
+      (exl ∘ exl ▵ exl ∘ exr) ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂)) ▵
+      (exr ∘ exl ▵ exr ∘ exr) ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂))
+    ≈⟨ ▵≈ ▵∘ ▵∘ ⟩
+      ((exl ∘ exl) ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂)) ▵
+       (exl ∘ exr) ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂))) ▵
+      ((exr ∘ exl) ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂)) ▵
+       (exr ∘ exr) ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂)))
+    ≈⟨ ▵≈ (▵≈ ∘-assocʳ ∘-assocʳ) (▵≈ ∘-assocʳ ∘-assocʳ) ⟩
+      (exl ∘ exl ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂)) ▵
+       exl ∘ exr ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂))) ▵
+      (exr ∘ exl ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂)) ▵
+       exr ∘ exr ∘ ((f₁ ▵ f₂) ▵ (g₁ ▵ g₂)))
+    ≈⟨ ▵≈ (▵≈ (∘≈ʳ exl∘▵) (∘≈ʳ exr∘▵)) (▵≈ (∘≈ʳ exl∘▵) (∘≈ʳ exr∘▵)) ⟩
+      (exl ∘ (f₁ ▵ f₂) ▵ exl ∘ (g₁ ▵ g₂)) ▵ (exr ∘ (f₁ ▵ f₂) ▵ exr ∘ (g₁ ▵ g₂))
+    ≈⟨ ▵≈ (▵≈ exl∘▵ exl∘▵) (▵≈ exr∘▵ exr∘▵) ⟩
       (f₁ ▵ g₁) ▵ (f₂ ▵ g₂)
     ∎
 
@@ -510,130 +542,28 @@ module Assoc
     ≡⟨⟩
       transpose ∘ ((f₁ ∘ exl ▵ f₂ ∘ exr) ▵ (g₁ ∘ exl ▵ g₂ ∘ exr))
     ≈⟨ transpose∘▵▵▵ ⟩
-      (f₁ ∘ exl ▵ g₁ ∘ exl) ▵ (f₂ ∘ exr ▵ g₂ ∘ exr)
-    ≈˘⟨ ▵≈ ▵∘ ▵∘ ⟩
-      (f₁ ▵ g₁) ∘ exl ▵ (f₂ ▵ g₂) ∘ exr
+      ((f₁ ∘ exl ▵ g₁ ∘ exl) ▵ (f₂ ∘ exr ▵ g₂ ∘ exr))
+    ≈⟨ sym (▵≈ ▵∘ ▵∘) ⟩
+      ((f₁ ▵ g₁) ∘ exl ▵ (f₂ ▵ g₂) ∘ exr)
     ≡⟨⟩
       (f₁ ▵ g₁) ⊗ (f₂ ▵ g₂)
     ∎
 
-  -- transpose≡ : ∀ {a b c d : obj} →
-  --   transpose {a = a} {b} {c} {d} ≈ {!!}
-  -- transpose≡ =
-  --   begin
-  --     transpose
-  --   ≡⟨⟩
-  --     inAssocʳ (inAssocˡ swap)
-  --   ≡⟨⟩
-  --     inAssocʳ (assocʳ ∘ first swap ∘ assocˡ)
-  --   ≡⟨⟩
-  --     assocˡ ∘ second (assocʳ ∘ first swap ∘ assocˡ) ∘ assocʳ
-  --   ≡⟨⟩
-  --     {!!}
-  --   ∎
-
-{-
-
-  exl∘assocˡ : ∀ {a b c : obj} → exl ∘ assocˡ {a = a} {b} {c} ≈ second exl
-  exl∘assocˡ = {!!}
-
-  exl∘assocʳ : ∀ {a b c : obj} → exl ∘ assocʳ {a = a} {b} {c} ≈ exl ∘ exl
-  exl∘assocʳ = {!!}
-
-  exr∘assocˡ : ∀ {a b c : obj} → exr ∘ assocˡ {a = a} {b} {c} ≈ exr ∘ exr
-  exr∘assocˡ = {!!}
-
-  exr∘assocʳ : ∀ {a b c : obj} → exr ∘ assocʳ {a = a} {b} {c} ≈ first exr
-  exr∘assocʳ = {!!}
-
-  exl∘transpose : ∀ {a b c d : obj} →
-    exl ∘ transpose {a = a} {b} {c} {d} ≈ exl ⊗ exl
-  exl∘transpose =
+  transpose∘transpose : ∀ {a b c d : obj} →
+    transpose ∘ transpose {a = a} {b} {c} {d} ≈ id
+  transpose∘transpose =
     begin
-      exl ∘ transpose
+      transpose ∘ transpose
     ≡⟨⟩
-      exl ∘ assocˡ ∘ second (assocʳ ∘ first swap ∘ assocˡ) ∘ assocʳ
-    ≈⟨ {!!} ⟩
-      second exl ∘ second (assocʳ ∘ first swap ∘ assocˡ) ∘ assocʳ
-    ≈⟨ {!!} ⟩
-      second (exl ∘ assocʳ ∘ first swap ∘ assocˡ) ∘ assocʳ
-    ≈⟨ {!!} ⟩
-      second (exl ∘ exl ∘ first swap ∘ assocˡ) ∘ assocʳ
-    ≈⟨ {!!} ⟩
-      second (exl ∘ swap ∘ exl ∘ assocˡ) ∘ assocʳ
-    ≈⟨ {!!} ⟩
-      second (exr ∘ exl ∘ assocˡ) ∘ assocʳ
-    ≈⟨ {!!} ⟩
-      second (exr ∘ second exl) ∘ assocʳ
-    ≈⟨ {!!} ⟩
-      (id ⊗ exr ∘ second exl) ∘ assocʳ
-    ≈⟨ {!!} ⟩
-      (exl ▵ (exr ∘ second exl) ∘ exr) ∘ assocʳ
-    ≈⟨ {!!} ⟩
-      exl ∘ assocʳ ▵ ((exr ∘ second exl) ∘ exr) ∘ assocʳ
-    ≈⟨ {!!} ⟩
-      exl ∘ assocʳ ▵ exr ∘ second exl ∘ exr ∘ assocʳ
-    ≈⟨ {!!} ⟩
-      exl ∘ assocʳ ▵ exr ∘ second exl ∘ first exr
-    ≈⟨ {!!} ⟩
-      exl ∘ assocʳ ▵ exr ∘ (exr ⊗ exl)
-    ≈⟨ {!!} ⟩
-      exl ∘ assocʳ ▵ exl ∘ exr
-    ≈⟨ {!!} ⟩
-      exl ∘ second exl ∘ assocʳ ▵ exl ∘ exr
-    ≈⟨ {!!} ⟩
-      exl ∘ second exl ∘ assocʳ ▵ exl ∘ exr ∘ first exr
-    ≈⟨ {!!} ⟩
-      exl ∘ second exl ∘ assocʳ ▵ exl ∘ exr ∘ exr ∘ assocʳ
-    ≈⟨ {!!} ⟩
-      exl ∘ second exl ∘ assocʳ ▵ exl ∘ exr ∘ assocˡ ∘ assocʳ
-    ≈⟨ {!!} ⟩
-      exl ∘ exl ∘ assocˡ ∘ assocʳ ▵ exl ∘ exr ∘ assocˡ ∘ assocʳ
-    ≈⟨ {!!} ⟩
-      (exl ∘ exl ▵ exl ∘ exr) ∘ (assocˡ ∘ assocʳ)
-    ≈⟨ {!!} ⟩
-      exl ∘ exl ▵ exl ∘ exr
-    ≡⟨⟩
-      exl ⊗ exl
+      transpose ∘ ((exl ∘ exl ▵ exl ∘ exr) ▵ (exr ∘ exl ▵ exr ∘ exr))
+    ≈⟨ transpose∘▵▵▵ ⟩
+      ((exl ∘ exl ▵ exr ∘ exl) ▵ (exl ∘ exr ▵ exr ∘ exr))
+    ≈⟨ sym (▵≈ ▵∘ ▵∘) ⟩
+      ((exl ▵ exr) ∘ exl ▵ (exl ▵ exr) ∘ exr)
+    ≈⟨ ▵≈ (elimˡ exl▵exr) (elimˡ exl▵exr) ⟩
+      exl ▵ exr
+    ≈⟨ exl▵exr ⟩
+      id
     ∎
-
-  [exl⊗exl]∘transpose : ∀ {a b c d : obj} →
-    (exl ⊗ exl) ∘ transpose {a = a} {b} {c} {d} ≈ exl
-  [exl⊗exl]∘transpose =
-    begin
-      (exl ⊗ exl) ∘ transpose
-    ≡⟨⟩
-      (exl ∘ exl ▵ exl ∘ exr) ∘ transpose
-    ≈⟨ ▵∘ ⟩
-      (exl ∘ exl) ∘ transpose ▵ (exl ∘ exr) ∘ transpose
-    ≈⟨ ▵≈ ∘-assocʳ ∘-assocʳ ⟩
-      exl ∘ exl ∘ transpose ▵ exl ∘ exr ∘ transpose
-    ≈⟨ {!!} ⟩
-      {!!}
-
-
-    -- ≡⟨⟩
-    --   (exl ∘ exl ▵ exl ∘ exr) ∘ inAssocʳ (inAssocˡ swap)
-    -- ≡⟨⟩
-    --   (exl ∘ exl ▵ exl ∘ exr) ∘ assocˡ ∘ second (inAssocˡ swap) ∘ assocʳ
-    -- ≡⟨⟩
-    --   (exl ∘ exl ▵ exl ∘ exr) ∘ assocˡ ∘ second (assocʳ ∘ first swap ∘ assocˡ) ∘ assocʳ
-
-    ≡⟨⟩
-      exl
-    ∎
--}
-
-  -- For now
-
-  -- postulate
-  --   [exl⊗exl]∘transpose : ∀ {a b c d : obj} →
-  --     (exl ⊗ exl) ∘ transpose {a = a} {b} {c} {d} ≈ exl
-  --   [exr⊗exr]∘transpose : ∀ {a b c d : obj} →
-  --     (exr ⊗ exr) ∘ transpose {a = a} {b} {c} {d} ≈ exr
-
-
--- F-exr : (exr ⊗ exr) ∘ transpose ≈ exr
 
 open Assoc public
-
