@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K #-}  -- K needed for Algebra.Indexed
+{-# OPTIONS --safe --without-K #-}
 
 open import Level
 
