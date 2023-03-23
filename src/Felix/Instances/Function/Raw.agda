@@ -20,6 +20,10 @@ module →-raw-instances where instance
   cartesian : Cartesian _⇾_
   cartesian = record { _▵_ = <_,_> ; exl = proj₁ ; exr = proj₂ }
 
+  import Data.Sum as ⊎
+  cocartesian : Cocartesian _⇾_
+  cocartesian = record { ¡ = λ () ; _▿_ = ⊎.[_,_] ; inl = ⊎.inj₁ ; inr = ⊎.inj₂ }
+
   traced : Traced _⇾_
   traced = record
     { WF = λ {a} {s} {b} f → ∀ (x : a) → ∃₂ λ (y : b) (z : s) → f (x , z) ≡ (y , z)
