@@ -4,7 +4,9 @@ open import Level
 
 module Felix.Instances.Function.Type (ℓ : Level) where
 
-import Data.Unit as U
+import Data.Empty.Polymorphic as ⊥
+import Data.Sum as ⊎
+import Data.Unit as ⊤
 open import Data.Unit.Polymorphic using () renaming (⊤ to ⊤′)
 open import Data.Product using (_,_) renaming (_×_ to _×̇_)
 open import Data.Fin using (Fin)
@@ -14,7 +16,7 @@ infixr 0 _⇾_
 _⇾_ : Set ℓ → Set ℓ → Set ℓ
 A ⇾ B = A → B
 
-pattern tt = lift U.tt
+pattern tt = lift ⊤.tt
 
 -- lift₁ : ∀ {a b} {A : Set a} {B : Set b} {a′ b′}
 --       → (A → B) → (Lift a′ A → Lift b′ B)
@@ -50,6 +52,9 @@ module →-instances where
 
     products : Products (Set ℓ)
     products = record { ⊤ = ⊤′ ; _×_ = _×̇_ }
+
+    coproducts : Coproducts (Set ℓ)
+    coproducts = record { ⊥ = ⊥.⊥ ; _⊎_ = ⊎._⊎_ }
 
     exponentials : Exponentials (Set ℓ)
     exponentials = record { _⇛_ = _⇾_ }
