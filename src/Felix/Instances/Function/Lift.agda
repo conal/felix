@@ -8,9 +8,23 @@ open Lift
 open import Data.Product using (_,_)
 
 open import Felix.Homomorphism hiding (refl)
+open import Felix.Object
 
 private module F {ℓ} where open import Felix.Instances.Function ℓ public
 open F
+
+private
+  variable
+    A : Set a
+
+lift₀ : ⦃ _ : Products (Set (a ⊔ b)) ⦄ → A → (⊤ F.⇾ Lift b A)
+lift₀ n tt = lift n
+
+lift₁ : (A F.⇾ A) → (Lift b A F.⇾ Lift b A)
+lift₁ f (lift a) = lift (f a)
+
+lift₂ : (A F.⇾ A F.⇾ A) → (Lift b A × Lift b A F.⇾ Lift b A)
+lift₂ f (lift a , lift b) = lift (f a b)
 
 module function-lift-instances where instance
 
