@@ -23,7 +23,11 @@ module function-lift-instances where instance
   open import Relation.Binary.PropositionalEquality
 
   catH : CategoryH (_⇾_ {a}) (_⇾_ {a ⊔ b})
-  catH = record { F-id = λ _ → refl ; F-∘  = λ _ → refl }
+  catH = record
+    { F-cong = λ f≈g → λ (lift x) → cong lift (f≈g x)
+    ; F-id = λ _ → refl
+    ; F-∘  = λ _ → refl
+    }
 
   pH : ProductsH (Set a) (_⇾_ {a ⊔ b})
   pH = record
