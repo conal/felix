@@ -21,3 +21,4 @@ import Felix.Construct.Arrow
 
 import Felix.Instances.Function
 import Felix.Instances.Identity
+import Felix.Instances.Pred
