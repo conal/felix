@@ -20,6 +20,10 @@ record Category {obj : Set o} (_⇨_ : obj → obj → Set ℓ) : Set (o ⊔ ℓ
     id  : a ⇨ a
     _∘_ : {a b c : obj} → (g : b ⇨ c) (f : a ⇨ b) → (a ⇨ c)
 
+  infixr 7 _>>_
+  _>>_ : (a ⇨ b) → (b ⇨ c) → (a ⇨ c)
+  f >> g = g ∘ f
+
   open import Relation.Binary.PropositionalEquality
 
   sub : ∀ {i} {I : Set i} {m n : I} (f : I → obj) → m ≡ n → f m ⇨ f n
@@ -30,61 +34,34 @@ record Category {obj : Set o} (_⇨_ : obj → obj → Set ℓ) : Set (o ⊔ ℓ
 
 open Category ⦃ … ⦄ public
 
-
-record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
+record Monoidal {obj : Set o} ⦃ _ : Products obj ⦄
          (_⇨′_ : obj → obj → Set ℓ)
          ⦃ _ : Category _⇨′_ ⦄
     : Set (o ⊔ ℓ) where
   private infix 0 _⇨_; _⇨_ = _⇨′_
-  infixr 7 _▵_
-  field
-    !   : a ⇨ ⊤
-    _▵_ : (a ⇨ c) → (a ⇨ d) → (a ⇨ c × d)
-    exl : a × b ⇨ a
-    exr : a × b ⇨ b
-
-  dup : a ⇨ a × a
-  dup = id ▵ id
-
-  -- The following operations will probably move to Monoidal or Braided
-
   infixr 7 _⊗_
-  _⊗_ : (a ⇨ c) → (b ⇨ d) → (a × b ⇨ c × d)
-  f ⊗ g = f ∘ exl ▵ g ∘ exr
+  field
+    unitorᵉˡ : ⊤ × a ⇨ a
+    unitorᵉʳ : a × ⊤ ⇨ a
+    unitorⁱˡ : a ⇨ ⊤ × a
+    unitorⁱʳ : a ⇨ a × ⊤
+    assocˡ : a × (b × c) ⇨ (a × b) × c
+    assocʳ : (a × b) × c ⇨ a × (b × c)
+    _⊗_ : (a ⇨ c) → (b ⇨ d) → (a × b ⇨ c × d)
 
   first : (a ⇨ c) → (a × b ⇨ c × b)
   first f = f ⊗ id
-
-  second : (b ⇨ d) → (a × b ⇨ a × d)
-  second g = id ⊗ g
+  second : (a ⇨ c) → (b × a ⇨ b × c)
+  second f = id ⊗ f
 
   twice : (a ⇨ c) → (a × a ⇨ c × c)
   twice f = f ⊗ f
-
-  unitorᵉˡ : ⊤ × a ⇨ a
-  unitorᵉˡ = exr
-
-  unitorᵉʳ : a × ⊤ ⇨ a
-  unitorᵉʳ = exl
-
-  unitorⁱˡ : a ⇨ ⊤ × a
-  unitorⁱˡ = ! ▵ id
-
-  unitorⁱʳ : a ⇨ a × ⊤
-  unitorⁱʳ = id ▵ !
 
   constˡ : (⊤ ⇨ a) → (b ⇨ a × b)
   constˡ f = first f ∘ unitorⁱˡ
 
   constʳ : (⊤ ⇨ b) → (a ⇨ a × b)
   constʳ g = second g ∘ unitorⁱʳ
-
-  assocˡ : a × (b × c) ⇨ (a × b) × c
-  assocˡ = second exl ▵ exr ∘ exr
-
-  assocʳ : (a × b) × c ⇨ a × (b × c)
-  assocʳ = exl ∘ exl ▵ first exr
-
   inAssocˡ′ : ((a × b) × c ⇨ (a′ × b′) × c′) → (a × (b × c) ⇨ a′ × (b′ × c′))
   inAssocˡ′ f = assocʳ ∘ f ∘ assocˡ
 
@@ -97,18 +74,67 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
   inAssocʳ : (b × c ⇨ b′ × c′) → ((a × b) × c ⇨ (a × b′) × c′)
   inAssocʳ = inAssocʳ′ ∘̇ second
 
-  swap : a × b ⇨ b × a
-  swap = exr ▵ exl
+
+-- second I ∘ unitor
+
+open Monoidal ⦃ … ⦄ public
+record Braided {obj : Set o} ⦃ _ : Products obj ⦄
+         (_⇨′_ : obj → obj → Set ℓ)
+         ⦃ _ : Category _⇨′_ ⦄
+         ⦃ _ : Monoidal _⇨′_  ⦄
+    : Set (o ⊔ ℓ) where
+  private infix 0 _⇨_; _⇨_ = _⇨′_
+  field
+    swap : (a × b) ⇨ (b × a)
+
+  transpose : (a × b) × (c × d) ⇨ (a × c) × (b × d)
+  transpose = inAssocʳ′ (second (inAssocˡ′ (first swap )))
+  inTranspose : ((a × c) × (b × d) ⇨ (a′ × c′) × (b′ × d′))
+              → ((a × b) × (c × d) ⇨ (a′ × b′) × (c′ × d′))
+  inTranspose f = transpose ∘ f ∘ transpose
+
 
   inSwap : (b × a ⇨ b′ × a′) → (a × b ⇨ a′ × b′)
   inSwap f = swap ∘ f ∘ swap
 
-  transpose : (a × b) × (c × d) ⇨ (a × c) × (b × d)
-  transpose = (exl ∘ exl ▵ exl ∘ exr) ▵ (exr ∘ exl ▵ exr ∘ exr)
 
-  inTranspose : ((a × c) × (b × d) ⇨ (a′ × c′) × (b′ × d′))
-              → ((a × b) × (c × d) ⇨ (a′ × b′) × (c′ × d′))
-  inTranspose f = transpose ∘ f ∘ transpose
+open Braided ⦃ … ⦄ public
+
+
+record Symmetric {obj : Set o} ⦃ _ : Products obj ⦄
+         (_⇨′_ : obj → obj → Set ℓ)
+        -- (_M′_ : obj → obj → obj)
+         ⦃ _ : Category _⇨′_ ⦄
+         ⦃ _ : Monoidal _⇨′_  ⦄
+    : Set (o ⊔ ℓ) where
+  private infix 0 _⇨_; _⇨_ = _⇨′_
+  -- private infixr 7 _M_; _M_ = _M′_
+    -- braidbraid : (braid ∘ braid) ⇨  id
+
+open Symmetric ⦃ … ⦄ public
+
+
+
+
+record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
+         (_⇨′_ : obj → obj → Set ℓ)
+         ⦃ _ : Category _⇨′_ ⦄
+         ⦃ _ : Monoidal _⇨′_ ⦄
+         ⦃ _ : Symmetric _⇨′_ ⦄
+    : Set (o ⊔ ℓ) where
+  private infix 0 _⇨_; _⇨_ = _⇨′_
+  field
+    dup : a ⇨ a × a
+    !   : a ⇨ ⊤
+
+  exl : a × b ⇨ a
+  exl =  unitorᵉʳ ∘ (second !)
+
+  exr : a × b ⇨ b
+  exr =  unitorᵉˡ ∘ (first !)
+  infixr 7 _▵_
+  _▵_ : (a ⇨ c) → (a ⇨ d) → (a ⇨ c × d)
+  f ▵ g = (f ⊗ g) ∘ dup
 
   infixr 4 _⦂_
   _⦂_ : (⊤ ⇨ a) → (⊤ ⇨ b) → (⊤ ⇨ a × b)
@@ -153,6 +179,8 @@ record CartesianClosed {obj : Set o}
          ⦃ _ : Products obj ⦄ ⦃ _ : Exponentials obj ⦄
          (_⇨′_ : obj → obj → Set ℓ)
          ⦃ _ : Category _⇨′_ ⦄
+         ⦃ _ : Monoidal _⇨′_ ⦄
+         ⦃ _ : Symmetric _⇨′_ ⦄
          ⦃ _ : Cartesian _⇨′_ ⦄
     : Set (o ⊔ ℓ) where
   private infix 0 _⇨_; _⇨_ = _⇨′_
