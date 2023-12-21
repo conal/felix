@@ -15,7 +15,7 @@ module Felix.MakeLawful
          ⦃ H : Homomorphism _⇨₁_ _⇨₂_ ⦄
  where
 
-open import Function.Equivalence using (equivalence)
+open import Function using (mk⇔)
 
 open import Felix.Raw
 open import Felix.Laws as L hiding (Category; Cartesian; CartesianClosed)
@@ -103,7 +103,7 @@ LawfulCartesianᶠ = record
       ≈˘⟨ F-! ⟩
         Fₘ !
       ∎
-  ; ∀× = λ {a b c} {f g k} → equivalence
+  ; ∀× = λ {a b c} {f g k} → mk⇔
       (λ k≈f▵g → (begin
           Fₘ (exl ∘ k)
         ≈⟨ F-∘ ; ∘≈ʳ k≈f▵g ⟩

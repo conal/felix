@@ -87,8 +87,7 @@ module product-instances where instance
     ; ∘≈        = λ (eq₁ , eq₂) (eq₁′ , eq₂′) → ∘≈ eq₁ eq₁′ , ∘≈ eq₂ eq₂′
     }
 
-  open import Function.Equivalence using (Equivalence; equivalence)
-  open import Function.Equality as F using (Π; _⟨$⟩_)
+  open import Function using (Equivalence; mk⇔)
 
   l-cartesian : ∀ {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
                 ⦃ _ :   Products  obj₁ ⦄ ⦃ _ :   Products  obj₂ ⦄
@@ -103,10 +102,10 @@ module product-instances where instance
             e₂ = ∀× {f = f₂} {g₂} {k₂}
             module Q₁ = Equivalence e₁
             module Q₂ = Equivalence e₂
-            h₁ = Q₁.to ⟨$⟩_ ; h₁⁻¹ = Q₁.from ⟨$⟩_
-            h₂ = Q₂.to ⟨$⟩_ ; h₂⁻¹ = Q₂.from ⟨$⟩_
+            h₁ = Q₁.to ; h₁⁻¹ = Q₁.from
+            h₂ = Q₂.to ; h₂⁻¹ = Q₂.from
         in
-        equivalence
+        mk⇔
           (λ (z₁ , z₂) → let eq₁ , eq₁′ = h₁ z₁ ; eq₂ , eq₂′ = h₂ z₂ in
             (eq₁ , eq₂) , (eq₁′ , eq₂′)
             )
