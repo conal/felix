@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs?ref=23.05";
     utils.url = "github:numtide/flake-utils";
     agda-stdlib-src = {
-      url = "github:agda/agda-stdlib?ref=7c5f3ff";
+      url = "github:agda/agda-stdlib?ref=v2.0";
       flake = false;
     };
   };
