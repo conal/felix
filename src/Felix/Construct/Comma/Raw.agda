@@ -29,7 +29,7 @@ open import Felix.Construct.Comma.Type _⇨₀_ _⇨₁_ _⇨₂_
 
 open Obj
 
-variable a b c d : Obj
+private variable a b c d : Obj
 
 module comma-cat where
 
