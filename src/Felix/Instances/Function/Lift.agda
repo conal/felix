@@ -8,9 +8,23 @@ open Lift
 open import Data.Product using (_,_)
 
 open import Felix.Homomorphism hiding (refl)
+open import Felix.Object
 
 private module F {ℓ} where open import Felix.Instances.Function ℓ public
 open F
+
+private
+  variable
+    A : Set a
+
+lift₀ : ⦃ _ : Products (Set (a ⊔ b)) ⦄ → A → (⊤ F.⇾ Lift b A)
+lift₀ n tt = lift n
+
+lift₁ : (A F.⇾ A) → (Lift b A F.⇾ Lift b A)
+lift₁ f (lift a) = lift (f a)
+
+lift₂ : (A F.⇾ A F.⇾ A) → (Lift b A × Lift b A F.⇾ Lift b A)
+lift₂ f (lift a , lift b) = lift (f a b)
 
 module function-lift-instances where instance
 
@@ -23,7 +37,11 @@ module function-lift-instances where instance
   open import Relation.Binary.PropositionalEquality
 
   catH : CategoryH (_⇾_ {a}) (_⇾_ {a ⊔ b})
-  catH = record { F-id = λ _ → refl ; F-∘  = λ _ → refl }
+  catH = record
+    { F-cong = λ f≈g → λ (lift x) → cong lift (f≈g x)
+    ; F-id = λ _ → refl
+    ; F-∘  = λ _ → refl
+    }
 
   pH : ProductsH (Set a) (_⇾_ {a ⊔ b})
   pH = record
