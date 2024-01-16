@@ -4,7 +4,7 @@ open import Level
 
 module Felix.Instances.Function.Laws (ℓ : Level) where
 
-open import Function.Equivalence hiding (id; _∘_)
+open import Function using (mk⇔)
 open import Data.Product using (_,_)
 
 open import Felix.Raw hiding (Category; Cartesian; CartesianClosed)
@@ -34,7 +34,7 @@ module →-laws-instances where
     cartesian : Cartesian _⇾_
     cartesian = record
       { ∀⊤ = λ _ → refl≡
-      ; ∀× = equivalence
+      ; ∀× = mk⇔
           (λ k≈f▵g → (λ x → cong exl (k≈f▵g x)) , (λ x → cong exr (k≈f▵g x)))
           (λ (exl∘k≈f , exr∘k≈g) x → cong₂ _,_ (exl∘k≈f x) (exr∘k≈g x))
       ; ▵≈ = λ h≈k f≈g x → cong₂ _,_ (h≈k x) (f≈g x)
@@ -44,7 +44,7 @@ module →-laws-instances where
 
       cartesianClosed : CartesianClosed _⇾_
       cartesianClosed = record
-        { ∀⇛ = equivalence
+        { ∀⇛ = mk⇔
             (λ g≈f (x , y) → sym≡ (cong (λ h → h y) (g≈f x)))
             (λ f≈uncurry-g x → extensionality λ y → sym≡ (f≈uncurry-g (x , y)))
         ; curry≈ = λ f≈g x → extensionality λ y → f≈g (x , y)

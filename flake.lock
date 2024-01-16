@@ -3,16 +3,16 @@
     "agda-stdlib-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1684170868,
-        "narHash": "sha256-xTTnCIAGYjjU74m0H/nObIvHwjcbTDTCNt6U944ela4=",
+        "lastModified": 1702291622,
+        "narHash": "sha256-TjGvY3eqpF+DDwatT7A78flyPcTkcLHQ1xcg+MKgCoE=",
         "owner": "agda",
         "repo": "agda-stdlib",
-        "rev": "7c5f3ff90fa7ff1b9d4a522050291119f209a85b",
+        "rev": "2b8fff10f4033b91a6df4007e4a65cb10047c89c",
         "type": "github"
       },
       "original": {
         "owner": "agda",
-        "ref": "7c5f3ff",
+        "ref": "v2.0",
         "repo": "agda-stdlib",
         "type": "github"
       }

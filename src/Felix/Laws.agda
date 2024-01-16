@@ -4,8 +4,7 @@ module Felix.Laws where
 
 open import Level
 open import Relation.Binary.PropositionalEquality using (_≡_)
-open import Function.Equivalence using (_⇔_; module Equivalence)
-open import Function.Equality using (_⟨$⟩_)
+open import Function using (_⇔_; module Equivalence)
 
 open import Felix.Raw as R hiding (Category; Cartesian; CartesianClosed)
 open import Felix.Equiv
@@ -69,11 +68,11 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
 
   ∀×→ : {f : a ⇨ b} {g : a ⇨ c} {k : a ⇨ b × c}
      → k ≈ f ▵ g → (exl ∘ k ≈ f  ×ₚ  exr ∘ k ≈ g)
-  ∀×→ = to ∀× ⟨$⟩_
+  ∀×→ = to ∀×
 
   ∀×← : {f : a ⇨ b} {g : a ⇨ c} {k : a ⇨ b × c}
      → (exl ∘ k ≈ f  ×ₚ  exr ∘ k ≈ g) → k ≈ f ▵ g
-  ∀×← = from ∀× ⟨$⟩_
+  ∀×← = from ∀×
 
   ▵≈ˡ : {f : a ⇨ c} {h k : a ⇨ d} → h ≈ k → h ▵ f ≈ k ▵ f
   ▵≈ˡ h≈k = ▵≈ h≈k refl
@@ -289,11 +288,11 @@ record CartesianClosed {obj : Set o} ⦃ _ : Products obj ⦄
 
   ∀⇛→ : {f : a × b ⇨ c} {g : a ⇨ (b ⇛ c)}
       → g ≈ curry f → f ≈ uncurry g
-  ∀⇛→ = to ∀⇛ ⟨$⟩_
+  ∀⇛→ = to ∀⇛
 
   ∀⇛← : {f : a × b ⇨ c} {g : a ⇨ (b ⇛ c)}
       → f ≈ uncurry g → g ≈ curry f
-  ∀⇛← = from ∀⇛ ⟨$⟩_
+  ∀⇛← = from ∀⇛
 
   curry-apply : {a b : obj} → id { a = a ⇛ b } ≈ curry apply
   curry-apply = ∀⇛← (begin
