@@ -4,7 +4,7 @@
 open import Level
 
 open import Felix.Raw
-open import Felix.Equiv
+open import Felix.Equiv as R
 open import Felix.Laws as L hiding (Category; Cartesian; CartesianClosed)
 open import Felix.Homomorphism
 
@@ -58,11 +58,32 @@ _ᵀ {mkᵒ h} {mkᵒ h′} (mkᵐ _ _ commute) = mkᵐ h h′ (sym commute)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
--- Vertical composition.
+-- Object composition
+composableᵒ : Obj → Obj → Set o
+composableᵒ (mkᵒ {τ₂′} {τ₃′} _) (mkᵒ {τ₁} {τ₂} _) = τ₂′ ≡ τ₂
+
+infixr 9 _○_
+_○_ : ∀ (a b : Obj) → ⦃ composableᵒ a b ⦄ → Obj
+(mkᵒ g ○ mkᵒ f) ⦃ refl ⦄ = mkᵒ (g ∘ f)
+
+-- Vertical morphism composition
+
+vcomposable : ∀ {a₂ b₂ a₁ b₁} → ⦃ composableᵒ a₂ a₁ ⦄ → ⦃ composableᵒ b₂ b₁ ⦄ →
+  (a₂ ↬ b₂) → (a₁ ↬ b₁) → Set ℓ
+vcomposable ⦃ refl ⦄ ⦃ refl ⦄ (mkᵐ fₖ₂ fₕ₂ _) (mkᵐ fₖ₁ fₕ₁ _) = fₕ₁ ≡ fₖ₂
+-- vcomposable ⦃ p@refl ⦄ ⦃ q@refl ⦄ (mkᵐ _ fₕ₂ _) (mkᵐ fₖ₁ _ _) = {!!}
+
 infixr 9 _◎_
-_◎_ : ∀ {τ₁ τ₂ τ₃ : obj} {τ₁′ τ₂′ τ₃′ : obj}
-        {h : τ₁ ↠ τ₂} {h′ : τ₁′ ↠ τ₂′}
-        {k : τ₂ ↠ τ₃} {k′ : τ₂′ ↠ τ₃′}
-        ((mkᵐ fₖ₁ _ _) : k ⇉ k′) ((mkᵐ _ fₕ₂ _) : h ⇉ h′) → ⦃ fₖ₁ ≡ fₕ₂ ⦄
-    → k ∘ h ⇉ k′ ∘ h′
-(G ◎ F) ⦃ refl ⦄ = (G ᵀ ∘ F ᵀ) ᵀ
+_◎_ : ∀ {a₂ b₂ a₁ b₁} → (G : a₂ ↬ b₂) (F : a₁ ↬ b₁)
+  ⦃ cᵢ : composableᵒ a₂ a₁ ⦄ ⦃ cₒ : composableᵒ b₂ b₁ ⦄ ⦃ c : vcomposable G F ⦄ →
+  a₂ ○ a₁ ↬ b₂ ○ b₁
+(G ◎ F) ⦃ refl ⦄ ⦃ refl ⦄ ⦃ refl ⦄ = (G ᵀ ∘ F ᵀ) ᵀ
+
+-- TODO: Generalize vertical composition to general comma categories.
+
+Id : obj → Obj
+Id a = mkᵒ (id {a = a})
+
+idᵀ : ∀ {a b} → (a ↠ b) → Id a ↬ Id b
+idᵀ f = id {a = mkᵒ f} ᵀ
+-- idᵀ f = mkᵐ f f ...
