@@ -1,19 +1,18 @@
 {-# OPTIONS --safe --without-K #-}
-open import Level using (Level; suc; _⊔_)
+open import Level using (Level; suc; lift; _⊔_)
 
 module Felix.Instances.Pred (m ℓm : Level) where
 
-open import Data.Product using (_,_; ∃; proj₁)
-open import Relation.Unary using (Pred; _⟨×⟩_; _⟨→⟩_)
+open import Data.Product using (_,_; ∃; Σ; proj₁)
+open import Relation.Unary using (Pred; _≐_; _⟨×⟩_; _⟨→⟩_)
+open import Relation.Unary.Polymorphic using (U)
+open import Relation.Binary.PropositionalEquality as ≡ using (_≡_; _≗_)
 
+open import Felix.Equiv
 open import Felix.Object
 open import Felix.Raw
 private module F {ℓ} where open import Felix.Instances.Function ℓ public
 open F
-
--- Level-generalized U from Relation.Unary
-U : ∀ {a ℓ} {A : Set a} → Pred A ℓ
-U x = ⊤
 
 record PRED : Set (suc (m ⊔ ℓm)) where
   constructor mkᵒ
@@ -32,6 +31,16 @@ record _⇒_ (𝒜 ℬ : PRED) : Set (m ⊔ ℓm) where
   field
     {f}  : ty 𝒜 → ty ℬ
     imp  : (pred 𝒜 ⟨→⟩ pred ℬ) f
+
+equivalent : Equivalent _ _⇒_
+equivalent = record
+  { _≈_ = λ { g h → f g ≗ f h }
+  ; equiv = record
+      { refl  = λ _ → ≡.refl
+      ; sym   = λ f∼g x → ≡.sym (f∼g x)
+      ; trans = λ f∼g g∼h x → ≡.trans (f∼g x) (g∼h x)
+      }
+  } where open _⇒_
 
 module PRED-morphisms where instance
 
@@ -57,8 +66,12 @@ module PRED-functor where instance
   H : Homomorphism _⇒_ _⇾_
   H = record { Fₘ = _⇒_.f }
   
-  catH : CategoryH _⇒_ _⇾_
-  catH = record { F-id = refl ; F-∘ = refl }
+  catH : CategoryH _⇒_ ⦃ eq₁ = equivalent ⦄ _⇾_
+  catH = record
+    { F-cong = λ f∼g → f∼g
+    ; F-id = refl
+    ; F-∘ = refl
+    }
 
   pH : ProductsH PRED _⇾_
   pH = record { ε = id ; μ = id ; ε⁻¹ = id ; μ⁻¹ = id }
@@ -69,6 +82,6 @@ module PRED-functor where instance
   spH = record { ε⁻¹∘ε = L.identityˡ ; ε∘ε⁻¹ = L.identityˡ
                ; μ⁻¹∘μ = L.identityˡ ; μ∘μ⁻¹ = L.identityˡ }
 
-  cartH : CartesianH _⇒_ _⇾_
+  cartH : CartesianH _⇒_ _⇾_ ⦃ eq₁ = equivalent ⦄
   cartH = record { F-! = refl ; F-▵ = refl ; F-exl = refl ; F-exr = refl }
 
