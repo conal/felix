@@ -2,7 +2,7 @@
   description = "Category theory for denotational design";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs?ref=23.05";
+    nixpkgs.url = "github:NixOS/nixpkgs?ref=23.11";
     utils.url = "github:numtide/flake-utils";
     agda-stdlib-src = {
       url = "github:agda/agda-stdlib?ref=v2.0";
