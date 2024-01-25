@@ -14,8 +14,6 @@ private
     obj : Set o
     a b : obj
 
--- TODO: move a and b arguments from methods to record.
-
 record Equivalent q {obj : Set o} (_⇨_ : obj → obj → Set ℓ)
        : Set (o ⊔ ℓ ⊔ suc q) where
   infix 4 _≈_
@@ -43,9 +41,6 @@ record Equivalent q {obj : Set o} (_⇨_ : obj → obj → Set ℓ)
   _;_ = trans
 
 open Equivalent ⦃ … ⦄ public
-
--- TODO: Replace Equivalent by Setoid?
--- I think we need _⇨_ as an argument rather than field.
 
 -- TODO: consider moving to Felix.Homomorphism.
 record Homomorphismₒ (obj₁ : Set o₁) (obj₂ : Set o₂) : Set (o₁ ⊔ o₂) where
