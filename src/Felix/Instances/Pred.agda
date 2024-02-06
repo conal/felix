@@ -56,7 +56,7 @@ module PRED-functor where instance
 
   H : Homomorphism _⇒_ _⇾_
   H = record { Fₘ = _⇒_.f }
-  
+
   catH : CategoryH _⇒_ _⇾_
   catH = record { F-id = refl ; F-∘ = refl }
 

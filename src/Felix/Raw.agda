@@ -157,7 +157,7 @@ record CartesianClosed {obj : Set o}
     : Set (o ⊔ ℓ) where
   private infix 0 _⇨_; _⇨_ = _⇨′_
   field
-    
+
     curry : (a × b ⇨ c) → (a ⇨ (b ⇛ c))
     apply : (a ⇛ b) × a ⇨ b
 
