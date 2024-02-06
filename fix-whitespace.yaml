@@ -1,0 +1,13 @@
+included-dirs:
+  - src
+
+included-files:
+  - "*.agda"
+  - "*.md"
+  - "*.org"
+  - "*.nix"
+
+excluded-dirs:
+  - .git
+  - .direnv
+  - result
