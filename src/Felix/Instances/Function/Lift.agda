@@ -60,6 +60,6 @@ module function-lift-instances where instance
   cartH : CartesianH (_⇾_ {a}) (_⇾_ {a ⊔ b})
   cartH = record
      { F-!   = λ _ → refl
-     ; F-▵   = λ _ → refl 
+     ; F-▵   = λ _ → refl
      ; F-exl = λ _ → refl
      ; F-exr = λ _ → refl }

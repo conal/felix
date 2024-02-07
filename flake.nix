@@ -21,10 +21,22 @@
         agdaWithStandardLibrary = pkgs.agda.withPackages (_: [ standard-library ]);
 
       in {
-        devShell = pkgs.mkShell {
+        checks.whitespace = pkgs.stdenvNoCC.mkDerivation {
+          name = "check-whitespace";
+          dontBuild = true;
+          src = ./.;
+          doCheck = true;
+          checkPhase = ''
+            ${pkgs.haskellPackages.fix-whitespace}/bin/fix-whitespace --check
+          '';
+          installPhase = ''mkdir "$out"'';
+        };
+
+        devShells.default = pkgs.mkShell {
           buildInputs = [
             agdaWithStandardLibrary
             pkgs.graphviz
+            pkgs.haskellPackages.fix-whitespace
           ];
         };
 

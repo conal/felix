@@ -73,7 +73,7 @@ toH (mk⤇ Fₒ Fₘ) = record { Fₘ = Fₘ }
 it-⤇ : ∀
   {obj₁ : Set o} {_⇨₁_ : obj₁ → obj₁ → Set ℓ}
   {obj₂ : Set o} {_⇨₂_ : obj₂ → obj₂ → Set ℓ}
-  ⦃ Hₒ : Homomorphismₒ obj₁ obj₂ ⦄ ⦃ H : Homomorphism _⇨₁_ _⇨₂_ ⦄ → 
+  ⦃ Hₒ : Homomorphismₒ obj₁ obj₂ ⦄ ⦃ H : Homomorphism _⇨₁_ _⇨₂_ ⦄ →
   cat _⇨₁_ ⤇ cat _⇨₂_
 it-⤇ ⦃ Hₒ = Hₒ ⦄ ⦃ H = H ⦄ = mk⤇ (Homomorphismₒ.Fₒ Hₒ) (Homomorphism.Fₘ H)
 

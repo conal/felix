@@ -202,7 +202,7 @@ module product-homomorphisms where instance
 --     → BooleanH Obj _⇨₂_
 --   booleanH₂ = record { β = id ; β⁻¹ = id }
 
---   strongBooleanH₁ : 
+--   strongBooleanH₁ :
 --       ∀ {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ ⦃ _ : Boolean obj₁ ⦄ ⦃ _ : Boolean obj₂ ⦄
 --       ⦃ _ : L.Category _⇨₁_ ⦄
 --     → StrongBooleanH Obj _⇨₁_
