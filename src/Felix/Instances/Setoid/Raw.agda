@@ -2,10 +2,11 @@
 
 module Felix.Instances.Setoid.Raw where
 
-open import Data.Product using (_,_; <_,_>; proj₁; proj₂; uncurry′; ∃₂)
+open import Data.Product using (_,_; curry′; uncurry′; ∃₂)
+open import Data.Product.Function.NonDependent.Setoid using (<_,_>ₛ; proj₁ₛ; proj₂ₛ)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent using (_×ₛ_)
 open import Data.Sum using ([_,_]; inj₁; inj₂)
-open import Data.Sum.Relation.Binary.Pointwise using (inj₁; inj₂)
+open import Data.Sum.Function.Setoid using ([_,_]ₛ; inj₁ₛ; inj₂ₛ)
 open import Data.Unit.Polymorphic using (tt) renaming (⊤ to ⊤′)
 open import Function using (Congruent; Func; _∘′_; flip′) renaming (_∘_ to _∘ᵈ_)
 open import Function.Construct.Composition as Comp
@@ -37,18 +38,9 @@ module setoid-raw-instances where instance
   cartesian : ∀ {c ℓ} → Cartesian {obj = Setoid c ℓ} _⟶_
   cartesian = record
     { ! = Const.function _ ⊤ tt
-    ; _▵_ = λ ac ad → record
-      { to = < ac ⟨$⟩_ , ad ⟨$⟩_ >
-      ; cong = < cong ac , cong ad >
-      }
-    ; exl = record
-      { to = proj₁
-      ; cong = proj₁
-      }
-    ; exr = record
-      { to = proj₂
-      ; cong = proj₂
-      }
+    ; _▵_ = <_,_>ₛ
+    ; exl = proj₁ₛ
+    ; exr = proj₂ₛ
     }
 
   cocartesian : ∀ {c ℓ} → Cocartesian ⦃ coproducts {c} {ℓ} ⦄ _⟶_
@@ -57,20 +49,9 @@ module setoid-raw-instances where instance
       { to = λ { () }
       ; cong = λ { {()} }
       }
-    ; _▿_ = λ ac bc → record
-      { to = [ ac ⟨$⟩_ , bc ⟨$⟩_ ]
-      ; cong = λ where
-        (inj₁ x) → cong ac x
-        (inj₂ x) → cong bc x
-      }
-    ; inl = record
-      { to = inj₁
-      ; cong = inj₁
-      }
-    ; inr = record
-      { to = inj₂
-      ; cong = inj₂
-      }
+    ; _▿_ = [_,_]ₛ
+    ; inl = inj₁ₛ
+    ; inr = inj₂ₛ
     }
 
   cartesianClosed :
@@ -79,8 +60,8 @@ module setoid-raw-instances where instance
   cartesianClosed = record
     { curry = λ {A} {B} f → record
       { to = λ a → record
-        { to = λ b → f ⟨$⟩ (a , b)
-        ; cong = λ x≈y → cong f (Setoid.refl A , x≈y)
+        { to = curry′ (f ⟨$⟩_) a
+        ; cong = curry′ (cong f) (Setoid.refl A)
         }
       ; cong = λ x≈y → cong f (x≈y , Setoid.refl B)
       }
