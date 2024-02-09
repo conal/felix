@@ -8,7 +8,7 @@ open import Data.Product.Relation.Binary.Pointwise.NonDependent using (_×ₛ_)
 open import Data.Sum using ([_,_]; inj₁; inj₂)
 open import Data.Sum.Function.Setoid using ([_,_]ₛ; inj₁ₛ; inj₂ₛ)
 open import Data.Unit.Polymorphic using (tt) renaming (⊤ to ⊤′)
-open import Function using (Congruent; Func; _∘′_; flip′) renaming (_∘_ to _∘ᵈ_)
+open import Function using (Congruent; Func; _∘′_) renaming (_∘_ to _∘ᵈ_)
 open import Function.Construct.Composition as Comp
 open import Function.Construct.Constant as Const
 open import Function.Construct.Identity as Id
@@ -32,7 +32,8 @@ module setoid-raw-instances where instance
   category : ∀ {c ℓ} → Category {suc (c ⊔ ℓ)} {c ⊔ ℓ} {obj = Setoid c ℓ} _⟶_
   category = record
     { id = Id.function _
-    ; _∘_ = flip′ Comp.function
+    -- flip′ Comp.function doesn't reduce in goals
+    ; _∘_ = λ g f → Comp.function f g
     }
 
   cartesian : ∀ {c ℓ} → Cartesian {obj = Setoid c ℓ} _⟶_
@@ -63,12 +64,12 @@ module setoid-raw-instances where instance
         { to = curry′ (f ⟨$⟩_) a
         ; cong = curry′ (cong f) (Setoid.refl A)
         }
-      ; cong = λ x≈y → cong f (x≈y , Setoid.refl B)
+      ; cong = λ x≈y _ → cong f (x≈y , Setoid.refl B)
       }
     ; apply = λ {A} {B} → record
       { to = uncurry′ _⟨$⟩_
       ; cong = λ { {f , x} {g , y} (f≈g , x≈y) →
-        Setoid.trans B (f≈g {x}) (cong g x≈y) }
+        Setoid.trans B (f≈g x) (cong g x≈y) }
       }
     }
 

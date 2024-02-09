@@ -20,11 +20,11 @@ module Function.Construct.Setoid where
   setoid : Setoid a₁ a₂ → Setoid b₁ b₂ → Setoid _ _
   setoid From To = record
     { Carrier = Func From To
-    ; _≈_ = λ f g → ∀ {x} → Func.to f x To.≈ Func.to g x
+    ; _≈_ = λ f g → ∀ x → Func.to f x To.≈ Func.to g x
     ; isEquivalence = record
-      { refl = To.refl
-      ; sym = λ f≈g → To.sym f≈g
-      ; trans = λ f≈g g≈h → To.trans f≈g g≈h
+      { refl = λ _ → To.refl
+      ; sym = λ f≈g x → To.sym (f≈g x)
+      ; trans = λ f≈g g≈h x → To.trans (f≈g x) (g≈h x)
       }
     }
     where
