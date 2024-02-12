@@ -9,9 +9,9 @@ This library replaces the overgrown [denotational-hardware](https://github.com/c
 ## Dependencies
 
 *   [Agda compiler](https://agda.readthedocs.io/en/latest/getting-started/installation.html#installing-the-agda-and-the-agda-mode-programs).
-    Known to work with Agda 2.6.2
+    Known to work with Agda 2.6.3.
 *   The [Agda standard library (agda-stdlib)](https://github.com/agda/agda-stdlib).
-    Known to work with version 1.7.
+    Known to work with agda-stdlib commit 93f5c0f81 (August 10, 2023).
 *   Haskell [ieee754 package](https://github.com/agda/agda/issues/3619) (as described under Troubleshooting below)
 
 ## Summary of important modules
