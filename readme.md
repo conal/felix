@@ -9,9 +9,11 @@ This library replaces the overgrown [denotational-hardware](https://github.com/c
 ## Dependencies
 
 *   [Agda compiler](https://agda.readthedocs.io/en/latest/getting-started/installation.html#installing-the-agda-and-the-agda-mode-programs).
-    Known to work with Agda 2.6.3.
+    Known to work with Agda 2.6.3, but not yet 2.6.4.
 *   The [Agda standard library (agda-stdlib)](https://github.com/agda/agda-stdlib).
-    Known to work with agda-stdlib commit 93f5c0f81 (August 10, 2023).
+    Known to work with agda-stdlib-2.0.
+    If you also want the ring solver or other uses of reflection, you can use the agda-stdlib commit 93f5c0f81 (August 10, 2023).
+    (Some more recent commits points may work as well, but not the 2.0 release.)
 *   Haskell [ieee754 package](https://github.com/agda/agda/issues/3619) (as described under Troubleshooting below)
 
 ## Summary of important modules
