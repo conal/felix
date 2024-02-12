@@ -68,11 +68,11 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
 
   ∀×→ : {f : a ⇨ b} {g : a ⇨ c} {k : a ⇨ b × c}
      → k ≈ f ▵ g → (exl ∘ k ≈ f  ×ₚ  exr ∘ k ≈ g)
-  ∀×→ = to ∀×
+  ∀×→ = f ∀×  -- For agda-stdlib 2.0: to ∀×
 
   ∀×← : {f : a ⇨ b} {g : a ⇨ c} {k : a ⇨ b × c}
      → (exl ∘ k ≈ f  ×ₚ  exr ∘ k ≈ g) → k ≈ f ▵ g
-  ∀×← = from ∀×
+  ∀×← = g ∀×  -- For agda-stdlib 2.0: from ∀×
 
   ▵≈ˡ : {f : a ⇨ c} {h k : a ⇨ d} → h ≈ k → h ▵ f ≈ k ▵ f
   ▵≈ˡ h≈k = ▵≈ h≈k refl
@@ -288,11 +288,11 @@ record CartesianClosed {obj : Set o} ⦃ _ : Products obj ⦄
 
   ∀⇛→ : {f : a × b ⇨ c} {g : a ⇨ (b ⇛ c)}
       → g ≈ curry f → f ≈ uncurry g
-  ∀⇛→ = to ∀⇛
+  ∀⇛→ = f ∀⇛  -- For agda-stdlib 2.0: to ∀⇛
 
   ∀⇛← : {f : a × b ⇨ c} {g : a ⇨ (b ⇛ c)}
       → f ≈ uncurry g → g ≈ curry f
-  ∀⇛← = from ∀⇛
+  ∀⇛← = g ∀⇛  -- For agda-stdlib 2.0: from ∀⇛
 
   curry-apply : {a b : obj} → id { a = a ⇛ b } ≈ curry apply
   curry-apply = ∀⇛← (begin
