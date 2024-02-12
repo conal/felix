@@ -2,6 +2,10 @@
 
 module Felix.All where
 
+-- Temporary sanity check while finding a commit point in agda-stdlib that will
+-- work with agda-2.6.3 and Felix and reflection (particularly the ring solver).
+open import Data.Nat.Tactic.RingSolver using (solve-∀)
+
 import Felix.Object
 import Felix.Equiv
 import Felix.Raw
