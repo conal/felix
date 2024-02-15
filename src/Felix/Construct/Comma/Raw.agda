@@ -7,16 +7,15 @@ open import Felix.Equiv
 open import Felix.Laws as L
        hiding (Category; Cartesian; CartesianClosed) -- ; Logic; Monoid
 open import Felix.Homomorphism
-open ≈-Reasoning
 open import Felix.Reasoning
 
 module Felix.Construct.Comma.Raw
    {o₀}{obj₀ : Set o₀} {ℓ₀} (_⇨₀_ : obj₀ → obj₀ → Set ℓ₀) ⦃ _ : Category _⇨₀_ ⦄
    {o₁}{obj₁ : Set o₁} {ℓ₁} (_⇨₁_ : obj₁ → obj₁ → Set ℓ₁) ⦃ _ : Category _⇨₁_ ⦄
    {o₂}{obj₂ : Set o₂} {ℓ₂} (_⇨₂_ : obj₂ → obj₂ → Set ℓ₂) ⦃ _ : Category _⇨₂_ ⦄
-   {q₀} ⦃ _ : Equivalent q₀ _⇨₀_ ⦄ ⦃ _ : L.Category _⇨₀_ ⦄
-   {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ -- ⦃ _ : L.Category _⇨₁_ ⦄
-   {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄ -- ⦃ _ : L.Category _⇨₂_ ⦄
+   {q₀} ⦃ eq₀ : Equivalent q₀ _⇨₀_ ⦄ ⦃ _ : L.Category _⇨₀_ ⦄
+   {q₁} ⦃ eq₁ : Equivalent q₁ _⇨₁_ ⦄ -- ⦃ _ : L.Category _⇨₁_ ⦄
+   {q₂} ⦃ eq₂ : Equivalent q₂ _⇨₂_ ⦄ -- ⦃ _ : L.Category _⇨₂_ ⦄
    ⦃ hₒ₁ : Homomorphismₒ obj₁ obj₀ ⦄ ⦃ h₁ : Homomorphism _⇨₁_ _⇨₀_ ⦄
      ⦃ catH₁ : CategoryH _⇨₁_ _⇨₀_ ⦄
    ⦃ hₒ₂ : Homomorphismₒ obj₂ obj₀ ⦄ ⦃ h₂ : Homomorphism _⇨₂_ _⇨₀_ ⦄
@@ -28,6 +27,7 @@ open import Felix.Construct.Comma.Type _⇨₀_ _⇨₁_ _⇨₂_
      public
 
 open Obj
+open ≈-Reasoning ⦃ eq₀ ⦄
 
 private variable a b c d : Obj
 
@@ -58,7 +58,7 @@ module comma-cat where
   --        (Fₘ g₂ ∘ h b) ∘ Fₘ f₁
   --      ≈⟨ ∘-assocʳ′ ↻-f ⟩
   --        Fₘ g₂ ∘ (Fₘ f₂ ∘ h a)
-  --      ≈⟨ ∘-assocˡ′ (sym F-∘) ⟩
+  --      ≈⟨ ∘-assocˡ′ (⟺ F-∘) ⟩
   --        Fₘ (g₂ ∘ f₂) ∘ h a
   --      ∎)
   -- -- 35s
@@ -66,7 +66,7 @@ module comma-cat where
   comp : (b ↬ c) → (a ↬ b) → (a ↬ c)
   comp (mkᵐ g₁ g₂ ↻-g) (mkᵐ f₁ f₂ ↻-f) =
     mkᵐ (g₁ ∘ f₁) (g₂ ∘ f₂)
-       (∘≈ʳ F-∘ ; ∘-assocˡ′ ↻-g ; ∘-assocʳ′ ↻-f ; ∘-assocˡ′ (sym F-∘))
+       (∘≈ʳ F-∘ ; ∘-assocˡ′ ↻-g ; ∘-assocʳ′ ↻-f ; ∘-assocˡ′ (sym≈ F-∘))
 
   instance
 
@@ -97,15 +97,15 @@ module comma-products
   --      (ε ∘ ε⁻¹) ∘ Fₘ !
   --    ≈⟨ ∘≈ʳ F-! ; cancelInner ε⁻¹∘ε ⟩
   --      ε ∘ !
-  --    ≈⟨ ∘≈ʳ (sym ∀⊤) ⟩
+  --    ≈⟨ ∘≈ʳ (sym≈ ∀⊤) ⟩
   --      ε ∘ (! ∘ h a)
-  --    ≈⟨ ∘-assocˡ′ (sym F-!) ⟩
+  --    ≈⟨ ∘-assocˡ′ (sym≈ F-!) ⟩
   --      Fₘ ! ∘ h a
   --    ∎)
   -- -- 23s
 
   !′ : a ↬ ⊤
-  !′ = mkᵐ ! ! (∘≈ʳ F-! ; cancelInner ε⁻¹∘ε ; ∘≈ʳ (sym ∀⊤) ; ∘-assocˡ′ (sym F-!))
+  !′ = mkᵐ ! ! (∘≈ʳ F-! ; cancelInner ε⁻¹∘ε ; ∘≈ʳ (sym≈ ∀⊤) ; ∘-assocˡ′ (sym≈ F-!))
 
   -- fork : (a ↬ c) → (a ↬ d) → (a ↬ c × d)
   -- fork {a}{c}{d} (mkᵐ f₁ f₂ ↻-f) (mkᵐ g₁ g₂ ↻-g) =
@@ -114,9 +114,9 @@ module comma-products
   --        h (c × d) ∘ Fₘ (f₁ ▵ g₁)
   --      ≈⟨ ∘≈ ∘-assocˡ F-▵ ; cancelInner μ⁻¹∘μ ⟩
   --        (μ ∘ (h c ⊗ h d)) ∘ (Fₘ f₁ ▵ Fₘ g₁)
-  --      ≈⟨ ∘-assocʳ′ (⊗∘▵ ; ▵≈ ↻-f ↻-g ; sym ▵∘) ⟩
+  --      ≈⟨ ∘-assocʳ′ (⊗∘▵ ; ▵≈ ↻-f ↻-g ; sym≈ ▵∘) ⟩
   --        μ ∘ ((Fₘ f₂ ▵ Fₘ g₂) ∘ h a)
-  --      ≈⟨ ∘-assocˡ′ (sym F-▵) ⟩
+  --      ≈⟨ ∘-assocˡ′ (sym≈ F-▵) ⟩
   --        Fₘ (f₂ ▵ g₂) ∘ h a
   --      ∎)
   -- -- 1m ?
@@ -126,8 +126,8 @@ module comma-products
     mkᵐ (f₁ ▵ g₁) (f₂ ▵ g₂)
        ( ∘≈ ∘-assocˡ F-▵
        ; cancelInner μ⁻¹∘μ
-       ; ∘-assocʳ′ (⊗∘▵ ; ▵≈ ↻-f ↻-g ; sym ▵∘)
-       ; ∘-assocˡ′ (sym F-▵)
+       ; ∘-assocʳ′ (⊗∘▵ ; ▵≈ ↻-f ↻-g ; sym≈ ▵∘)
+       ; ∘-assocˡ′ (sym≈ F-▵)
        )
 
   -- exl′ : a × b ↬ a
@@ -136,9 +136,9 @@ module comma-products
   --      h a ∘ Fₘ exl
   --    ≈⟨ ∘≈ʳ (introʳ μ∘μ⁻¹ ; ∘-assocˡ′ F-exl) ⟩
   --      h a ∘ (exl ∘ μ⁻¹)
-  --    ≈⟨ ∘-assocˡʳ′ (sym exl∘▵) ⟩
+  --    ≈⟨ ∘-assocˡʳ′ (sym≈ exl∘▵) ⟩
   --      exl ∘ (h a ⊗ h b) ∘ μ⁻¹
-  --    ≈⟨ sym (∘-assocˡ′ F-exl) ⟩
+  --    ≈⟨ sym≈ (∘-assocˡ′ F-exl) ⟩
   --      Fₘ exl ∘ μ ∘ (h a ⊗ h b) ∘ μ⁻¹
   --    ∎)
   -- -- 45s
@@ -146,8 +146,8 @@ module comma-products
   exl′ : a × b ↬ a
   exl′ = mkᵐ exl exl
     ( ∘≈ʳ (introʳ μ∘μ⁻¹ ; ∘-assocˡ′ F-exl)
-    ; ∘-assocˡʳ′ (sym exl∘▵)
-    ; sym (∘-assocˡ′ F-exl)
+    ; ∘-assocˡʳ′ (sym≈ exl∘▵)
+    ; sym≈ (∘-assocˡ′ F-exl)
     )
 
   -- exr′ : a × b ↬ b
@@ -156,9 +156,9 @@ module comma-products
   --      h b ∘ Fₘ exr
   --    ≈⟨ ∘≈ʳ (introʳ μ∘μ⁻¹ ; ∘-assocˡ′ F-exr) ⟩
   --      h b ∘ (exr ∘ μ⁻¹)
-  --    ≈⟨ ∘-assocˡʳ′ (sym exr∘▵) ⟩
+  --    ≈⟨ ∘-assocˡʳ′ (sym≈ exr∘▵) ⟩
   --      exr ∘ (h a ⊗ h b) ∘ μ⁻¹
-  --    ≈⟨ sym (∘-assocˡ′ F-exr) ⟩
+  --    ≈⟨ sym≈ (∘-assocˡ′ F-exr) ⟩
   --      Fₘ exr ∘ μ ∘ (h a ⊗ h b) ∘ μ⁻¹
   --    ∎)
   -- -- 45s
@@ -166,8 +166,8 @@ module comma-products
   exr′ : a × b ↬ b
   exr′ = mkᵐ exr exr
     ( ∘≈ʳ (introʳ μ∘μ⁻¹ ; ∘-assocˡ′ F-exr)
-    ; ∘-assocˡʳ′ (sym exr∘▵)
-    ; sym (∘-assocˡ′ F-exr)
+    ; ∘-assocˡʳ′ (sym≈ exr∘▵)
+    ; sym≈ (∘-assocˡ′ F-exr)
     )
 
   instance
@@ -212,7 +212,7 @@ module comma-products
 --   --    -- (β ∘ false ∘ ε⁻¹) ∘ (ε ∘ ε⁻¹)
 --   --    ≈˘⟨ (∘≈ˡ ∘-assocˡ ; cancelInner ε⁻¹∘ε ; ∘-assocʳ) ⟩
 --   --     (β ∘ false ∘ ε⁻¹) ∘ (ε ∘ ε⁻¹)
---   --    ≈⟨ ∘≈ˡ (sym F-false′) ⟩
+--   --    ≈⟨ ∘≈ˡ (sym≈ F-false′) ⟩
 --   --     Fₘ false ∘ (ε ∘ ε⁻¹)
 --   --    ≡⟨⟩
 --   --     Fₘ false ∘ h ⊤
@@ -222,14 +222,14 @@ module comma-products
 --   false′ = mkᵐ false false
 --     ( ∘≈ʳ F-false′
 --     ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
---     ; sym (∘≈ˡ (F-false′ ; ∘-assocˡ) ; cancelInner ε⁻¹∘ε ; ∘-assocʳ)
+--     ; sym≈ (∘≈ˡ (F-false′ ; ∘-assocˡ) ; cancelInner ε⁻¹∘ε ; ∘-assocʳ)
 --     )
 
 --   true′ : ⊤ ↬ Bool
 --   true′ = mkᵐ true true
 --     ( ∘≈ʳ F-true′
 --     ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
---     ; sym (∘≈ˡ (F-true′ ; ∘-assocˡ) ; cancelInner ε⁻¹∘ε ; ∘-assocʳ)
+--     ; sym≈ (∘≈ˡ (F-true′ ; ∘-assocˡ) ; cancelInner ε⁻¹∘ε ; ∘-assocʳ)
 --     )
 
 --   -- not′ = mkᵐ not not
@@ -241,7 +241,7 @@ module comma-products
 --   --      (β ∘ β⁻¹) ∘ (β ∘ not ∘ β⁻¹)
 --   --    ≈⟨ cancelInner β⁻¹∘β ⟩
 --   --      β ∘ not ∘ β⁻¹
---   --    ≈⟨ sym (∘-assocˡʳ′ F-not) ⟩
+--   --    ≈⟨ sym≈ (∘-assocˡʳ′ F-not) ⟩
 --   --      Fₘ not ∘ (β ∘ β⁻¹)
 --   --    ∎)
 
@@ -249,7 +249,7 @@ module comma-products
 --   not′ = mkᵐ not not
 --     ( ∘≈ʳ F-not′
 --     ; cancelInner β⁻¹∘β
---     ; sym (∘-assocˡʳ′ F-not)
+--     ; sym≈ (∘-assocˡʳ′ F-not)
 --     )
 
 --   -- ∧′ : Bool × Bool ↬ Bool
@@ -262,7 +262,7 @@ module comma-products
 --   --      (β ∘ β⁻¹) ∘ β ∘ ∧ ∘ (β⁻¹ ⊗ β⁻¹) ∘ μ⁻¹
 --   --    ≈⟨ ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β) ⟩
 --   --      β ∘ ∧ ∘ (β⁻¹ ⊗ β⁻¹) ∘ μ⁻¹
---   --    ≈⟨ ∘-assocˡ′ (sym F-∧) ⟩
+--   --    ≈⟨ ∘-assocˡ′ (sym≈ F-∧) ⟩
 --   --      (Fₘ ∧ ∘ μ ∘ (β ⊗ β)) ∘ (β⁻¹ ⊗ β⁻¹) ∘ μ⁻¹
 --   --    ≈⟨ ∘-assocʳ′ ∘-assocʳ ⟩
 --   --      Fₘ ∧ ∘ μ ∘ (β ⊗ β) ∘ (β⁻¹ ⊗ β⁻¹) ∘ μ⁻¹
@@ -278,7 +278,7 @@ module comma-products
 --   ∧′ = mkᵐ ∧ ∧
 --           ( ∘≈ʳ F-∧′
 --           ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
---           ; ∘-assocˡ′ (sym F-∧)
+--           ; ∘-assocˡ′ (sym≈ F-∧)
 --           ; ∘-assocʳ′ ∘-assocʳ
 --           ; ∘≈ʳ² (∘-assocˡ′ ⊗∘⊗)
 --           )
@@ -287,7 +287,7 @@ module comma-products
 --   ∨′ = mkᵐ ∨ ∨
 --           ( ∘≈ʳ F-∨′
 --           ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
---           ; ∘-assocˡ′ (sym F-∨)
+--           ; ∘-assocˡ′ (sym≈ F-∨)
 --           ; ∘-assocʳ′ ∘-assocʳ
 --           ; ∘≈ʳ² (∘-assocˡ′ ⊗∘⊗)
 --           )
@@ -296,7 +296,7 @@ module comma-products
 --   xor′ = mkᵐ xor xor
 --             ( ∘≈ʳ F-xor′
 --             ; ∘-assocˡ′ (∘-assoc-elimʳ β⁻¹∘β)
---             ; ∘-assocˡ′ (sym F-xor)
+--             ; ∘-assocˡ′ (sym≈ F-xor)
 --             ; ∘-assocʳ′ ∘-assocʳ
 --             ; ∘≈ʳ² (∘-assocˡ′ ⊗∘⊗)
 --             )
@@ -313,7 +313,7 @@ module comma-products
 --   --      cond ∘ (id ∘ β⁻¹ ⊗ ((h a ⊗ h a) ∘ μ⁻¹)) ∘ μ⁻¹
 --   --    ≈⟨ ∘≈ʳ (∘≈ˡ (⊗≈ˡ identityˡ)) ⟩
 --   --      cond ∘ (β⁻¹ ⊗ ((h a ⊗ h a) ∘ μ⁻¹)) ∘ μ⁻¹
---   --    ≈⟨ ∘≈ˡ (sym F-cond) ⟩
+--   --    ≈⟨ ∘≈ˡ (sym≈ F-cond) ⟩
 --   --      (Fₘ cond ∘ μ ∘ (β ⊗ μ)) ∘ (β⁻¹ ⊗ ((h a ⊗ h a) ∘ μ⁻¹)) ∘ μ⁻¹
 --   --    ≈⟨ ∘-assocʳ³ ⟩
 --   --      Fₘ cond ∘ μ ∘ (β ⊗ μ) ∘ (β⁻¹ ⊗ ((h a ⊗ h a) ∘ μ⁻¹)) ∘ μ⁻¹
@@ -334,7 +334,7 @@ module comma-products
 --     ( ∘≈ʳ F-cond′
 --     ; ∘-assocˡ′ f∘cond ; ∘-assocʳ
 --     ; ∘≈ʳ (∘-assocˡ′ ⊗∘⊗ ; ∘≈ˡ (⊗≈ˡ identityˡ))
---     ; ∘≈ˡ (sym F-cond)
+--     ; ∘≈ˡ (sym≈ F-cond)
 --     ; ∘-assocʳ³
 --     ; ∘≈ʳ² (∘-assocˡ ; ∘≈ˡ ⊗∘⊗)
 --     )

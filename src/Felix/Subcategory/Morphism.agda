@@ -17,6 +17,7 @@ module Felix.Subcategory.Morphism {o ℓ} {obj : Set o}
 private variable a b c d : obj
 
 open import Felix.Prop
+open ≈-Reasoning
 
 infix 0 _⇨_
 record _⇨_ (a b : obj) : Set (ℓ ⊔ m) where
@@ -27,12 +28,12 @@ record _⇨_ (a b : obj) : Set (ℓ ⊔ m) where
 
 private
   refl↠ : {f : a ↠ b} → f ≈ f
-  refl↠ = refl
+  refl↠ = refl≈
 
   sym-identityˡ↠ : ⦃ _ : Products obj ⦄ ⦃ _ : Cartesian _↠_ ⦄
     ⦃ _ : L.Category _↠_ ⦄ ⦃ _ : L.Cartesian _↠_ ⦄ {f : a ↠ b} →
     f ≈ id ∘ f
-  sym-identityˡ↠ = sym L.identityˡ
+  sym-identityˡ↠ = sym≈ L.identityˡ
 
 module subcat-instances ⦃ _ : Categoryᴾ M ⦄ where instance
 

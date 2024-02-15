@@ -37,13 +37,13 @@ record Category {obj : Set o} (_⇨′_ : obj → obj → Set ℓ)
   ∘-assocʳ = assoc
 
   ∘-assocˡ : {f : a ⇨ b} {g : b ⇨ c} {h : c ⇨ d} → h ∘ (g ∘ f) ≈ (h ∘ g) ∘ f
-  ∘-assocˡ = sym ∘-assocʳ
+  ∘-assocˡ = sym≈ ∘-assocʳ
 
   ∘≈ˡ : ∀ {f : a ⇨ b} {h k : b ⇨ c} → h ≈ k → h ∘ f ≈ k ∘ f
-  ∘≈ˡ h≈k = ∘≈ h≈k refl
+  ∘≈ˡ h≈k = ∘≈ h≈k refl≈
 
   ∘≈ʳ : ∀ {f g : a ⇨ b} {h : b ⇨ c} → f ≈ g → h ∘ f ≈ h ∘ g
-  ∘≈ʳ f≈g = ∘≈ refl f≈g
+  ∘≈ʳ f≈g = ∘≈ refl≈ f≈g
 
 open Category ⦃ … ⦄ public
 
@@ -75,20 +75,20 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
   ∀×← = from ∀×
 
   ▵≈ˡ : {f : a ⇨ c} {h k : a ⇨ d} → h ≈ k → h ▵ f ≈ k ▵ f
-  ▵≈ˡ h≈k = ▵≈ h≈k refl
+  ▵≈ˡ h≈k = ▵≈ h≈k refl≈
 
   ▵≈ʳ : {f g : a ⇨ c} {h : a ⇨ d} → f ≈ g → h ▵ f ≈ h ▵ g
-  ▵≈ʳ f≈g = ▵≈ refl f≈g
+  ▵≈ʳ f≈g = ▵≈ refl≈ f≈g
 
   open import Data.Product using (proj₁; proj₂)
   -- TODO: Generalize Function category from level 0, and use exl & exr in place
   -- of proj₁ & proj₂
 
   exl∘▵ : {f : a ⇨ b} {g : a ⇨ c} → exl ∘ (f ▵ g) ≈ f
-  exl∘▵ = proj₁ (∀×→ refl)
+  exl∘▵ = proj₁ (∀×→ refl≈)
 
   exr∘▵ : {f : a ⇨ b} {g : a ⇨ c} → exr ∘ (f ▵ g) ≈ g
-  exr∘▵ = proj₂ (∀×→ refl)
+  exr∘▵ = proj₂ (∀×→ refl≈)
 
   -- Specializing:
   exl∘⊗ : {f : a ⇨ c} {g : b ⇨ d} → exl ∘ (f ⊗ g) ≈ f ∘ exl
@@ -109,7 +109,7 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
   exr∘second = exr∘⊗
 
   exl▵exr : {a b : obj} → exl ▵ exr ≈ id {a = a × b}
-  exl▵exr = sym (∀×← (identityʳ , identityʳ))
+  exl▵exr = sym≈ (∀×← (identityʳ , identityʳ))
 
   ⊗≈ : {a b c d : obj} {f g : a ⇨ c} {h k : b ⇨ d}
      → f ≈ g → h ≈ k → f ⊗ h ≈ g ⊗ k
@@ -128,17 +128,17 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
 
   ⊗≈ˡ : {a b c d : obj}{f g : a ⇨ c}{h : b ⇨ d}
      → f ≈ g → f ⊗ h ≈ g ⊗ h
-  ⊗≈ˡ f≈g = ⊗≈ f≈g refl
+  ⊗≈ˡ f≈g = ⊗≈ f≈g refl≈
 
   ⊗≈ʳ : {a b c d : obj}{f : a ⇨ c}{h k : b ⇨ d}
      → h ≈ k → f ⊗ h ≈ f ⊗ k
-  ⊗≈ʳ h≈k = ⊗≈ refl h≈k
+  ⊗≈ʳ h≈k = ⊗≈ refl≈ h≈k
 
   id⊗id : {a b : obj} → id ⊗ id ≈ id {a = a × b}
   id⊗id = exl▵exr • ▵≈ identityˡ identityˡ
 
   ▵∘ : {f : a ⇨ b} {g : b ⇨ c} {h : b ⇨ d} → (g ▵ h) ∘ f ≈ g ∘ f ▵ h ∘ f
-  ▵∘ {f = f}{g}{h}= ∀×← (∘≈ˡ exl∘▵ • sym assoc , ∘≈ˡ exr∘▵ • sym assoc)
+  ▵∘ {f = f}{g}{h}= ∀×← (∘≈ˡ exl∘▵ • sym≈ assoc , ∘≈ˡ exr∘▵ • sym≈ assoc)
 
   ⊗∘▵ : {f : a ⇨ b} {g : a ⇨ c} {h : b ⇨ d} {k : c ⇨ e}
       → (h ⊗ k) ∘ (f ▵ g) ≈ h ∘ f ▵ k ∘ g
@@ -210,7 +210,7 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
   unitorᵉʳ∘unitorⁱʳ = exl∘▵
 
   unitorⁱˡ∘unitorᵉˡ : ∀ {a : obj} → unitorⁱˡ ∘ unitorᵉˡ {a = a} ≈ id
-  unitorⁱˡ∘unitorᵉˡ = ▵∘ ; ▵≈ ∀⊤ identityˡ ; ▵≈ˡ (sym ∀⊤) ; exl▵exr
+  unitorⁱˡ∘unitorᵉˡ = ▵∘ ; ▵≈ ∀⊤ identityˡ ; ▵≈ˡ (sym≈ ∀⊤) ; exl▵exr
 
   --   (! ▵ id) ∘ exr
   -- ≈ ! ∘ exr ▵ id ∘ exr
@@ -219,7 +219,7 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
   -- ≈ id
 
   unitorⁱʳ∘unitorᵉʳ : ∀ {a : obj} → unitorⁱʳ ∘ unitorᵉʳ {a = a} ≈ id
-  unitorⁱʳ∘unitorᵉʳ = ▵∘ ; ▵≈ identityˡ ∀⊤ ; ▵≈ʳ (sym ∀⊤) ; exl▵exr
+  unitorⁱʳ∘unitorᵉʳ = ▵∘ ; ▵≈ identityˡ ∀⊤ ; ▵≈ʳ (sym≈ ∀⊤) ; exl▵exr
 
   --   (id ▵ !) ∘ exl
   -- ≈ id ∘ exl ▵ ! ∘ exl

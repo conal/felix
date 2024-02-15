@@ -10,7 +10,7 @@ open import Felix.Laws as L
 module Felix.Construct.Squared
   {o} {obj : Set o} {ℓ} {_⇨_ : obj → obj → Set ℓ} ⦃ _ : Category _⇨_ ⦄
   ⦃ _ : Products obj ⦄ ⦃ _ : Cartesian _⇨_ ⦄
-  {q} ⦃ _ : Equivalent q _⇨_ ⦄ ⦃ _ : L.Category _⇨_ ⦄ ⦃ _ : L.Cartesian _⇨_ ⦄
+  {q} ⦃ eq : Equivalent q _⇨_ ⦄ ⦃ _ : L.Category _⇨_ ⦄ ⦃ _ : L.Cartesian _⇨_ ⦄
  where
 
 open import Data.Product using (_,_) renaming (map to _⊗̇_; uncurry to uncurry′)
@@ -26,6 +26,7 @@ unsquare = mk⤇ (λ (A , B) → A × B) (λ (f , g) → f ⊗ g)
 open import Felix.Reasoning
 
 module product-same-homomorphisms where instance
+  open ≈-Reasoning ⦃ eq ⦄
 
   Hₒ : Homomorphismₒ Obj obj
   Hₒ = toHₒ unsquare
@@ -36,7 +37,7 @@ module product-same-homomorphisms where instance
   -- H = record { Fₘ = λ (f , g) → f ⊗ g }
 
   catH : CategoryH _⇨²_ _⇨_
-  catH = record { F-cong = uncurry′ ⊗≈ ; F-id = id⊗id ; F-∘ = sym ⊗∘⊗ }
+  catH = record { F-cong = uncurry′ ⊗≈ ; F-id = id⊗id ; F-∘ = sym≈ ⊗∘⊗ }
 
   pH : ProductsH Obj _⇨_
   pH = record { ε = unitorⁱʳ ; μ = transpose ; ε⁻¹ = unitorᵉʳ ; μ⁻¹ = transpose }
@@ -49,14 +50,14 @@ module product-same-homomorphisms where instance
 
   cartH : CartesianH _⇨²_ _⇨_
   cartH = record { F-!   = !⊗!
-                 ; F-▵   = sym transpose∘▵⊗▵
+                 ; F-▵   = sym≈ transpose∘▵⊗▵
                  ; F-exl = [exl⊗exl]∘transpose
                  ; F-exr = [exr⊗exr]∘transpose }
 
   equivalent : Equivalent q _⇨²_
   equivalent = H-equiv
 
-  open import Felix.MakeLawful _⇨²_ _⇨_
+  open import Felix.MakeLawful _⇨²_ _⇨_ ⦃ product-instances.equivalent ⦄ ⦃ eq ⦄
 
-  catL : L.Category _⇨²_
+  catL : L.Category _⇨²_ ⦃ equiv = equivalent ⦄
   catL = LawfulCategoryᶠ

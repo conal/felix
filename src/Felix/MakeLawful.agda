@@ -10,7 +10,7 @@ open import Felix.Homomorphism
 module Felix.MakeLawful
          {o₁}{obj₁ : Set o₁} {ℓ₁}(_⇨₁_ : obj₁ → obj₁ → Set ℓ₁)
          {o₂}{obj₂ : Set o₂} {ℓ₂}(_⇨₂_ : obj₂ → obj₂ → Set ℓ₂)
-         {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
+         {q₁} ⦃ eq₁ : Equivalent q₁ _⇨₁_ ⦄ {q₂} ⦃ eq₂ : Equivalent q₂ _⇨₂_ ⦄
          ⦃ _ : Homomorphismₒ obj₁ obj₂ ⦄
          ⦃ H : Homomorphism _⇨₁_ _⇨₂_ ⦄
  where
@@ -21,7 +21,7 @@ open import Felix.Raw
 open import Felix.Laws as L hiding (Category; Cartesian; CartesianClosed)
 open import Felix.Reasoning
 
-open ≈-Reasoning
+open ≈-Reasoning ⦃ eq₂ ⦄
 
 private
   variable
@@ -125,24 +125,24 @@ LawfulCartesianᶠ = record
         ≈⟨ exr∘▵ ⟩
           Fₘ g
         ∎))
-      (λ (exl∘k≈f , exr∘k≈g) → sym (begin
+      (λ (exl∘k≈f , exr∘k≈g) → sym≈ (begin
           Fₘ (f ▵ g)
         ≈⟨ F-▵ ⟩
           μ ∘ (Fₘ f ▵ Fₘ g)
-        ≈⟨ ∘≈ʳ (▵≈ (sym exl∘k≈f ; F-∘) (sym exr∘k≈g ; F-∘)) ⟩
+        ≈⟨ ∘≈ʳ (▵≈ (sym≈ exl∘k≈f ; F-∘) (sym≈ exr∘k≈g ; F-∘)) ⟩
           μ ∘ ((Fₘ exl ∘ Fₘ k) ▵ (Fₘ exr ∘ Fₘ k))
-        ≈⟨ ∘≈ʳ (sym ▵∘) ⟩
+        ≈⟨ ∘≈ʳ (sym≈ ▵∘) ⟩
           μ ∘ (Fₘ exl ▵ Fₘ exr) ∘ Fₘ k
         ≈⟨ ∘≈ʳ (∘≈ˡ (▵≈ F-exl′ F-exr′)) ⟩
           μ ∘ (exl ∘ μ⁻¹ ▵ exr ∘ μ⁻¹) ∘ Fₘ k
-        ≈⟨ ∘≈ʳ (∘≈ˡ (sym ▵∘)) ⟩
+        ≈⟨ ∘≈ʳ (∘≈ˡ (sym≈ ▵∘)) ⟩
           μ ∘ ((exl ▵ exr) ∘ μ⁻¹) ∘ Fₘ k
         ≈⟨ ∘≈ʳ (∘≈ˡ (elimˡ exl▵exr)) ⟩
           μ ∘ μ⁻¹ ∘ Fₘ k
         ≈⟨ cancelˡ μ∘μ⁻¹ ⟩
           Fₘ k
         ∎))
-    ; ▵≈ = λ h≈k f≈g → F-▵ ; ∘≈ʳ (▵≈ h≈k f≈g) ; sym F-▵
+    ; ▵≈ = λ h≈k f≈g → F-▵ ; ∘≈ʳ (▵≈ h≈k f≈g) ; sym≈ F-▵
   }
 
 -- TODO: CartesianClosed, etc.
