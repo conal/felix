@@ -272,7 +272,6 @@ open Cartesian ⦃ … ⦄ public
 record CartesianClosed {obj : Set o} ⦃ _ : Products obj ⦄
                        ⦃ _ : Exponentials obj ⦄ (_⇨′_ : obj → obj → Set ℓ)
                        {q} ⦃ _ : Equivalent q _⇨′_ ⦄
-                       ⦃ _ : Products (Set q) ⦄
                        ⦃ _ : R.Category _⇨′_ ⦄
                        ⦃ _ : R.Cartesian _⇨′_ ⦄
                        ⦃ _ : R.CartesianClosed _⇨′_ ⦄
