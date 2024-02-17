@@ -102,9 +102,8 @@ module product-instances where instance
             e₂ = ∀× {f = f₂} {g₂} {k₂}
             module Q₁ = Equivalence e₁
             module Q₂ = Equivalence e₂
-            h₁ = Q₁.f ; h₁⁻¹ = Q₁.g
-            h₂ = Q₂.f ; h₂⁻¹ = Q₂.g
-            -- For agda-stdlib 2.0, fields 'f' and 'g' become 'to' and 'from'.
+            h₁ = Q₁.to ; h₁⁻¹ = Q₁.from
+            h₂ = Q₂.to ; h₂⁻¹ = Q₂.from
         in
         mk⇔
           (λ (z₁ , z₂) → let eq₁ , eq₁′ = h₁ z₁ ; eq₂ , eq₂′ = h₂ z₂ in

@@ -13,7 +13,6 @@ open import Felix.Equiv
 open import Felix.Instances.Function.Raw ℓ public
 open import Axiom.Extensionality.Propositional
 open import Relation.Binary.PropositionalEquality
-     using (cong; cong₂)
      renaming ( refl to refl≡
               ; trans to trans≡
               ; sym to sym≡
