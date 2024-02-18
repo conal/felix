@@ -11,7 +11,7 @@ open import Felix.Homomorphism
 module Felix.Construct.Arrow
    {o}{obj : Set o}
    {ℓ} (_↠_ : obj → obj → Set ℓ) ⦃ _ : Category _↠_ ⦄
-   {q} ⦃ _ : Equivalent q _↠_ ⦄ ⦃ _ : L.Category _↠_ ⦄
+   {q} ⦃ eq : Equivalent q _↠_ ⦄ ⦃ _ : L.Category _↠_ ⦄
  where
 
 private
@@ -31,6 +31,7 @@ private
 open import Felix.Construct.Comma.Raw _↠_ _↠_ _↠_
               ⦃ catH₁ = catH ⦄ ⦃ catH₂ = catH ⦄ public
 
+open ≈-Reasoning ⦃ eq ⦄
 
 module arrow-products ⦃ p : Products obj ⦄ ⦃ c : Cartesian _↠_ ⦄ ⦃ lc : L.Cartesian _↠_ ⦄ where
 
@@ -54,7 +55,7 @@ module arrow-products ⦃ p : Products obj ⦄ ⦃ c : Cartesian _↠_ ⦄ ⦃ l
 
 -- Transposition
 _ᵀ : ∀ {a b} ((mkᵐ f₁ f₂ _) : a ↬ b) → (f₁ ⇉ f₂)
-_ᵀ {mkᵒ h} {mkᵒ h′} (mkᵐ _ _ commute) = mkᵐ h h′ (sym commute)
+_ᵀ {mkᵒ h} {mkᵒ h′} (mkᵐ _ _ commute) = mkᵐ h h′ (sym≈ commute)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 

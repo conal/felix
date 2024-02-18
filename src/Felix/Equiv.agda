@@ -14,8 +14,6 @@ private
     obj : Set o
     a b : obj
 
--- TODO: move a and b arguments from methods to record.
-
 record Equivalent q {obj : Set o} (_⇨_ : obj → obj → Set ℓ)
        : Set (o ⊔ ℓ ⊔ suc q) where
   infix 4 _≈_
@@ -25,8 +23,8 @@ record Equivalent q {obj : Set o} (_⇨_ : obj → obj → Set ℓ)
 
   module Equiv {a b} where
     open IsEquivalence (equiv {a}{b}) public
-      -- renaming (refl to refl≈; sym to sym≈; trans to trans≈)
-  open Equiv public
+
+  open Equiv
 
   ≈setoid : obj → obj → Setoid ℓ q
   ≈setoid a b = record { isEquivalence = equiv {a}{b} }
@@ -34,18 +32,21 @@ record Equivalent q {obj : Set o} (_⇨_ : obj → obj → Set ℓ)
   module ≈-Reasoning {a b} where
     open SetoidR (≈setoid a b) public
 
-  infixr 9 _•_
-  _•_ : {f g h : a ⇨ b} (g≈h : g ≈ h) (f≈g : f ≈ g) → f ≈ h
-  g≈h • f≈g = trans f≈g g≈h
+    refl≈ : {f : a ⇨ b} → f ≈ f
+    refl≈ = Equiv.refl
 
-  infixr 1 _;_   -- unicode
-  _;_ : {f g h : a ⇨ b} (f≈g : f ≈ g) (g≈h : g ≈ h) → f ≈ h
-  _;_ = trans
+    sym≈ : {f g : a ⇨ b} → f ≈ g → g ≈ f
+    sym≈ = Equiv.sym
+
+    infixr 9 _•_
+    _•_ : {f g h : a ⇨ b} (g≈h : g ≈ h) (f≈g : f ≈ g) → f ≈ h
+    g≈h • f≈g = Equiv.trans f≈g g≈h
+
+    infixr 1 _;_   -- unicode
+    _;_ : {f g h : a ⇨ b} (f≈g : f ≈ g) (g≈h : g ≈ h) → f ≈ h
+    _;_ = trans
 
 open Equivalent ⦃ … ⦄ public
-
--- TODO: Replace Equivalent by Setoid?
--- I think we need _⇨_ as an argument rather than field.
 
 -- TODO: consider moving to Felix.Homomorphism.
 record Homomorphismₒ (obj₁ : Set o₁) (obj₂ : Set o₂) : Set (o₁ ⊔ o₂) where

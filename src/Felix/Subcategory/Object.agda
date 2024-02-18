@@ -23,6 +23,8 @@ module Felix.Subcategory.Object
   ⦃ Hₒ : Homomorphismₒ J obj ⦄
  where
 
+open ≈-Reasoning
+
 infix 0 _⇨_
 record _⇨_ (a b : J) : Set ℓ where
   constructor mk
@@ -66,8 +68,8 @@ module subcategory-instances where instance
 
   module _ {q : Level} ⦃ _ : Equivalent q _↠_ ⦄ where
 
-    refl↠ : ∀ {a b}{f : a ↠ b} → f ≈ f
-    refl↠ = refl
+    refl≈↠ : ∀ {a b}{f : a ↠ b} → f ≈ f
+    refl≈↠ = refl≈
 
     instance
 
@@ -75,14 +77,14 @@ module subcategory-instances where instance
       equivalent = H-equiv
 
       categoryH : CategoryH _⇨_ _↠_
-      categoryH = record { F-cong = λ ~ → ~ ; F-id = refl↠ ; F-∘ = refl↠ }
+      categoryH = record { F-cong = λ ~ → ~ ; F-id = refl≈↠ ; F-∘ = refl≈↠ }
 
       cartesianH :
         ⦃ _ : Products obj ⦄ ⦃ _ : Cartesian _↠_ ⦄ ⦃ _ : L.Category _↠_ ⦄
         ⦃ _ : Products J ⦄ ⦃ _ : ProductsH J _↠_ ⦄ ⦃ _ : StrongProductsH J _↠_ ⦄
         → CartesianH _⇨_ _↠_
-      cartesianH = record { F-! = refl↠
-                          ; F-▵ = refl↠
+      cartesianH = record { F-! = refl≈↠
+                          ; F-▵ = refl≈↠
                           ; F-exl = ∘-assoc-elimʳ μ⁻¹∘μ   -- (exl ∘ μ⁻¹) ∘ μ ≈ exl
                           ; F-exr = ∘-assoc-elimʳ μ⁻¹∘μ   -- (exr ∘ μ⁻¹) ∘ μ ≈ exr
                           }

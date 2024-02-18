@@ -66,16 +66,17 @@ module product-instances where instance
   --           ; cond  = cond  , cond
   --           }
 
-  equivalent : ∀ {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
+  equivalent : ∀ {q₁} ⦃ eq₁ : Equivalent q₁ _⇨₁_ ⦄ {q₂} ⦃ eq₂ : Equivalent q₂ _⇨₂_ ⦄
              → Equivalent (q₁ ⊔ q₂) _⇨_
-  equivalent = record
+  equivalent ⦃ eq₁ ⦄ ⦃ eq₂ ⦄ = record
     { _≈_ = λ (f₁ , f₂) (g₁ , g₂) → f₁ ≈ g₁ ×̇ f₂ ≈ g₂  -- Does this construction already exist?
     ; equiv = record
-       { refl  = refl , refl
-       ; sym   = λ (eq₁ , eq₂) → sym eq₁ , sym eq₂
-       ; trans = λ (eq₁ , eq₂) (eq₁′ , eq₂′)  → trans eq₁ eq₁′ , trans eq₂ eq₂′
+       { refl  = refl≈₁ , refl≈₂
+       ; sym   = λ (eq₁ , eq₂) → sym≈₁  eq₁ , sym≈₂  eq₂
+       ; trans = λ (eq₁ , eq₂) (eq₁′ , eq₂′) → (eq₁ ;₁ eq₁′) , (eq₂ ;₂ eq₂′)
        }
-    }
+    } where open ≈-Reasoning ⦃ eq₁ ⦄ renaming (refl≈ to refl≈₁; sym≈ to sym≈₁; _;_ to _;₁_)
+            open ≈-Reasoning ⦃ eq₂ ⦄ renaming (refl≈ to refl≈₂; sym≈ to sym≈₂; _;_ to _;₂_)
 
   l-category : ∀ {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
                ⦃ _ : L.Category _⇨₁_ ⦄ ⦃ _ : L.Category _⇨₂_ ⦄
@@ -102,9 +103,8 @@ module product-instances where instance
             e₂ = ∀× {f = f₂} {g₂} {k₂}
             module Q₁ = Equivalence e₁
             module Q₂ = Equivalence e₂
-            h₁ = Q₁.f ; h₁⁻¹ = Q₁.g
-            h₂ = Q₂.f ; h₂⁻¹ = Q₂.g
-            -- For agda-stdlib 2.0, fields 'f' and 'g' become 'to' and 'from'.
+            h₁ = Q₁.to ; h₁⁻¹ = Q₁.from
+            h₂ = Q₂.to ; h₂⁻¹ = Q₂.from
         in
         mk⇔
           (λ (z₁ , z₂) → let eq₁ , eq₁′ = h₁ z₁ ; eq₂ , eq₂′ = h₂ z₂ in
@@ -141,11 +141,13 @@ module product-homomorphisms where instance
   H₂ : Homomorphism _⇨_ _⇨₂_
   H₂ = record { Fₘ = proj₂ }
 
-  catH₁ : ∀ {q₁ q₂} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ ⦃ _ : Equivalent q₂ _⇨₂_ ⦄ → CategoryH _⇨_ _⇨₁_
-  catH₁ = record { F-cong = proj₁ ; F-id = refl ; F-∘ = refl }
+  catH₁ : ∀ {q₁ q₂} ⦃ eq₁ : Equivalent q₁ _⇨₁_ ⦄ ⦃ eq₂ : Equivalent q₂ _⇨₂_ ⦄ → CategoryH _⇨_ _⇨₁_
+  catH₁ ⦃ eq₁ ⦄ = record { F-cong = proj₁ ; F-id = refl≈ ; F-∘ = refl≈ }
+    where open ≈-Reasoning ⦃ eq₁ ⦄
 
-  catH₂ : ∀ {q₁ q₂} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ ⦃ _ : Equivalent q₂ _⇨₂_ ⦄ → CategoryH _⇨_ _⇨₂_
-  catH₂ = record { F-cong = proj₂ ; F-id = refl ; F-∘ = refl }
+  catH₂ : ∀ {q₁ q₂} ⦃ eq₁ : Equivalent q₁ _⇨₁_ ⦄ ⦃ eq₂ : Equivalent q₂ _⇨₂_ ⦄ → CategoryH _⇨_ _⇨₂_
+  catH₂ ⦃ eq₂ = eq₂ ⦄ = record { F-cong = proj₂ ; F-id = refl≈ ; F-∘ = refl≈ }
+    where open ≈-Reasoning ⦃ eq₂ ⦄
 
   pH₁ : ∀ ⦃ _ : Products obj₁ ⦄ ⦃ _ : Products obj₂ ⦄ → ProductsH Obj _⇨₁_
   pH₁ = record { ε = id ; μ = id ; ε⁻¹ = id ; μ⁻¹ = id }
@@ -171,25 +173,27 @@ module product-homomorphisms where instance
                 ; μ⁻¹∘μ = identityˡ
                 ; μ∘μ⁻¹ = identityˡ }
 
-  cartesianH₁ : ∀ {q₁ q₂} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
+  cartesianH₁ : ∀ {q₁ q₂} ⦃ eq₁ : Equivalent q₁ _⇨₁_ ⦄ ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
       ⦃ _ : Products  obj₁ ⦄ ⦃ _ : Products  obj₂ ⦄
       ⦃ _ : Cartesian _⇨₁_ ⦄ ⦃ _ : Cartesian _⇨₂_ ⦄ ⦃ _ : L.Category _⇨₁_ ⦄
     → CartesianH _⇨_ _⇨₁_
-  cartesianH₁ = record
-    { F-!   = sym identityˡ
-    ; F-▵   = sym identityˡ
+  cartesianH₁ ⦃ eq₁ ⦄ = record
+    { F-!   = sym≈ identityˡ
+    ; F-▵   = sym≈ identityˡ
     ; F-exl = identityʳ
-    ; F-exr = identityʳ }
+    ; F-exr = identityʳ
+    } where open ≈-Reasoning ⦃ eq₁ ⦄
 
-  cartesianH₂ : ∀ {q₁ q₂} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
+  cartesianH₂ : ∀ {q₁ q₂} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ ⦃ eq₂ : Equivalent q₂ _⇨₂_ ⦄
       ⦃ _ : Products  obj₁ ⦄ ⦃ _ : Products  obj₂ ⦄
       ⦃ _ : Cartesian _⇨₁_ ⦄ ⦃ _ : Cartesian _⇨₂_ ⦄ ⦃ _ : L.Category _⇨₂_ ⦄
     → CartesianH _⇨_ _⇨₂_
-  cartesianH₂ = record
-    { F-!   = sym identityˡ
-    ; F-▵   = sym identityˡ
+  cartesianH₂ ⦃ eq₂ = eq₂ ⦄ = record
+    { F-!   = sym≈ identityˡ
+    ; F-▵   = sym≈ identityˡ
     ; F-exl = identityʳ
-    ; F-exr = identityʳ }
+    ; F-exr = identityʳ
+    } where open ≈-Reasoning ⦃ eq₂ ⦄
 
 --   booleanH₁ :
 --       ∀ {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ ⦃ _ : Boolean obj₁ ⦄ ⦃ _ : Boolean obj₂ ⦄

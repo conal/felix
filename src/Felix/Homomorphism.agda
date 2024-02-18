@@ -17,9 +17,6 @@ private
     obj₁ obj₂ : Set o
     a b c d : obj₁
 
-open ≈-Reasoning
-
-
 -- Category homomorphism (functor)
 record CategoryH
   {obj₁ : Set o₁} (_⇨₁_ : obj₁ → obj₁ → Set ℓ₁) {q₁} ⦃ eq₁ : Equivalent q₁ _⇨₁_ ⦄
@@ -35,6 +32,7 @@ record CategoryH
     -- TODO: make g and f explicit arguments? Wait and see.
 
   module _ ⦃ _ : L.Category _⇨₂_ ⦄ where
+    open ≈-Reasoning ⦃ eq₂ ⦄
 
     F-∘³ : {a₀ a₁ a₂ a₃ : obj₁}
            {f₁ : a₀ ⇨₁ a₁}{f₂ : a₁ ⇨₁ a₂}{f₃ : a₂ ⇨₁ a₃}
@@ -65,27 +63,29 @@ id-CategoryH : {obj : Set o} {_⇨_ : obj → obj → Set ℓ}
                {q : Level} ⦃ _ : Equivalent q _⇨_ ⦄
                ⦃ _ : Category _⇨_ ⦄
              → CategoryH _⇨_ _⇨_ ⦃ Hₒ = id-Hₒ ⦄ ⦃ H = id-H ⦄
-id-CategoryH = record { F-cong = id′ ; F-id = refl ; F-∘ = refl }
+id-CategoryH = record { F-cong = id′ ; F-id = refl≈ ; F-∘ = refl≈ }
+  where open ≈-Reasoning
 
 infixr 9 _∘-CategoryH_
 _∘-CategoryH_ :
    {obj₁ : Set o₁} {_⇨₁_ : obj₁ → obj₁ → Set ℓ₁}
    {obj₂ : Set o₂} {_⇨₂_ : obj₂ → obj₂ → Set ℓ₂}
    {obj₃ : Set o₃} {_⇨₃_ : obj₃ → obj₃ → Set ℓ₃}
-   {q₁ : Level} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄
-   {q₂ : Level} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
-   {q₃ : Level} ⦃ _ : Equivalent q₃ _⇨₃_ ⦄
+   {q₁ : Level} ⦃ eq₁ : Equivalent q₁ _⇨₁_ ⦄
+   {q₂ : Level} ⦃ eq₂ : Equivalent q₂ _⇨₂_ ⦄
+   {q₃ : Level} ⦃ eq₃ : Equivalent q₃ _⇨₃_ ⦄
    ⦃ _ : Category _⇨₁_ ⦄ ⦃ _ : Category _⇨₂_ ⦄ ⦃ _ : Category _⇨₃_ ⦄
    ⦃ Fₒ : Homomorphismₒ obj₁ obj₂ ⦄ ⦃ Fₘ : Homomorphism _⇨₁_ _⇨₂_ ⦄
    ⦃ Gₒ : Homomorphismₒ obj₂ obj₃ ⦄ ⦃ Gₘ : Homomorphism _⇨₂_ _⇨₃_ ⦄
    (G : CategoryH _⇨₂_ _⇨₃_) (F : CategoryH _⇨₁_ _⇨₂_)
   → CategoryH _⇨₁_ _⇨₃_ ⦃ Hₒ = Gₒ ∘Hₒ Fₒ ⦄ ⦃ H = Gₘ ∘H Fₘ ⦄
-G ∘-CategoryH F  = record
+_∘-CategoryH_ ⦃ eq₃ = eq₃ ⦄ G F = record
   { F-cong = G.F-cong ∘̇ F.F-cong
   ; F-id   = G.F-cong F.F-id ; G.F-id
   ; F-∘    = G.F-cong F.F-∘  ; G.F-∘
-  }
- where module F = CategoryH F ; module G = CategoryH G
+  } where module F = CategoryH F
+          module G = CategoryH G
+          open ≈-Reasoning ⦃ eq₃ ⦄
 
 open import Data.Product using (_,_) renaming (_×_ to _×̇_; <_,_> to _▵̇_)
 
@@ -171,7 +171,7 @@ id-StrongProductsH =
 record CartesianH
   {obj₁ : Set o₁} ⦃ _ : Products obj₁ ⦄ (_⇨₁_ : obj₁ → obj₁ → Set ℓ₁)
   {obj₂ : Set o₂} ⦃ _ : Products obj₂ ⦄ (_⇨₂_ : obj₂ → obj₂ → Set ℓ₂)
-  {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
+  {q₁} ⦃ eq₁ : Equivalent q₁ _⇨₁_ ⦄ {q₂} ⦃ eq₂ : Equivalent q₂ _⇨₂_ ⦄
   ⦃ _ : Category _⇨₁_ ⦄ ⦃ _ : Cartesian _⇨₁_ ⦄
   ⦃ _ : Category _⇨₂_ ⦄ ⦃ _ : Cartesian _⇨₂_ ⦄
   ⦃ Hₒ : Homomorphismₒ obj₁ obj₂ ⦄
@@ -185,6 +185,7 @@ record CartesianH
     F-exr : ∀ {a b : obj₁} → Fₘ exr ∘ μ {a = a}{b} ≈ exr
 
   module _ ⦃ _ : L.Category _⇨₂_ ⦄ ⦃ spH : StrongProductsH obj₁ _⇨₂_ ⦄ where
+    open ≈-Reasoning ⦃ eq₂ ⦄
 
     F-!′ : {a : obj₁} → ε⁻¹ ∘ Fₘ {a = a} ! ≈ !
     F-!′ = ∘≈ʳ F-! ; ∘-assoc-elimˡ ε⁻¹∘ε
@@ -222,7 +223,7 @@ record CartesianH
           μ ∘ (Fₘ f ∘ Fₘ exl ▵ Fₘ g ∘ Fₘ exr)
         ≈⟨ ∘≈ʳ (▵≈ (∘≈ʳ F-exl′ ; ∘-assocˡ) (∘≈ʳ F-exr′ ; ∘-assocˡ)) ⟩
           μ ∘ ((Fₘ f ∘ exl) ∘ μ⁻¹ ▵ (Fₘ g ∘ exr) ∘ μ⁻¹)
-        ≈⟨ ∘≈ʳ (sym ▵∘) ⟩
+        ≈⟨ ∘≈ʳ (sym≈ ▵∘) ⟩
           μ ∘ (Fₘ f ∘ exl ▵ Fₘ g ∘ exr) ∘ μ⁻¹
         ∎
 
@@ -259,7 +260,7 @@ record CartesianH
           μ ∘ ((μ ∘ second (Fₘ exl)) ∘ second μ ▵ exr ∘ exr)
         ≈⟨ ∘≈ʳ (▵≈ˡ (∘-assocʳ′ (second∘⊗ ; ⊗≈ʳ F-exl))) ⟩
           μ ∘ (μ ∘ second exl ▵ exr ∘ exr)
-        ≈⟨ ∘≈ʳ (sym first∘▵) ⟩
+        ≈⟨ ∘≈ʳ (sym≈ first∘▵) ⟩
           μ ∘ first μ ∘ (second exl ▵ exr ∘ exr)
         ≡⟨⟩
           μ ∘ first μ ∘ assocˡ
@@ -270,7 +271,7 @@ record CartesianH
       F-assocˡ′ =
         begin
           Fₘ assocˡ
-        ≈⟨ sym (∘≈ʳ (∘≈ʳ (∘-assocˡ ; elimˡ (second-inverse μ∘μ⁻¹))) ; elimʳ μ∘μ⁻¹) ⟩
+        ≈⟨ sym≈ (∘≈ʳ (∘≈ʳ (∘-assocˡ ; elimˡ (second-inverse μ∘μ⁻¹))) ; elimʳ μ∘μ⁻¹) ⟩
           Fₘ assocˡ ∘ μ ∘ second μ ∘ second μ⁻¹ ∘ μ⁻¹
         ≈⟨ ∘-assocˡ³ ; ∘≈ˡ F-assocˡ ; ∘-assocʳ³ ⟩
           μ ∘ first μ ∘ assocˡ ∘ second μ⁻¹ ∘ μ⁻¹
@@ -305,7 +306,7 @@ record CartesianH
           μ ∘ (Fₘ exl ∘ μ ∘ exl ▵ μ ∘ first exr)
         ≈⟨ ∘≈ʳ (▵≈ˡ (∘-assocˡ′ F-exl)) ⟩
           μ ∘ (exl ∘ exl ▵ μ ∘ first exr)
-        ≈⟨ ∘≈ʳ (sym second∘▵) ⟩
+        ≈⟨ ∘≈ʳ (sym≈ second∘▵) ⟩
           μ ∘ second μ ∘ (exl ∘ exl ▵ first exr)
         ≡⟨⟩
           μ ∘ second μ ∘ assocʳ
@@ -316,7 +317,7 @@ record CartesianH
       F-assocʳ′ =
         begin
           Fₘ assocʳ
-        ≈⟨ sym (∘≈ʳ (∘≈ʳ (∘-assocˡ ; elimˡ (first-inverse μ∘μ⁻¹))) ; elimʳ μ∘μ⁻¹) ⟩
+        ≈⟨ sym≈ (∘≈ʳ (∘≈ʳ (∘-assocˡ ; elimˡ (first-inverse μ∘μ⁻¹))) ; elimʳ μ∘μ⁻¹) ⟩
           Fₘ assocʳ ∘ μ ∘ first μ ∘ first μ⁻¹ ∘ μ⁻¹
         ≈⟨ (∘-assocˡ³ ; ∘≈ˡ F-assocʳ ; ∘-assocʳ³) ⟩
           μ ∘ second μ ∘ assocʳ ∘ first μ⁻¹ ∘ μ⁻¹
@@ -331,11 +332,11 @@ id-CartesianH :
     ⦃ _ : L.Category _⇨_ ⦄ ⦃ _ : L.Cartesian _⇨_ ⦄
   → CartesianH _⇨_ _⇨_ ⦃ Hₒ = id-Hₒ ⦄ ⦃ H = id-H ⦄ ⦃ pH = id-ProductsH ⦄
 id-CartesianH = record
-  { F-!   = sym identityˡ
-  ; F-▵   = sym identityˡ
+  { F-!   = sym≈ identityˡ
+  ; F-▵   = sym≈ identityˡ
   ; F-exl = identityʳ
   ; F-exr = identityʳ
-  }
+  } where open ≈-Reasoning
 
 
 record CoproductsH

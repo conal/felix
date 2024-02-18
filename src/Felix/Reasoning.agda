@@ -28,11 +28,11 @@ open ≈-Reasoning
 
 module Misc where
 
-  sym-sym : {i j : a ⇨ b} {f g : c ⇨ d} → (i ≈ j → f ≈ g) → (j ≈ i → g ≈ f)
-  sym-sym f≈g = sym ∘′ f≈g ∘′ sym
-  -- sym-sym f≈g i≈j = sym (f≈g (sym i≈j))
+  sym≈-sym≈ : {i j : a ⇨ b} {f g : c ⇨ d} → (i ≈ j → f ≈ g) → (j ≈ i → g ≈ f)
+  sym≈-sym≈ f≈g = sym≈ ∘′ f≈g ∘′ sym≈
+  -- sym≈-sym≈ f≈g i≈j = sym≈ (f≈g (sym≈ i≈j))
 
-  -- I've been able to use sym-sym, due to implicits
+  -- I've been able to use sym≈-sym≈, due to implicits
 
 open Misc public
 
@@ -49,7 +49,7 @@ module IntroElim {i : b ⇨ b} (i≈id : i ≈ id) where
                    ∎
 
   introˡ : ∀ {f : a ⇨ b} → f ≈ i ∘ f
-  introˡ = sym elimˡ
+  introˡ = sym≈ elimˡ
 
   elimʳ  : ∀ {f : b ⇨ c} → f ∘ i ≈ f
   elimʳ  {f = f} = begin
@@ -61,13 +61,13 @@ module IntroElim {i : b ⇨ b} (i≈id : i ≈ id) where
                    ∎
 
   introʳ : ∀ {f : b ⇨ c} → f ≈ f ∘ i
-  introʳ = sym elimʳ
+  introʳ = sym≈ elimʳ
 
   elim-center  : ∀ {f : a ⇨ b} {g : b ⇨ c} → g ∘ i ∘ f ≈ g ∘ f
   elim-center = ∘≈ʳ elimˡ
 
   intro-center : ∀ {f : a ⇨ b} {g : b ⇨ c} → g ∘ f ≈ g ∘ i ∘ f
-  intro-center  = sym elim-center
+  intro-center  = sym≈ elim-center
 
 open IntroElim public
 
@@ -126,24 +126,24 @@ module ∘-Assoc where
   ∘-assocˡ³ : {a₀ a₁ a₂ a₃ a₄ : obj}
            {f₁ : a₀ ⇨ a₁}{f₂ : a₁ ⇨ a₂}{f₃ : a₂ ⇨ a₃}{f₄ : a₃ ⇨ a₄}
          → f₄ ∘ f₃ ∘ f₂ ∘ f₁ ≈ (f₄ ∘ f₃ ∘ f₂) ∘ f₁
-  ∘-assocˡ³ = sym ∘-assocʳ³
+  ∘-assocˡ³ = sym≈ ∘-assocʳ³
 
   ∘-assocˡ⁴ : {a₀ a₁ a₂ a₃ a₄ a₅ : obj}
      {f₁ : a₀ ⇨ a₁}{f₂ : a₁ ⇨ a₂}{f₃ : a₂ ⇨ a₃}{f₄ : a₃ ⇨ a₄}{f₅ : a₄ ⇨ a₅}
    → f₅ ∘ f₄ ∘ f₃ ∘ f₂ ∘ f₁ ≈ (f₅ ∘ f₄ ∘ f₃ ∘ f₂) ∘ f₁
-  ∘-assocˡ⁴ = sym ∘-assocʳ⁴
+  ∘-assocˡ⁴ = sym≈ ∘-assocʳ⁴
 
   ∘-assocˡ⁵ : {a₀ a₁ a₂ a₃ a₄ a₅ a₆ : obj}
      {f₁ : a₀ ⇨ a₁}{f₂ : a₁ ⇨ a₂}{f₃ : a₂ ⇨ a₃}{f₄ : a₃ ⇨ a₄}{f₅ : a₄ ⇨ a₅}
        {f₆ : a₅ ⇨ a₆}
    → f₆ ∘ f₅ ∘ f₄ ∘ f₃ ∘ f₂ ∘ f₁ ≈ (f₆ ∘ f₅ ∘ f₄ ∘ f₃ ∘ f₂) ∘ f₁
-  ∘-assocˡ⁵ = sym ∘-assocʳ⁵
+  ∘-assocˡ⁵ = sym≈ ∘-assocʳ⁵
 
   ∘-assocˡ⁶ : {a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ : obj}
      {f₁ : a₀ ⇨ a₁}{f₂ : a₁ ⇨ a₂}{f₃ : a₂ ⇨ a₃}{f₄ : a₃ ⇨ a₄}{f₅ : a₄ ⇨ a₅}
        {f₆ : a₅ ⇨ a₆}{f₇ : a₆ ⇨ a₇}
    → f₇ ∘ f₆ ∘ f₅ ∘ f₄ ∘ f₃ ∘ f₂ ∘ f₁ ≈ (f₇ ∘ f₆ ∘ f₅ ∘ f₄ ∘ f₃ ∘ f₂) ∘ f₁
-  ∘-assocˡ⁶ = sym ∘-assocʳ⁶
+  ∘-assocˡ⁶ = sym≈ ∘-assocʳ⁶
 
   ∘≈ʳ² : ∀ {a₀ a₁ a₂ a₃ : obj}{f₁ g₁ : a₀ ⇨ a₁}{f₂ : a₁ ⇨ a₂}{f₃ : a₂ ⇨ a₃}
     → f₁ ≈ g₁ → f₃ ∘ f₂ ∘ f₁ ≈ f₃ ∘ f₂ ∘ g₁
@@ -188,7 +188,7 @@ module Cancel {i : b ⇨ c} {h : c ⇨ b} (inv : h ∘ i ≈ id) where
     ∎
 
   -- insertʳ : {f : b ⇨ d} → f ≈ (f ∘ h) ∘ i
-  -- insertʳ = sym cancelʳ
+  -- insertʳ = sym≈ cancelʳ
 
   cancelˡ : {f : a ⇨ b} →  h ∘ (i ∘ f) ≈ f
   cancelˡ {f = f} =
@@ -201,7 +201,7 @@ module Cancel {i : b ⇨ c} {h : c ⇨ b} (inv : h ∘ i ≈ id) where
     ∎
 
   -- insertˡ : {f : a ⇨ b} →  f ≈ h ∘ (i ∘ f)
-  -- insertˡ = Equiv.sym cancelˡ
+  -- insertˡ = Equiv.sym≈ cancelˡ
 
   cancelInner : {f : b ⇨ d} {g : a ⇨ b} → (f ∘ h) ∘ (i ∘ g) ≈ f ∘ g
   cancelInner {f = f} {g = g} =
@@ -255,10 +255,10 @@ module Assoc
     -- -- Likewise below. For faster compiles, but maybe not worth it.
     ≈⟨ ▵≈ (second∘▵ ; ▵≈ʳ exl∘⊗) (∘-assocʳ ; ∘≈ʳ exr∘▵ ; exr∘first) ⟩
       (exl ∘ exl ▵ exr ∘ exl) ▵ exr
-    -- ≈⟨ ▵≈ˡ (sym ▵∘) ⟩
+    -- ≈⟨ ▵≈ˡ (sym≈ ▵∘) ⟩
     --   (exl ▵ exr) ∘ exl ▵ exr
     -- ≈⟨ ▵≈ˡ (∘≈ˡ exl▵exr ; identityˡ) ⟩
-    ≈⟨ ▵≈ˡ (sym ▵∘ ; elimˡ exl▵exr) ⟩
+    ≈⟨ ▵≈ˡ (sym≈ ▵∘ ; elimˡ exl▵exr) ⟩
       exl ▵ exr
     ≈⟨ exl▵exr ⟩
       id
@@ -277,7 +277,7 @@ module Assoc
     -- ≈⟨ ▵≈ (∘≈ʳ exl∘▵) (▵≈ˡ exr∘second) ⟩
     ≈⟨ ▵≈ (∘-assocʳ ; ∘≈ʳ exl∘▵) (first∘▵ ; ▵≈ˡ exr∘second) ⟩
       exl ∘ second exl ▵ (exl ∘ exr ▵ exr ∘ exr)
-    ≈⟨ ▵≈ exl∘second (sym ▵∘) ⟩
+    ≈⟨ ▵≈ exl∘second (sym≈ ▵∘) ⟩
       exl ▵ (exl ▵ exr) ∘ exr
     ≈⟨ ▵≈ʳ (elimˡ exl▵exr) ⟩
       exl ▵ exr
@@ -328,19 +328,19 @@ module Assoc
       f ∘ exl ∘ exl ▵ (g ⊗ h) ∘ first exr
     -- ≈⟨ ▵≈ʳ ⊗∘first ⟩
     --   f ∘ exl ∘ exl ▵ (g ∘ exr ⊗ h)
-    -- ≈⟨ ▵≈ʳ (⊗≈ˡ (sym exr∘⊗)) ⟩
+    -- ≈⟨ ▵≈ʳ (⊗≈ˡ (sym≈ exr∘⊗)) ⟩
     --   f ∘ exl ∘ exl ▵ (exr ∘ (f ⊗ g) ⊗ h)
-    -- ≈⟨ ▵≈ʳ (sym first∘⊗) ⟩
-    ≈⟨ ▵≈ʳ (⊗∘first ; ⊗≈ˡ (sym exr∘⊗) ; sym first∘⊗) ⟩
+    -- ≈⟨ ▵≈ʳ (sym≈ first∘⊗) ⟩
+    ≈⟨ ▵≈ʳ (⊗∘first ; ⊗≈ˡ (sym≈ exr∘⊗) ; sym≈ first∘⊗) ⟩
       f ∘ exl ∘ exl ▵ first exr ∘ ((f ⊗ g) ⊗ h)
-    -- ≈⟨ ▵≈ˡ (∘-assocˡʳ′ (sym exl∘⊗)) ⟩
+    -- ≈⟨ ▵≈ˡ (∘-assocˡʳ′ (sym≈ exl∘⊗)) ⟩
     --   exl ∘ (f ⊗ g) ∘ exl ▵ first exr ∘ ((f ⊗ g) ⊗ h)
-    -- ≈⟨ ▵≈ˡ (∘≈ʳ (sym exl∘⊗)) ⟩
+    -- ≈⟨ ▵≈ˡ (∘≈ʳ (sym≈ exl∘⊗)) ⟩
     --   exl ∘ exl ∘ ((f ⊗ g) ⊗ h) ▵ first exr ∘ ((f ⊗ g) ⊗ h)
     -- ≈⟨ ▵≈ˡ ∘-assocˡ ⟩
-    ≈⟨ ▵≈ˡ (∘-assocˡʳ′ (sym exl∘⊗) ; ∘≈ʳ (sym exl∘⊗) ; ∘-assocˡ) ⟩
+    ≈⟨ ▵≈ˡ (∘-assocˡʳ′ (sym≈ exl∘⊗) ; ∘≈ʳ (sym≈ exl∘⊗) ; ∘-assocˡ) ⟩
       (exl ∘ exl) ∘ ((f ⊗ g) ⊗ h) ▵ first exr ∘ ((f ⊗ g) ⊗ h)
-    ≈⟨ sym ▵∘ ⟩
+    ≈⟨ sym≈ ▵∘ ⟩
       (exl ∘ exl ▵ first exr) ∘ ((f ⊗ g) ⊗ h)
     ≡⟨⟩
       assocʳ ∘ ((f ⊗ g) ⊗ h)
@@ -357,17 +357,17 @@ module Assoc
       (f ⊗ g) ∘ second exl ▵ h ∘ exr ∘ exr
     -- ≈⟨ ▵≈ˡ ⊗∘second ⟩
     --   (f ⊗ g ∘ exl) ▵ h ∘ exr ∘ exr
-    -- ≈⟨ ▵≈ˡ (⊗≈ʳ (sym exl∘⊗)) ⟩
-    ≈⟨ ▵≈ˡ (⊗∘second ; ⊗≈ʳ (sym exl∘⊗)) ⟩
+    -- ≈⟨ ▵≈ˡ (⊗≈ʳ (sym≈ exl∘⊗)) ⟩
+    ≈⟨ ▵≈ˡ (⊗∘second ; ⊗≈ʳ (sym≈ exl∘⊗)) ⟩
       (f ⊗ exl ∘ (g ⊗ h)) ▵ h ∘ exr ∘ exr
-    -- ≈⟨ ▵≈ʳ (∘-assocˡʳ′ (sym exr∘⊗)) ⟩
+    -- ≈⟨ ▵≈ʳ (∘-assocˡʳ′ (sym≈ exr∘⊗)) ⟩
     --   (f ⊗ exl ∘ (g ⊗ h)) ▵ exr ∘ (g ⊗ h) ∘ exr
-    -- ≈⟨ ▵≈ʳ (∘≈ʳ (sym exr∘⊗)) ⟩
-    ≈⟨ ▵≈ʳ (∘-assocˡʳ′ (sym exr∘⊗) ; ∘≈ʳ (sym exr∘⊗)) ⟩
+    -- ≈⟨ ▵≈ʳ (∘≈ʳ (sym≈ exr∘⊗)) ⟩
+    ≈⟨ ▵≈ʳ (∘-assocˡʳ′ (sym≈ exr∘⊗) ; ∘≈ʳ (sym≈ exr∘⊗)) ⟩
       (f ⊗ exl ∘ (g ⊗ h)) ▵ exr ∘ exr ∘ (f ⊗ (g ⊗ h))
-    ≈⟨ ▵≈ (sym second∘⊗) ∘-assocˡ ⟩
+    ≈⟨ ▵≈ (sym≈ second∘⊗) ∘-assocˡ ⟩
       second exl ∘ (f ⊗ (g ⊗ h)) ▵ (exr ∘ exr) ∘ (f ⊗ (g ⊗ h))
-    ≈⟨ sym ▵∘ ⟩
+    ≈⟨ sym≈ ▵∘ ⟩
       (second exl ▵ exr ∘ exr) ∘ (f ⊗ (g ⊗ h))
     ≡⟨⟩
       assocˡ ∘ (f ⊗ (g ⊗ h))
@@ -395,7 +395,7 @@ module Assoc
   first-first {f = f} =
     begin
       first (first f)
-    ≈⟨ sym (elimʳ assocˡ∘assocʳ) ⟩
+    ≈⟨ sym≈ (elimʳ assocˡ∘assocʳ) ⟩
       first (first f) ∘ assocˡ ∘ assocʳ
     ≈⟨ ∘-assocˡʳ′ first-first∘assocˡ ⟩
       assocˡ ∘ first f ∘ assocʳ
@@ -463,9 +463,9 @@ module Assoc
       ! ∘ exl ▵ ! ∘ exr
     ≈⟨ ▵≈ ∀⊤ ∀⊤ ⟩
       ! ▵ !
-    ≈⟨ sym (▵≈ ∀⊤ ∀⊤) ⟩
+    ≈⟨ sym≈ (▵≈ ∀⊤ ∀⊤) ⟩
       id ∘ ! ▵ ! ∘ !
-    ≈⟨ sym ▵∘ ⟩
+    ≈⟨ sym≈ ▵∘ ⟩
       (id ▵ !) ∘ !
     ≡⟨⟩
       unitorⁱʳ ∘ !
@@ -482,7 +482,7 @@ module Assoc
       exl ∘ (exl ∘ exl ▵ exl ∘ exr) ▵ exl ∘ (exr ∘ exl ▵ exr ∘ exr)
     ≈⟨ ▵≈ exl∘▵ exl∘▵ ⟩
       exl ∘ exl ▵ exr ∘ exl
-    ≈⟨ sym ▵∘ ⟩
+    ≈⟨ sym≈ ▵∘ ⟩
       (exl ▵ exr) ∘ exl
     ≈⟨ elimˡ exl▵exr ⟩
       exl
@@ -499,7 +499,7 @@ module Assoc
       exr ∘ (exl ∘ exl ▵ exl ∘ exr) ▵ exr ∘ (exr ∘ exl ▵ exr ∘ exr)
     ≈⟨ ▵≈ exr∘▵ exr∘▵ ⟩
       exl ∘ exr ▵ exr ∘ exr
-    ≈⟨ sym ▵∘ ⟩
+    ≈⟨ sym≈ ▵∘ ⟩
       (exl ▵ exr) ∘ exr
     ≈⟨ elimˡ exl▵exr ⟩
       exr
@@ -543,7 +543,7 @@ module Assoc
       transpose ∘ ((f₁ ∘ exl ▵ f₂ ∘ exr) ▵ (g₁ ∘ exl ▵ g₂ ∘ exr))
     ≈⟨ transpose∘▵▵▵ ⟩
       ((f₁ ∘ exl ▵ g₁ ∘ exl) ▵ (f₂ ∘ exr ▵ g₂ ∘ exr))
-    ≈⟨ sym (▵≈ ▵∘ ▵∘) ⟩
+    ≈⟨ sym≈ (▵≈ ▵∘ ▵∘) ⟩
       ((f₁ ▵ g₁) ∘ exl ▵ (f₂ ▵ g₂) ∘ exr)
     ≡⟨⟩
       (f₁ ▵ g₁) ⊗ (f₂ ▵ g₂)
@@ -558,7 +558,7 @@ module Assoc
       transpose ∘ ((exl ∘ exl ▵ exl ∘ exr) ▵ (exr ∘ exl ▵ exr ∘ exr))
     ≈⟨ transpose∘▵▵▵ ⟩
       ((exl ∘ exl ▵ exr ∘ exl) ▵ (exl ∘ exr ▵ exr ∘ exr))
-    ≈⟨ sym (▵≈ ▵∘ ▵∘) ⟩
+    ≈⟨ sym≈ (▵≈ ▵∘ ▵∘) ⟩
       ((exl ▵ exr) ∘ exl ▵ (exl ▵ exr) ∘ exr)
     ≈⟨ ▵≈ (elimˡ exl▵exr) (elimˡ exl▵exr) ⟩
       exl ▵ exr
