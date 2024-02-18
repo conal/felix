@@ -71,12 +71,12 @@ module product-instances where instance
   equivalent ⦃ eq₁ ⦄ ⦃ eq₂ ⦄ = record
     { _≈_ = λ (f₁ , f₂) (g₁ , g₂) → f₁ ≈ g₁ ×̇ f₂ ≈ g₂  -- Does this construction already exist?
     ; equiv = record
-       { refl  = refl≈₁ , refl≈₂
-       ; sym   = λ (eq₁ , eq₂) → sym≈₁  eq₁ , sym≈₂  eq₂
-       ; trans = λ (eq₁ , eq₂) (eq₁′ , eq₂′) → (eq₁ ;₁ eq₁′) , (eq₂ ;₂ eq₂′)
+       { refl  = ₁.refl≈ , ₂.refl≈
+       ; sym   = λ (eq₁ , eq₂) → ₁.sym≈  eq₁ , ₂.sym≈  eq₂
+       ; trans = λ (eq₁ , eq₂) (eq₁′ , eq₂′) → (eq₁ ₁.; eq₁′) , (eq₂ ₂.; eq₂′)
        }
-    } where open ≈-Reasoning ⦃ eq₁ ⦄ renaming (refl≈ to refl≈₁; sym≈ to sym≈₁; _;_ to _;₁_)
-            open ≈-Reasoning ⦃ eq₂ ⦄ renaming (refl≈ to refl≈₂; sym≈ to sym≈₂; _;_ to _;₂_)
+    } where module ₁ = ≈-Reasoning ⦃ eq₁ ⦄
+            module ₂ = ≈-Reasoning ⦃ eq₂ ⦄
 
   l-category : ∀ {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄ {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
                ⦃ _ : L.Category _⇨₁_ ⦄ ⦃ _ : L.Category _⇨₂_ ⦄
