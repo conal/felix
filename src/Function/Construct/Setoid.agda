@@ -1,9 +1,8 @@
 -- agda-categories says that it:
--- was not ported from old function hierarchy
+-- was not ported from old function hierarchy, see:
+-- https://github.com/agda/agda-stdlib/pull/2240
 
 {-# OPTIONS --without-K --safe #-}
-
--- was not ported from old function hierarchy
 
 module Function.Construct.Setoid where
 
