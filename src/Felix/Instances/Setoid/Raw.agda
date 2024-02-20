@@ -14,6 +14,7 @@ open import Function.Construct.Identity as Id
 open import Level using (_⊔_; suc)
 open import Relation.Binary using (Setoid)
 
+open import Function.Construct.Setoid using (setoid)
 open import Felix.Equiv using (Equivalent)
 open import Felix.Raw
 open import Felix.Instances.Setoid.Type
@@ -24,16 +25,8 @@ module setoid-raw-instances where instance
 
   equivalent : ∀ {c ℓ} → Equivalent (c ⊔ ℓ) {obj = Setoid c ℓ} _⟶_
   equivalent = record
-    { _≈_ = λ {From} {To} f g →
-      let open Setoid To
-      in ∀ x → f ⟨$⟩ x ≈ g ⟨$⟩ x
-    ; equiv = λ {From} {To} →
-      let open Setoid To
-       in record
-         { refl = λ _ → refl
-         ; sym = λ f≈g x → sym (f≈g x)
-         ; trans = λ f≈g g≈h x → trans (f≈g x) (g≈h x)
-         }
+    { _≈_ = λ {From} {To} → Setoid._≈_ (setoid From To)
+    ; equiv = λ {From} {To} → Setoid.isEquivalence (setoid From To)
     }
 
   category : ∀ {c ℓ} → Category {suc (c ⊔ ℓ)} {c ⊔ ℓ} {obj = Setoid c ℓ} _⟶_
