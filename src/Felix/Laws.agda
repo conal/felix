@@ -4,9 +4,10 @@ module Felix.Laws where
 
 open import Level
 open import Relation.Binary.PropositionalEquality using (_≡_)
-open import Function using (_⇔_; module Equivalence)
+open import Function using (_↔_; _⇔_; module Equivalence)
 
-open import Felix.Raw as R hiding (Category; Cartesian; CartesianClosed)
+open import Felix.Raw as R
+  hiding (Category; Cartesian; Distributive; CartesianClosed)
 open import Felix.Equiv
 
 open Equivalence
@@ -267,6 +268,22 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
   --   ∎
 
 open Cartesian ⦃ … ⦄ public
+
+record Distributive
+  {obj : Set o}  ⦃ _ : Products obj ⦄ ⦃ _ : Coproducts obj ⦄
+  (_⇨′_ : obj → obj → Set ℓ)
+  {q} ⦃ _ : Equivalent q _⇨′_ ⦄
+  ⦃ _ : R.Category _⇨′_ ⦄ ⦃ _ : R.Cartesian _⇨′_ ⦄ ⦃ _ : R.Cocartesian _⇨′_ ⦄
+  ⦃ _ : R.Distributive _⇨′_ ⦄
+  ⦃ _ : Category _⇨′_ ⦄ ⦃ _ : Cartesian _⇨′_ ⦄
+    : Set (o ⊔ ℓ ⊔ q) where
+  field
+    distribˡ∘distribˡ⁻¹ : ∀ {a b c : obj} → distribˡ ∘ distribˡ⁻¹ ≈ id {a = a × (b ⊎ c)}
+    distribˡ⁻¹∘distribˡ : ∀ {a b c : obj} → distribˡ⁻¹ ∘ distribˡ ≈ id {a = (a × b) ⊎ (a × c)}
+    distribʳ∘distribʳ⁻¹ : ∀ {a b c : obj} → distribʳ ∘ distribʳ⁻¹ ≈ id {a = (b ⊎ c) × a}
+    distribʳ⁻¹∘distribʳ : ∀ {a b c : obj} → distribʳ⁻¹ ∘ distribʳ ≈ id {a = (b × a) ⊎ (c × a)}
+
+open Distributive ⦃ … ⦄ public
 
 
 record CartesianClosed {obj : Set o} ⦃ _ : Products obj ⦄

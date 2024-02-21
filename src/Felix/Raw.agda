@@ -137,6 +137,26 @@ open Cocartesian ⦃ … ⦄ public
 -- TODO: Factor a bunch of functionality out of Cartesian and some out of Cocartesian in Monoidal.
 
 
+record Distributive
+  {obj : Set o} ⦃ _ : Products obj ⦄ ⦃ _ : Coproducts obj ⦄
+  (_⇨′_ : obj → obj → Set ℓ) ⦃ _ : Category _⇨′_ ⦄
+  ⦃ _ : Cartesian _⇨′_ ⦄ ⦃ _ : Cocartesian _⇨′_ ⦄
+    : Set (o ⊔ ℓ)
+  where
+  private infix 0 _⇨_; _⇨_ = _⇨′_
+  field
+    distribˡ⁻¹ : a × (b ⊎ c) ⇨ (a × b) ⊎ (a × c)
+    distribʳ⁻¹ : (b ⊎ c) × a ⇨ (b × a) ⊎ (c × a)
+
+  distribˡ : (a × b) ⊎ (a × c) ⇨ a × (b ⊎ c)
+  distribˡ = second inl ▿ second inr
+
+  distribʳ : (b × a) ⊎ (c × a) ⇨ (b ⊎ c) × a
+  distribʳ = first inl ▿ first inr
+
+open Distributive ⦃ … ⦄ public
+
+
 record Traced {obj : Set o} ⦃ _ : Products obj ⦄
          (_⇨′_ : obj → obj → Set ℓ)
          ⦃ _ : Category _⇨′_ ⦄

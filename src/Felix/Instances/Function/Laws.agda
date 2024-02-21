@@ -6,8 +6,9 @@ module Felix.Instances.Function.Laws (ℓ : Level) where
 
 open import Function using (mk⇔)
 open import Data.Product using (_,_)
+open import Data.Sum using (inj₁; inj₂)
 
-open import Felix.Raw hiding (Category; Cartesian; CartesianClosed)
+open import Felix.Raw hiding (Category; Cartesian; Distributive; CartesianClosed)
 open import Felix.Laws
 open import Felix.Equiv
 open import Felix.Instances.Function.Raw ℓ public
@@ -38,6 +39,22 @@ module →-laws-instances where
           (λ k≈f▵g → (λ x → cong exl (k≈f▵g x)) , (λ x → cong exr (k≈f▵g x)))
           (λ (exl∘k≈f , exr∘k≈g) x → cong₂ _,_ (exl∘k≈f x) (exr∘k≈g x))
       ; ▵≈ = λ h≈k f≈g x → cong₂ _,_ (h≈k x) (f≈g x)
+      }
+
+    distributive : Distributive _⇾_
+    distributive = record
+      { distribˡ∘distribˡ⁻¹ = λ where
+        (_ , inj₁ _) → refl≡
+        (_ , inj₂ _) → refl≡
+      ; distribˡ⁻¹∘distribˡ = λ where
+        (inj₁ _) → refl≡
+        (inj₂ _) → refl≡
+      ; distribʳ∘distribʳ⁻¹ = λ where
+        (inj₁ _ , _) → refl≡
+        (inj₂ _ , _) → refl≡
+      ; distribʳ⁻¹∘distribʳ = λ where
+        (inj₁ _) → refl≡
+        (inj₂ _) → refl≡
       }
 
     module ccc (extensionality : Extensionality _ _) where
