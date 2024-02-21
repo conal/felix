@@ -6,6 +6,7 @@ module Felix.Instances.Function.Raw (ℓ : Level) where
 
 import Function as F
 open import Data.Product as × using (_,_; proj₁; proj₂; <_,_>; ∃; ∃₂)
+open import Data.Sum as ⊎ using (inj₁; inj₂; [_,_])
 
 open import Felix.Raw
 open import Felix.Equiv
@@ -20,9 +21,14 @@ module →-raw-instances where instance
   cartesian : Cartesian _⇾_
   cartesian = record { _▵_ = <_,_> ; exl = proj₁ ; exr = proj₂ }
 
-  import Data.Sum as ⊎
   cocartesian : Cocartesian _⇾_
-  cocartesian = record { ¡ = λ () ; _▿_ = ⊎.[_,_] ; inl = ⊎.inj₁ ; inr = ⊎.inj₂ }
+  cocartesian = record { ¡ = λ () ; _▿_ = [_,_] ; inl = inj₁ ; inr = inj₂ }
+
+  distributive : Distributive _⇾_
+  distributive = record
+    { distribˡ⁻¹ = λ (a , bc) → ⊎.map (a ,_) (a ,_) bc
+    ; distribʳ⁻¹ = λ (bc , a) → ⊎.map (_, a) (_, a) bc
+    }
 
   traced : Traced _⇾_
   traced = record
