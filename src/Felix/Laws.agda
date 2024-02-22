@@ -274,7 +274,7 @@ record Distributive
   (_⇨′_ : obj → obj → Set ℓ)
   {q} ⦃ _ : Equivalent q _⇨′_ ⦄
   ⦃ _ : R.Category _⇨′_ ⦄ ⦃ _ : R.Cartesian _⇨′_ ⦄ ⦃ _ : R.Cocartesian _⇨′_ ⦄
-  ⦃ _ : R.Distributive _⇨′_ ⦄
+  ⦃ raw : R.Distributive _⇨′_ ⦄
   ⦃ _ : Category _⇨′_ ⦄ ⦃ _ : Cartesian _⇨′_ ⦄
     : Set (o ⊔ ℓ ⊔ q) where
   field

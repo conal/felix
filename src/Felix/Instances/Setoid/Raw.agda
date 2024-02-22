@@ -6,6 +6,7 @@ open import Data.Product using (_,_; _,′_; curry′; uncurry′; ∃₂; proj�
 open import Data.Product.Function.NonDependent.Setoid using (<_,_>ₛ; proj₁ₛ; proj₂ₛ)
 open import Data.Sum using ([_,_]; inj₁; inj₂)
 open import Data.Sum.Function.Setoid using ([_,_]ₛ; inj₁ₛ; inj₂ₛ)
+open import Data.Sum.Relation.Binary.Pointwise using (inj₁; inj₂)
 open import Data.Unit.Polymorphic using (tt)
 open import Function using (Func) renaming (_∘_ to _∘ᵈ_)
 open import Function.Construct.Composition as Comp
@@ -19,6 +20,9 @@ open import Felix.Equiv using (Equivalent)
 open import Felix.Raw
 open import Felix.Instances.Setoid.Type
   using (module setoid-instances; _⟶_; cong; _⟨$⟩_) public
+
+import Felix.Instances.Function as Fun
+
 open setoid-instances public
 
 module setoid-raw-instances where instance
@@ -29,7 +33,7 @@ module setoid-raw-instances where instance
     ; equiv = λ {From} {To} → Setoid.isEquivalence (setoid From To)
     }
 
-  category : ∀ {c ℓ} → Category {suc (c ⊔ ℓ)} {c ⊔ ℓ} {obj = Setoid c ℓ} _⟶_
+  category : ∀ {c ℓ} → Category {obj = Setoid c ℓ} _⟶_
   category = record
     { id = Id.function _
     -- flip′ Comp.function doesn't reduce in goals
@@ -45,7 +49,7 @@ module setoid-raw-instances where instance
     }
 
   cocartesian : ∀ {c ℓ} → Cocartesian ⦃ coproducts {c} {ℓ} ⦄ _⟶_
-  cocartesian {c} {ℓ} = record
+  cocartesian = record
     { ¡ = record
       { to = λ { () }
       ; cong = λ { {()} }
@@ -53,6 +57,27 @@ module setoid-raw-instances where instance
     ; _▿_ = [_,_]ₛ
     ; inl = inj₁ₛ
     ; inr = inj₂ₛ
+    }
+
+  distributive :
+    ∀ {c ℓ} →
+    Distributive
+      ⦃ products {c} {c ⊔ ℓ} ⦄ ⦃ coproducts {c} {ℓ} ⦄
+      _⟶_
+      ⦃ category {c} {c ⊔ ℓ} ⦄ ⦃ cartesian {c} {c ⊔ ℓ} ⦄ ⦃ cocartesian {c} {ℓ} ⦄
+  distributive {c} {ℓ} = let open Fun c in record
+    { distribˡ⁻¹ = record
+      { to = distribˡ⁻¹
+      ; cong = λ where
+        (a₁≈a₂ , inj₁ b₁≈b₂) → inj₁ (a₁≈a₂ , b₁≈b₂)
+        (a₁≈a₂ , inj₂ c₁≈c₂) → inj₂ (a₁≈a₂ , c₁≈c₂)
+      }
+    ; distribʳ⁻¹ = record
+      { to = distribʳ⁻¹
+      ; cong = λ where
+        (inj₁ b₁≈b₂ , a₁≈a₂) → inj₁ (b₁≈b₂ , a₁≈a₂)
+        (inj₂ c₁≈c₂ , a₁≈a₂) → inj₂ (c₁≈c₂ , a₁≈a₂)
+      }
     }
 
   -- omit until I can be sure it's ok
