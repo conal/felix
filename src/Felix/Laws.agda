@@ -274,7 +274,7 @@ record Distributive
   (_⇨′_ : obj → obj → Set ℓ)
   {q} ⦃ _ : Equivalent q _⇨′_ ⦄
   ⦃ _ : R.Category _⇨′_ ⦄ ⦃ _ : R.Cartesian _⇨′_ ⦄ ⦃ _ : R.Cocartesian _⇨′_ ⦄
-  ⦃ _ : R.Distributive _⇨′_ ⦄
+  ⦃ raw : R.Distributive _⇨′_ ⦄
   ⦃ _ : Category _⇨′_ ⦄ ⦃ _ : Cartesian _⇨′_ ⦄
     : Set (o ⊔ ℓ ⊔ q) where
   field
@@ -291,7 +291,7 @@ record CartesianClosed {obj : Set o} ⦃ _ : Products obj ⦄
                        {q} ⦃ _ : Equivalent q _⇨′_ ⦄
                        ⦃ _ : R.Category _⇨′_ ⦄
                        ⦃ _ : R.Cartesian _⇨′_ ⦄
-                       ⦃ _ : R.CartesianClosed _⇨′_ ⦄
+                       ⦃ raw : R.CartesianClosed _⇨′_ ⦄
                        ⦃ lCat : Category _⇨′_ ⦄ ⦃ lCart : Cartesian _⇨′_ ⦄
        : Set (o ⊔ ℓ ⊔ q) where
   private infix 0 _⇨_; _⇨_ = _⇨′_
