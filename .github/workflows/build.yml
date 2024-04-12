@@ -9,5 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: cachix/install-nix-action@v24
-    - run:  nix build -L --show-trace
+    - uses: cachix/install-nix-action@v26
+    - uses: cachix/cachix-action@v14
+      with:
+        name: perspicuous
+        authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+    - run: |
+        nix build -L --show-trace
