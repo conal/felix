@@ -4,8 +4,8 @@
 -- Note that the J → obj homomorphism needn't be injective. Alternatively, we
 -- might take an object predicate (obj → Pred _), which is a more natural
 -- translation of the classic notion of subcategory from set theory to type
--- theory. Usage seems more convenient for the formulation in this module but it
--- may be worth studying more uses. Both style can be defined via the other,
+-- theory. Usage seems more convenient for the formulation in this module, but
+-- it may be worth studying more uses. Both styles can be defined via the other,
 -- thanks to the power of dependent types.
 
 open import Level using (Level)
@@ -22,8 +22,6 @@ module Felix.Subcategory.Object
   ⦃ cat : Category _↠_ ⦄
   ⦃ Hₒ : Homomorphismₒ J obj ⦄
  where
-
-open ≈-Reasoning
 
 infix 0 _⇨_
 record _⇨_ (a b : J) : Set ℓ where
@@ -69,7 +67,7 @@ module subcategory-instances where instance
   module _ {q : Level} ⦃ _ : Equivalent q _↠_ ⦄ where
 
     refl≈↠ : ∀ {a b}{f : a ↠ b} → f ≈ f
-    refl≈↠ = refl≈
+    refl≈↠ = refl≈ where open ≈-Reasoning
 
     instance
 
