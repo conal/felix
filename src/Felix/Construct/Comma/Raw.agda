@@ -58,7 +58,7 @@ module comma-cat where
   --        (Fₘ g₂ ∘ h b) ∘ Fₘ f₁
   --      ≈⟨ ∘-assocʳ′ ↻-f ⟩
   --        Fₘ g₂ ∘ (Fₘ f₂ ∘ h a)
-  --      ≈⟨ ∘-assocˡ′ (⟺ F-∘) ⟩
+  --      ≈⟨ ∘-assocˡ′ (sym≈ F-∘) ⟩
   --        Fₘ (g₂ ∘ f₂) ∘ h a
   --      ∎)
   -- -- 35s
