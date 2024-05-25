@@ -20,4 +20,5 @@ import Felix.Construct.Comma
 import Felix.Construct.Arrow
 
 import Felix.Instances.Function
+import Felix.Instances.Function.Lift
 import Felix.Instances.Identity
