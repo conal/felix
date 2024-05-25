@@ -51,3 +51,5 @@ module →-raw-instances where instance
         ; trans = λ f∼g g∼h x → ≡.trans (f∼g x) (g∼h x)
         }
     }
+
+module ⇾-Reasoning where open ≈-Reasoning ⦃ →-raw-instances.equivalent ⦄ public
