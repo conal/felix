@@ -2,23 +2,15 @@
   description = "Category theory for denotational design";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs?ref=23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     utils.url = "github:numtide/flake-utils";
-    agda-stdlib-src = {
-      url = "github:agda/agda-stdlib?ref=v2.0";
-      flake = false;
-    };
-  };
+ };
 
-  outputs = { self, nixpkgs, utils, agda-stdlib-src }:
+  outputs = { self, nixpkgs, utils }:
     utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        standard-library = pkgs.agdaPackages.standard-library.overrideAttrs (final: prev: {
-          version = "2.0";
-          src = agda-stdlib-src;
-        });
-        agdaWithStandardLibrary = pkgs.agda.withPackages (_: [ standard-library ]);
+        agdaWithStandardLibrary = pkgs.agda.withPackages (p: [ p.standard-library ]);
 
       in {
         checks.whitespace = pkgs.stdenvNoCC.mkDerivation {
@@ -45,7 +37,7 @@
           version = "0.0.1";
           src = ./.;
 
-          buildInputs = [ standard-library ];
+          buildInputs = with pkgs.agdaPackages; [ standard-library ];
 
           everythingFile = "./src/Felix/All.agda";
 
