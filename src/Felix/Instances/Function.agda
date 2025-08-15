@@ -2,5 +2,5 @@
 
 module Felix.Instances.Function ℓ where
 
--- exports Functions.Type & Functions.Raw
+-- exports Function.Type & Function.Raw
 open import Felix.Instances.Function.Laws ℓ public
