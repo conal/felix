@@ -35,10 +35,9 @@ private
     f ≈ id ∘ f
   sym-identityˡ↠ = sym≈ L.identityˡ
 
-module subcat-instances ⦃ _ : Categoryᴾ M ⦄ where instance
+open import Felix.Instances.Identity _↠_
 
-  Hₒ : Homomorphismₒ obj obj
-  Hₒ = id-Hₒ
+module subcat-instances ⦃ _ : Categoryᴾ M ⦄ where instance
 
   H : Homomorphism _⇨_ _↠_
   H = record { Fₘ = _⇨_.f }
@@ -56,9 +55,6 @@ module subcat-instances ⦃ _ : Categoryᴾ M ⦄ where instance
   catH = record { F-cong = λ ~ → ~ ; F-id = refl↠ ; F-∘ = refl↠ }
 
   module _  ⦃ _ : Products obj ⦄ ⦃ _ : Cartesian _↠_ ⦄ ⦃ _ : Cartesianᴾ M ⦄ where instance
-
-    prodH : ProductsH obj _↠_
-    prodH = id-ProductsH
 
     cart :  Cartesian _⇨_
     cart = record
