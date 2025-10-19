@@ -2,17 +2,27 @@
   description = "Category theory for denotational design";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     utils.url = "github:numtide/flake-utils";
- };
+  };
 
-  outputs = { self, nixpkgs, utils }:
-    utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      utils,
+    }:
+    utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         agdaWithStandardLibrary = pkgs.agda.withPackages (p: [ p.standard-library ]);
 
-      in {
+      in
+      {
+
+        formatter = pkgs.nixfmt-rfc-style;
+
         checks.whitespace = pkgs.stdenvNoCC.mkDerivation {
           name = "check-whitespace";
           dontBuild = true;
