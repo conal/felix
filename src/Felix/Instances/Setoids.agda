@@ -17,7 +17,7 @@ open import Data.Sum.Function.Setoid using ([_,_]ₛ; inj₁ₛ; inj₂ₛ)
 open import Data.Sum.Relation.Binary.Pointwise as P+ hiding (map)
 import Data.Unit as ⊤₀
 open import Data.Unit.Polymorphic hiding (tt)
-open import Function using (flip; Func; _⟨$⟩_; _⟶ₛ_; _∘_; _∘₂_; mk⇔)
+open import Function using (flip; Func; _⟨$⟩_; _∘_; _∘₂_; mk⇔)
 import Function.Construct.Identity    as I
 import Function.Construct.Composition as C
 import Function.Construct.Constant    as K
@@ -33,9 +33,18 @@ open import Felix.Laws
 open Setoid
 open Func
 
+--------------------------------------------------------------------------------
+-- Objects/Morphisms in category of Setoids
+
+Zoid = Setoid ℓ ℓ
+
+infix 0 _⟶_
+_⟶_ : Zoid → Zoid → Set ℓ
+_⟶_ = Func
+
 private
   variable 
-    A : Setoid ℓ ℓ
+    A : Zoid
 
 pattern tt = lift ⊤₀.tt
 
@@ -47,7 +56,7 @@ pattern _⊨_ t c = record { to = t ; cong = c }
 
 private
   -- Empty Setoid
-  𝟘 : Setoid ℓ ℓ
+  𝟘 : Zoid
   𝟘 .Carrier = ⊥
   𝟘 ._≈_ = λ ()
   𝟘 .isEquivalence = record 
@@ -57,7 +66,7 @@ private
     }
 
   -- Unit Setoid
-  𝟙 : Setoid ℓ ℓ
+  𝟙 : Zoid
   𝟙 .Carrier = ⊤
   𝟙 ._≈_ tt tt = ⊤
   𝟙 .isEquivalence = _
@@ -70,13 +79,13 @@ private
 
 instance
 
-  products : Products (Setoid ℓ ℓ)
+  products : Products Zoid
   products = record { ⊤ = 𝟙 ; _×_ = _×ₛ_ }
   
-  coproducts : Coproducts (Setoid ℓ ℓ)
+  coproducts : Coproducts Zoid
   coproducts = record { ⊥ = 𝟘 ; _⊎_ = _⊎ₛ_ }
 
-  exponentials : Exponentials (Setoid ℓ ℓ)
+  exponentials : Exponentials Zoid
   exponentials = record { _⇛_ = E._⇨_ }
 
 --------------------------------------------------------------------------------
@@ -84,13 +93,13 @@ instance
 
 instance
 
-  rawCategory : Raw.Category (_⟶ₛ_ {ℓ} {ℓ})
+  rawCategory : Raw.Category _⟶_
   rawCategory = record
     { id  = λ {A} → I.function A
     ; _∘_ = flip C.function
     }
 
-  rawCartesian : Raw.Cartesian _⟶ₛ_
+  rawCartesian : Raw.Cartesian _⟶_
   rawCartesian = record 
     { !   = K.function _ 𝟙 tt
     ; _▵_ = <_,_>ₛ
@@ -98,7 +107,7 @@ instance
     ; exr = proj₂ₛ
     }
 
-  rawCocartesian : Raw.Cocartesian _⟶ₛ_
+  rawCocartesian : Raw.Cocartesian _⟶_
   rawCocartesian = record 
     { ¡   = absurd 
     ; _▿_ = [_,_]ₛ
@@ -106,7 +115,7 @@ instance
     ; inr = inj₂ₛ
     }
   
-  rawCartesianClosed : Raw.CartesianClosed _⟶ₛ_
+  rawCartesianClosed : Raw.CartesianClosed _⟶_
   rawCartesianClosed = record 
     { curry = λ { {A} {B} {C} (f ⊨ p) → 
                (λ a → ×.curry f a ⊨ λ x≈y → p (Setoid.refl A , x≈y)) 
@@ -115,7 +124,7 @@ instance
        λ { {_} {g , y} (f≈g , x≈y) → Setoid.trans B (f≈g _) (cong g x≈y) }
     }
 
-  rawDistributive : Raw.Distributive _⟶ₛ_
+  rawDistributive : Raw.Distributive _⟶_
   rawDistributive = record 
     { distribˡ⁻¹ = 
        (λ { (x , ⊎.inj₁ y) → ⊎.inj₁ (x , y) ; (x , ⊎.inj₂ z) → ⊎.inj₂ (x , z) }) 
@@ -126,7 +135,7 @@ instance
     }
   
   -- TODO?
-  -- rawTraced : Raw.Traced _⟶ₛ_
+  -- rawTraced : Raw.Traced _⟶_
   -- rawTraced = record 
   --   { WF = λ {A} {S} {B} f → 
   --                 ∀ (x : Carrier A) 
@@ -141,20 +150,20 @@ instance
 
 instance
   
-  equivalent : Equivalent ℓ (_⟶ₛ_ {ℓ} {ℓ})
+  equivalent : Equivalent ℓ _⟶_
   equivalent = record 
     { _≈_   = λ {A} {B} → E._≈_ A B 
     ; equiv = λ {A} {B} → E.isEquivalence A B 
     }
 
-module ⇾-Reasoning where open ≈-Reasoning public
+module ⟶-Reasoning where open ≈-Reasoning public
 
 --------------------------------------------------------------------------------
 -- Lawful
 
 instance
 
-  category : Category _⟶ₛ_
+  category : Category _⟶_
   category = record
     { identityˡ = λ {_} {B} _ → refl B
     ; identityʳ = λ {_} {B} _ → refl B
@@ -163,7 +172,7 @@ instance
                     trans C (h≈k _) (cong k (f≈g x))
     }
 
-  cartesian : Cartesian _⟶ₛ_
+  cartesian : Cartesian _⟶_
   cartesian = record
     { ∀⊤ = λ _ → tt
     ; ∀× = λ {A} {B} {C} {f} {g} {k} → mk⇔ 
@@ -173,10 +182,10 @@ instance
     }
   
   -- Needs laws
-  -- cocartesian : Cocartesian _⟶ₛ_
+  -- cocartesian : Cocartesian _⟶_
   -- cocartesian = ?
 
-  cartesianClosed : CartesianClosed _⟶ₛ_
+  cartesianClosed : CartesianClosed _⟶_
   cartesianClosed = record
     { ∀⇛ = λ {_} {_} {C} → mk⇔
       (λ g≈curry-f   → sym C ∘ ×.uncurry g≈curry-f)
@@ -184,7 +193,7 @@ instance
     ; curry≈ = ×.curry
     }
    
-  distributive : Distributive _⟶ₛ_
+  distributive : Distributive _⟶_
   distributive = record
    { distribˡ∘distribˡ⁻¹ = λ where
       {A} {B} {C} (_ , ⊎.inj₁ x) → refl (A ×ₛ (B ⊎ₛ C))
