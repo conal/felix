@@ -181,9 +181,14 @@ instance
     ; ▵≈ = <_,_>
     }
   
-  -- Needs laws
-  -- cocartesian : Cocartesian _⟶_
-  -- cocartesian = ?
+  cocartesian : Cocartesian _⟶_
+  cocartesian = record 
+    { ∀⊥ = λ () 
+    ; ∀⊎ = λ {A} {B} {C} {f} {g} {k} → mk⇔
+        < _∘ ⊎.inj₁ , _∘ ⊎.inj₂ >
+        (×.uncurry ⊎.[_,_])
+    ; ▿≈ = λ h≈k f≈g → ⊎.[ h≈k , f≈g ]
+    }
 
   cartesianClosed : CartesianClosed _⟶_
   cartesianClosed = record
