@@ -8,6 +8,7 @@ module Felix.Instances.CardinalsInv (ℓ : Level) where
 
 -- stdlib
 open import Data.Product as × using (_,_; _×_)
+open import Data.Sum as ⊎ using ()
 open import Function using (flip ; Func ; Inverse; Injection)
 import Function.Construct.Identity    as I
 import Function.Construct.Composition as C
@@ -21,7 +22,7 @@ open import Relation.Binary.Construct.On as On using ()
 open import Felix.Raw as Raw using ()
 open import Felix.Equiv 
 open import Felix.Laws
-open import Felix.Instances.Setoids ℓ using (Zoid; _⟶_)
+open import Felix.Instances.Setoids ℓ using (Zoid; _⟶_; coproducts; products)
 
 open Setoid
 
@@ -105,9 +106,6 @@ instance
 -- Card category
 -- * Cardinal category, but morphisms are injections
 
-open import Felix.Prop
-
-
 -- Equivalence of injections
 instance
   
@@ -119,6 +117,9 @@ instance
     where open Injection
 
 module ≼-Reasoning where open ≈-Reasoning ⦃ ≼-equivalent ⦄ public
+
+
+open import Felix.Prop
 
 instance
   
@@ -145,3 +146,48 @@ instance
                      trans C (h≈k (to f a)) (cong k (f≈g a)) 
     }
     where open Injection
+
+--------------------------------------------------------------------------------
+-- Example Endofunctors on Card
+-- * TODO: find general construction
+
+open import Felix.Object
+open import Felix.Homomorphism
+
+open import Data.Sum.Relation.Binary.Pointwise as ⊎ₛ
+
+module _ (X : Cardinal) where instance
+
+  parₒ : Homomorphismₒ Cardinal Cardinal
+  parₒ = record { Fₒ = _⊎ X }
+
+  parₘ : Homomorphism _≼_ _≼_
+  parₘ = record { Fₘ = λ f → record 
+       { to = ⊎.map (to f)  Function.id 
+       ; cong = ⊎ₛ.map (cong f) Function.id 
+       ; injective = λ { {⊎.inj₁ _} {⊎.inj₁ _} (inj₁ x≈x′) → inj₁ (injective f x≈x′)
+                       ; {⊎.inj₂ _} {⊎.inj₂ _} (inj₂ x≈x′) → inj₂ (x≈x′)
+                       }
+       } 
+     }
+    where open Injection
+
+  par : CategoryH _≼_ _≼_
+  par = record 
+    { F-cong = λ { {A} {X} f≈g (⊎.inj₁ x) → inj₁ (f≈g x) ; _ (⊎.inj₂ _) → inj₂ (refl X)}
+    ; F-id   = λ { {A} (⊎.inj₁ a) → inj₁ (refl A) ;  (⊎.inj₂ _)  → inj₂ (refl X) }
+    ; F-∘    = λ { {A} {_} {C} {f} {g} (⊎.inj₁ _) → inj₁ (refl C)
+                 ; {A} {_} {C} {f} {g} (⊎.inj₂ _) → inj₂ (refl X) }
+    }
+    where open Injection
+
+module _ where instance
+
+  succₒ : Homomorphismₒ Cardinal Cardinal
+  succₒ = parₒ ⊤
+
+  succₘ : Homomorphism _≼_ _≼_
+  succₘ = parₘ ⊤
+
+  succ : CategoryH _≼_ _≼_
+  succ = par ⊤
