@@ -269,6 +269,9 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
 
 open Cartesian ⦃ … ⦄ public
 
+open import Data.Sum using () renaming (_⊎_ to _⊎ₚ_)
+
+
 record Cocartesian {obj : Set o} ⦃ _ : Coproducts obj ⦄
                  (_⇨′_ : obj → obj → Set ℓ)
                  {q} ⦃ equiv : Equivalent q _⇨′_ ⦄
@@ -277,7 +280,7 @@ record Cocartesian {obj : Set o} ⦃ _ : Coproducts obj ⦄
        : Set (o ⊔ ℓ ⊔ q) where
   private infix 0 _⇨_; _⇨_ = _⇨′_
   field
-    ∀⊤ : {f : ⊥ ⇨ a} → ¡ ≈ f
+    ∀⊥ : {f : ⊥ ⇨ a} → ¡ ≈ f
 
     ∀⊎ : {f : a ⇨ c} {g : b ⇨ c} {k : a ⊎ b ⇨ c}
        → k ≈ f ▿ g ⇔ (k ∘ inl ≈ f ×ₚ k ∘ inr ≈ g)
