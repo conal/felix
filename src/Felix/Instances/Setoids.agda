@@ -182,8 +182,8 @@ instance
     }
   
   -- Needs laws
-  -- cocartesian : Cocartesian _⟶_
-  -- cocartesian = ?
+  cocartesian : Cocartesian _⟶_
+  cocartesian = ?
 
   cartesianClosed : CartesianClosed _⟶_
   cartesianClosed = record

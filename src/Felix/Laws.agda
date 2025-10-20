@@ -7,7 +7,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_)
 open import Function using (_↔_; _⇔_; module Equivalence)
 
 open import Felix.Raw as R
-  hiding (Category; Cartesian; Distributive; CartesianClosed)
+  hiding (Category; Cartesian; Cocartesian; Distributive; CartesianClosed)
 open import Felix.Equiv
 
 open Equivalence
@@ -268,6 +268,23 @@ record Cartesian {obj : Set o} ⦃ _ : Products obj ⦄
   --   ∎
 
 open Cartesian ⦃ … ⦄ public
+
+record Cocartesian {obj : Set o} ⦃ _ : Coproducts obj ⦄
+                 (_⇨′_ : obj → obj → Set ℓ)
+                 {q} ⦃ equiv : Equivalent q _⇨′_ ⦄
+                 ⦃ _ : R.Category _⇨′_ ⦄ ⦃ _ : R.Cocartesian _⇨′_ ⦄
+                 ⦃ lCat : Category _⇨′_ ⦄
+       : Set (o ⊔ ℓ ⊔ q) where
+  private infix 0 _⇨_; _⇨_ = _⇨′_
+  field
+    ∀⊤ : {f : ⊥ ⇨ a} → ¡ ≈ f
+
+    ∀⊎ : {f : a ⇨ c} {g : b ⇨ c} {k : a ⊎ b ⇨ c}
+       → k ≈ f ▿ g ⇔ (k ∘ inl ≈ f ×ₚ k ∘ inr ≈ g)
+
+    ▿≈ : {f g : c ⇨ a} {h k : d ⇨ a} → h ≈ k → f ≈ g → h ▿ f ≈ k ▿ g
+
+open Cocartesian ⦃ … ⦄ public
 
 record Distributive
   {obj : Set o}  ⦃ _ : Products obj ⦄ ⦃ _ : Coproducts obj ⦄
