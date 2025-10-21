@@ -7,9 +7,9 @@ open import Level
 module Felix.Instances.CardinalsInv (ℓ : Level) where
 
 -- stdlib
-open import Data.Product as × using (_,_; _×_)
+open import Data.Product as × using (_,_)
 open import Data.Sum as ⊎ using ()
-open import Function using (flip ; Func ; Inverse; Injection)
+open import Function using (flip ; Func ; Inverse; Injection; _⟨$⟩_)
 import Function.Construct.Identity    as I
 import Function.Construct.Composition as C
 import Function.Construct.Constant    as K
@@ -22,7 +22,8 @@ open import Relation.Binary.Construct.On as On using ()
 open import Felix.Raw as Raw using ()
 open import Felix.Equiv 
 open import Felix.Laws
-open import Felix.Instances.Setoids ℓ using (Zoid; _⟶_; coproducts; products)
+open import Felix.Instances.Setoids ℓ 
+             using (Zoid; _⟶_; coproducts; products; exponentials)
 
 open Setoid
 
@@ -71,7 +72,7 @@ instance
   equivalent = record 
     { _≈_   =  λ {A} {B} ≃₁ ≃₂ → 
           (∀ {a : Carrier A} → _≈_ B (to ≃₁ a) (to ≃₂ a)) 
-        × (∀ {b : Carrier B} → _≈_ A (from ≃₁ b) (from ≃₂ b))
+        ×.× (∀ {b : Carrier B} → _≈_ A (from ≃₁ b) (from ≃₂ b))
     ; equiv = λ {A} {B} → record
       { refl = refl B , refl A 
       ; sym = λ (x , y) → sym B x , sym A y
@@ -157,12 +158,13 @@ open import Felix.Homomorphism
 open import Data.Sum.Relation.Binary.Pointwise as ⊎ₛ
 
 module _ (X : Cardinal) where instance
+  
+  -- A + X
+  addₒ : Homomorphismₒ Cardinal Cardinal
+  addₒ = record { Fₒ = _⊎ X }
 
-  parₒ : Homomorphismₒ Cardinal Cardinal
-  parₒ = record { Fₒ = _⊎ X }
-
-  parₘ : Homomorphism _≼_ _≼_
-  parₘ = record { Fₘ = λ f → record 
+  addₘ : Homomorphism _≼_ _≼_
+  addₘ = record { Fₘ = λ f → record 
        { to = ⊎.map (to f)  Function.id 
        ; cong = ⊎ₛ.map (cong f) Function.id 
        ; injective = λ { {⊎.inj₁ _} {⊎.inj₁ _} (inj₁ x≈x′) → inj₁ (injective f x≈x′)
@@ -172,8 +174,8 @@ module _ (X : Cardinal) where instance
      }
     where open Injection
 
-  par : CategoryH _≼_ _≼_
-  par = record 
+  add : CategoryH _≼_ _≼_
+  add = record 
     { F-cong = λ { {A} {X} f≈g (⊎.inj₁ x) → inj₁ (f≈g x) ; _ (⊎.inj₂ _) → inj₂ (refl X)}
     ; F-id   = λ { {A} (⊎.inj₁ a) → inj₁ (refl A) ;  (⊎.inj₂ _)  → inj₂ (refl X) }
     ; F-∘    = λ { {A} {_} {C} {f} {g} (⊎.inj₁ _) → inj₁ (refl C)
@@ -181,13 +183,53 @@ module _ (X : Cardinal) where instance
     }
     where open Injection
 
+  -- A * X
+  mulₒ : Homomorphismₒ Cardinal Cardinal
+  mulₒ = record { Fₒ = _× X }
+  
+  mulₘ : Homomorphism _≼_ _≼_ ⦃ Hₒ = mulₒ ⦄
+  mulₘ = record { Fₘ = λ f → record 
+     { to   = ×.map₁ (to f) 
+     ; cong = ×.map₁ (cong f) 
+     ; injective = ×.map₁ (injective f) 
+     } 
+    }
+    where open Injection
+
+  mul : CategoryH _≼_ _≼_ ⦃ Hₒ = mulₒ ⦄ ⦃ H = mulₘ ⦄
+  mul = record 
+    { F-cong = λ f≈g (a , _) → f≈g a , refl X 
+    ; F-id   = λ {A} _ → refl A , refl X 
+    ; F-∘    = λ {_} {_} {C} _ → refl C , refl X 
+    }
+ 
+  -- X ^ A
+  expₒ : Homomorphismₒ Cardinal Cardinal
+  expₒ = record { Fₒ = X ⇛_ }
+  
+  expₘ : Homomorphism _≼_ _≼_ ⦃ Hₒ = expₒ ⦄
+  expₘ  = record { Fₘ = λ {A} {B} f → record 
+      { to   = flip C.function (function f) 
+      ; cong = λ g≈h x → cong f (g≈h x)
+      ; injective = λ eq x → injective f (eq x) 
+      } 
+    }
+    where open Injection
+
+  exp : CategoryH _≼_ _≼_ ⦃ Hₒ = expₒ ⦄ ⦃ H = expₘ ⦄
+  exp = record 
+    { F-cong = λ f≈g h x → f≈g (h ⟨$⟩ x) 
+    ; F-id   = λ {A} _ _ → refl A 
+    ; F-∘    = λ {_} {_} {C} _ _ → refl C 
+    }
+
 module _ where instance
 
   succₒ : Homomorphismₒ Cardinal Cardinal
-  succₒ = parₒ ⊤
+  succₒ = addₒ ⊤
 
   succₘ : Homomorphism _≼_ _≼_
-  succₘ = parₘ ⊤
+  succₘ = addₘ ⊤
 
   succ : CategoryH _≼_ _≼_
-  succ = par ⊤
+  succ = add ⊤
