@@ -4,7 +4,7 @@
 
 open import Level
 
-module Felix.Instances.CardinalsInv (ℓ : Level) where
+module Felix.Instances.Cardinals (ℓ : Level) where
 
 -- stdlib
 open import Data.Product as × using (_,_)
