@@ -30,6 +30,11 @@ private
   refl↠ : {f : a ↠ b} → f ≈ f
   refl↠ = refl≈
 
+  identityʳ↠ : ⦃ _ : Products obj ⦄ ⦃ _ : Cartesian _↠_ ⦄
+    ⦃ _ : L.Category _↠_ ⦄ ⦃ _ : L.Cartesian _↠_ ⦄ {f : a ↠ b} →
+    f ∘ id ≈ f
+  identityʳ↠ = L.identityʳ
+
   sym-identityˡ↠ : ⦃ _ : Products obj ⦄ ⦃ _ : Cartesian _↠_ ⦄
     ⦃ _ : L.Category _↠_ ⦄ ⦃ _ : L.Cartesian _↠_ ⦄ {f : a ↠ b} →
     f ≈ id ∘ f
@@ -37,7 +42,7 @@ private
 
 open import Felix.Instances.Identity _↠_
 
-module subcat-instances ⦃ _ : Categoryᴾ M ⦄ where instance
+module sub-morphism-instances ⦃ _ : Categoryᴾ M ⦄ where instance
 
   H : Homomorphism _⇨_ _↠_
   H = record { Fₘ = _⇨_.f }
@@ -54,6 +59,11 @@ module subcat-instances ⦃ _ : Categoryᴾ M ⦄ where instance
   catH : CategoryH _⇨_ _↠_
   catH = record { F-cong = λ ~ → ~ ; F-id = refl↠ ; F-∘ = refl↠ }
 
+  open import Felix.MakeLawful _⇨_ _↠_
+
+  l-category : ⦃ _ : L.Category _↠_ ⦄ → L.Category _⇨_
+  l-category = LawfulCategoryᶠ
+
   module _  ⦃ _ : Products obj ⦄ ⦃ _ : Cartesian _↠_ ⦄ ⦃ _ : Cartesianᴾ M ⦄ where instance
 
     cart :  Cartesian _⇨_
@@ -64,10 +74,13 @@ module subcat-instances ⦃ _ : Categoryᴾ M ⦄ where instance
       ; exr = mk exr exrᴾ
       }
 
-    cartH : ⦃ _ : L.Category _↠_ ⦄ ⦃ _ : L.Cartesian _↠_ ⦄ → CartesianH _⇨_ _↠_
+    cartH : ⦃ lcat : L.Category _↠_ ⦄ ⦃ lcart : L.Cartesian _↠_ ⦄ → CartesianH _⇨_ _↠_
     cartH = record
       { F-! = sym-identityˡ↠
       ; F-▵ = sym-identityˡ↠
-      ; F-exl = L.identityʳ
-      ; F-exr = L.identityʳ
+      ; F-exl = identityʳ↠
+      ; F-exr = identityʳ↠
       }
+
+    l-cartesian : ⦃ _ : L.Category _↠_ ⦄ ⦃ _ : L.Cartesian _↠_ ⦄ → L.Cartesian _⇨_
+    l-cartesian = LawfulCartesianᶠ

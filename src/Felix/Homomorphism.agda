@@ -87,6 +87,22 @@ _∘-CategoryH_ ⦃ eq₃ = eq₃ ⦄ G F = record
           module G = CategoryH G
           open ≈-Reasoning ⦃ eq₃ ⦄
 
+-- TODO: Phase out _∘-CategoryH_ in favor of
+
+compose-CategoryH :
+   {obj₁ : Set o₁} {_⇨₁_ : obj₁ → obj₁ → Set ℓ₁}
+   {obj₂ : Set o₂} {_⇨₂_ : obj₂ → obj₂ → Set ℓ₂}
+   {obj₃ : Set o₃} {_⇨₃_ : obj₃ → obj₃ → Set ℓ₃}
+   {q₁ : Level} ⦃ eq₁ : Equivalent q₁ _⇨₁_ ⦄
+   {q₂ : Level} ⦃ eq₂ : Equivalent q₂ _⇨₂_ ⦄
+   {q₃ : Level} ⦃ eq₃ : Equivalent q₃ _⇨₃_ ⦄
+   ⦃ _ : Category _⇨₁_ ⦄ ⦃ _ : Category _⇨₂_ ⦄ ⦃ _ : Category _⇨₃_ ⦄
+   ⦃ Fₒ : Homomorphismₒ obj₁ obj₂ ⦄ ⦃ Fₘ : Homomorphism _⇨₁_ _⇨₂_ ⦄
+   ⦃ Gₒ : Homomorphismₒ obj₂ obj₃ ⦄ ⦃ Gₘ : Homomorphism _⇨₂_ _⇨₃_ ⦄
+   ⦃ G : CategoryH _⇨₂_ _⇨₃_ ⦄ ⦃ F : CategoryH _⇨₁_ _⇨₂_ ⦄
+  → CategoryH _⇨₁_ _⇨₃_ ⦃ Hₒ = Gₒ ∘Hₒ Fₒ ⦄ ⦃ H = Gₘ ∘H Fₘ ⦄
+compose-CategoryH ⦃ G = G ⦄ ⦃ F = F ⦄ = G ∘-CategoryH F
+
 open import Data.Product using (_,_) renaming (_×_ to _×̇_; <_,_> to _▵̇_)
 
 -- infixr 7 _▵-CategoryH_
@@ -132,6 +148,22 @@ id-ProductsH : ∀ {obj : Set o} ⦃ _ : Products obj ⦄
              → ProductsH obj _⇨_ ⦃ Hₒ = id-Hₒ ⦄
 id-ProductsH =
   record { ε = id ; μ = id ; ε⁻¹ = id ; μ⁻¹ = id }
+
+compose-ProductsH :
+   {obj₁ : Set o₁} ⦃ _ : Products obj₁ ⦄ {_⇨₁_ : obj₁ → obj₁ → Set ℓ₁}
+   {obj₂ : Set o₂} ⦃ _ : Products obj₂ ⦄ {_⇨₂_ : obj₂ → obj₂ → Set ℓ₂}
+   {obj₃ : Set o₃} ⦃ _ : Products obj₃ ⦄ {_⇨₃_ : obj₃ → obj₃ → Set ℓ₃}
+   ⦃ _ : Category _⇨₃_ ⦄
+   ⦃ Fₒ : Homomorphismₒ obj₁ obj₂ ⦄ ⦃ Fᵐ : Homomorphism _⇨₁_ _⇨₂_ ⦄
+   ⦃ Gₒ : Homomorphismₒ obj₂ obj₃ ⦄ ⦃ Gᵐ : Homomorphism _⇨₂_ _⇨₃_ ⦄
+   ⦃ pH₁ : ProductsH obj₁ _⇨₂_ ⦄ ⦃ pH₂ : ProductsH obj₂ _⇨₃_ ⦄
+  → ProductsH obj₁ _⇨₃_ ⦃ Hₒ = Gₒ ∘Hₒ Fₒ ⦄
+compose-ProductsH = record
+  { ε   = Fₘ ε ∘ ε
+  ; μ   = Fₘ μ ∘ μ
+  ; ε⁻¹ = ε⁻¹ ∘ Fₘ ε⁻¹
+  ; μ⁻¹ = μ⁻¹ ∘ Fₘ μ⁻¹
+  }
 
 record StrongProductsH
     (obj₁ : Set o₁) ⦃ _ : Products obj₁ ⦄
@@ -338,6 +370,67 @@ id-CartesianH = record
   ; F-exr = identityʳ
   } where open ≈-Reasoning
 
+infixr 9 _∘-CartesianH_
+_∘-CartesianH_ :
+   {obj₁ : Set o₁} ⦃ _ : Products obj₁ ⦄ {_⇨₁_ : obj₁ → obj₁ → Set ℓ₁}
+   {obj₂ : Set o₂} ⦃ _ : Products obj₂ ⦄ {_⇨₂_ : obj₂ → obj₂ → Set ℓ₂}
+   {obj₃ : Set o₃} ⦃ _ : Products obj₃ ⦄ {_⇨₃_ : obj₃ → obj₃ → Set ℓ₃}
+   {q₁ : Level} ⦃ eq₁ : Equivalent q₁ _⇨₁_ ⦄
+   {q₂ : Level} ⦃ eq₂ : Equivalent q₂ _⇨₂_ ⦄
+   {q₃ : Level} ⦃ eq₃ : Equivalent q₃ _⇨₃_ ⦄
+   ⦃ cat₁ : Category _⇨₁_ ⦄ ⦃ cat₂ : Category _⇨₂_ ⦄ ⦃ cat₃ : Category _⇨₃_ ⦄
+   ⦃ cart₁ : Cartesian _⇨₁_ ⦄ ⦃ cart₂ : Cartesian _⇨₂_ ⦄ ⦃ cart₃ : Cartesian _⇨₃_ ⦄
+   ⦃ Fₒ : Homomorphismₒ obj₁ obj₂ ⦄ ⦃ Fᵐ : Homomorphism _⇨₁_ _⇨₂_ ⦄
+   ⦃ Gₒ : Homomorphismₒ obj₂ obj₃ ⦄ ⦃ Gᵐ : Homomorphism _⇨₂_ _⇨₃_ ⦄
+   ⦃ pH₁ : ProductsH obj₁ _⇨₂_ ⦄ ⦃ pH₂ : ProductsH obj₂ _⇨₃_ ⦄
+   ⦃ G : CategoryH _⇨₂_ _⇨₃_ ⦄ ⦃ F : CategoryH _⇨₁_ _⇨₂_ ⦄
+   ⦃ c₁ : L.Category _⇨₁_ ⦄ ⦃ c₂ : L.Category _⇨₂_ ⦄ ⦃ c₃ : L.Category _⇨₃_ ⦄
+   (G× : CartesianH _⇨₂_ _⇨₃_) (F× : CartesianH _⇨₁_ _⇨₂_)
+  → CartesianH _⇨₁_ _⇨₃_ ⦃ Hₒ = Gₒ ∘Hₒ Fₒ ⦄ ⦃ H = Gᵐ ∘H Fᵐ ⦄ ⦃ pH = compose-ProductsH ⦄
+_∘-CartesianH_ ⦃ eq₃ = eq₃ ⦄ ⦃ cat₁ = cat₁ ⦄ ⦃ cat₂ = cat₂ ⦄ ⦃ cat₃ = cat₃ ⦄
+                   ⦃ cart₁ = cart₁ ⦄ ⦃ cart₂ = cart₂ ⦄ ⦃ cart₃ = cart₃ ⦄
+    ⦃ Fₒ = Fₒ ⦄ ⦃ Fᵐ = Fᵐ ⦄ ⦃ Gₒ = Gₒ ⦄ ⦃ Gᵐ = Gᵐ ⦄
+    ⦃ pH₁ = pH₁ ⦄ ⦃ pH₂ = pH₂ ⦄
+    ⦃ G = G ⦄ ⦃ F = F ⦄ ⦃ c₁ = c₁ ⦄ ⦃ c₂ = c₂ ⦄ ⦃ c₃ = c₃ ⦄
+    G× F× = record
+  { F-! = begin
+     Gᵐ.Fₘ (Fᵐ.Fₘ ₄.!)         ≈⟨ F-cong F×.F-! ⟩
+     Gᵐ.Fₘ (ₕ.ε ∘ !)           ≈⟨ G.F-∘        ⟩
+     Gᵐ.Fₘ ₕ.ε ∘ Gᵐ.Fₘ !       ≈⟨ ∘≈ʳ G×.F-!      ⟩
+     Gᵐ.Fₘ ₕ.ε ∘ (ₖ.ε ₃.∘ ₆.!) ≈⟨ assoc        ⟨
+     ((Gᵐ.Fₘ ₕ.ε ₃.∘ ₖ.ε) ₃.∘ ₆.!) ∎
+  ; F-▵ = λ {a c d f g} →
+      begin
+        Gᵐ.Fₘ (Fᵐ.Fₘ (f ₄.▵ g))
+      ≈⟨ G.F-cong F×.F-▵ ⟩
+        Gᵐ.Fₘ (ₕ.μ ₂.∘ (Fᵐ.Fₘ f ₅.▵ Fᵐ.Fₘ g))
+      ≈⟨ G.F-∘ ⟩
+        Gᵐ.Fₘ ₕ.μ ₃.∘ Gᵐ.Fₘ (Fᵐ.Fₘ f ₅.▵ Fᵐ.Fₘ g)
+      ≈⟨ ∘≈ʳ G×.F-▵ ⟩
+        Gᵐ.Fₘ ₕ.μ ₃.∘ (ₖ.μ ₃.∘ (Gᵐ.Fₘ (Fᵐ.Fₘ f) ₆.▵ Gᵐ.Fₘ (Fᵐ.Fₘ g)))
+      ≈⟨ assoc ⟨
+        ((Gᵐ.Fₘ ₕ.μ ₃.∘ ₖ.μ) ₃.∘ (Gᵐ.Fₘ (Fᵐ.Fₘ f) ₆.▵ Gᵐ.Fₘ (Fᵐ.Fₘ g)))
+      ∎
+  ; F-exl = λ {a b} → begin
+      Gᵐ.Fₘ (Fᵐ.Fₘ ₄.exl) ₃.∘ Gᵐ.Fₘ ₕ.μ ₃.∘ ₖ.μ   ≈⟨ assoc                ⟨
+      (Gᵐ.Fₘ (Fᵐ.Fₘ ₄.exl) ₃.∘ Gᵐ.Fₘ ₕ.μ) ₃.∘ ₖ.μ ≈⟨ ∘≈ˡ G.F-∘            ⟨
+      Gᵐ.Fₘ (Fᵐ.Fₘ ₄.exl ₂.∘ ₕ.μ) ₃.∘ ₖ.μ         ≈⟨ ∘≈ˡ (G.F-cong F×.F-exl) ⟩
+      Gᵐ.Fₘ ₅.exl ₃.∘ ₖ.μ                         ≈⟨ G×.F-exl                ⟩
+      ₆.exl                                                               ∎
+  ; F-exr = λ {a b} → begin
+      Gᵐ.Fₘ (Fᵐ.Fₘ ₄.exr) ₃.∘ Gᵐ.Fₘ ₕ.μ ₃.∘ ₖ.μ     ≈⟨ assoc                ⟨
+      ((Gᵐ.Fₘ (Fᵐ.Fₘ ₄.exr) ₃.∘ Gᵐ.Fₘ ₕ.μ) ₃.∘ ₖ.μ) ≈⟨ ∘≈ˡ G.F-∘            ⟨
+      (Gᵐ.Fₘ (Fᵐ.Fₘ ₄.exr ₂.∘ ₕ.μ) ₃.∘ ₖ.μ)         ≈⟨ ∘≈ˡ (G.F-cong F×.F-exr) ⟩
+      (Gᵐ.Fₘ ₅.exr ₃.∘ ₖ.μ)                         ≈⟨ G×.F-exr                ⟩
+      ₆.exr                                                                 ∎
+  } where module F = CategoryH F; module G = CategoryH G
+          module F× = CartesianH F×; module G× = CartesianH G×
+          module Fᵐ = Homomorphism Fᵐ; module Gᵐ = Homomorphism Gᵐ
+          module ₁ = Category cat₁; module ₂ = Category cat₂; module ₃ = Category cat₃
+          module ₄ = Cartesian cart₁; module ₅ = Cartesian cart₂; module ₆ = Cartesian cart₃
+          module ₕ = ProductsH pH₁ ; module ₖ = ProductsH pH₂
+          open ≈-Reasoning ⦃ eq₃ ⦄
+          instance _ = Gᵐ ∘H Fᵐ ; _ = Gₒ ∘Hₒ Fₒ
 
 record CoproductsH
     (obj₁ : Set o₁) ⦃ _ : Coproducts obj₁ ⦄

@@ -20,6 +20,7 @@ module Felix.Subcategory.Object
   {o ℓ} {obj : Set o}
   (_↠_ : obj → obj → Set ℓ) (let infix 0 _↠_; _↠_ = _↠_)
   ⦃ cat : Category _↠_ ⦄
+  {q : Level} ⦃ _ : Equivalent q _↠_ ⦄
   ⦃ Hₒ : Homomorphismₒ J obj ⦄
  where
 
@@ -30,7 +31,11 @@ record _⇨_ (a b : J) : Set ℓ where
     un : Fₒ a ↠ Fₒ b
 open _⇨_ public
 
-module subcategory-instances where instance
+private
+  refl≈↠ : ∀ {a b}{f : a ↠ b} → f ≈ f
+  refl≈↠ = refl≈ where open ≈-Reasoning
+
+module sub-object-instances where instance
 
   category : Category _⇨_
   category = record { id = mk id ; _∘_ = λ (mk g) (mk f) → mk (g ∘ f) }
@@ -64,30 +69,44 @@ module subcategory-instances where instance
   H : Homomorphism _⇨_ _↠_
   H = record { Fₘ = λ (mk f) → f }
 
-  module _ {q : Level} ⦃ _ : Equivalent q _↠_ ⦄ where
+  equivalent : Equivalent q _⇨_
+  equivalent = H-equiv
 
-    refl≈↠ : ∀ {a b}{f : a ↠ b} → f ≈ f
-    refl≈↠ = refl≈ where open ≈-Reasoning
+  categoryH : CategoryH _⇨_ _↠_
+  categoryH = record { F-cong = λ ~ → ~ ; F-id = refl≈↠ ; F-∘ = refl≈↠ }
 
-    instance
+  productsH : ⦃ _ : Products J ⦄ → ProductsH J _⇨_ ⦃ Hₒ = id-Hₒ ⦄
+  productsH = record { ε = id ; μ = id ; ε⁻¹ = id ; μ⁻¹ = id }
+  -- TODO: id-ProductsH?
 
-      equivalent : Equivalent q _⇨_
-      equivalent = H-equiv
+  strongProductsH : ⦃ _ : Products J ⦄ ⦃ _ : L.Category _↠_ ⦄ →
+    StrongProductsH J _⇨_ ⦃ Hₒ = id-Hₒ ⦄
+  strongProductsH = record
+    { ε⁻¹∘ε = L.identityˡ
+    ; ε∘ε⁻¹ = L.identityˡ
+    ; μ⁻¹∘μ = L.identityˡ
+    ; μ∘μ⁻¹ = L.identityˡ
+    }
+  -- TODO: id-StrongProductsH?
 
-      categoryH : CategoryH _⇨_ _↠_
-      categoryH = record { F-cong = λ ~ → ~ ; F-id = refl≈↠ ; F-∘ = refl≈↠ }
+  cartesianH :
+    ⦃ _ : Products obj ⦄ ⦃ _ : Cartesian _↠_ ⦄ ⦃ _ : L.Category _↠_ ⦄
+    ⦃ _ : Products J ⦄ ⦃ _ : ProductsH J _↠_ ⦄ ⦃ _ : StrongProductsH J _↠_ ⦄
+    → CartesianH _⇨_ _↠_
+  cartesianH = record { F-! = refl≈↠
+                      ; F-▵ = refl≈↠
+                      ; F-exl = ∘-assoc-elimʳ μ⁻¹∘μ   -- (exl ∘ μ⁻¹) ∘ μ ≈ exl
+                      ; F-exr = ∘-assoc-elimʳ μ⁻¹∘μ   -- (exr ∘ μ⁻¹) ∘ μ ≈ exr
+                      }
 
-      cartesianH :
-        ⦃ _ : Products obj ⦄ ⦃ _ : Cartesian _↠_ ⦄ ⦃ _ : L.Category _↠_ ⦄
-        ⦃ _ : Products J ⦄ ⦃ _ : ProductsH J _↠_ ⦄ ⦃ _ : StrongProductsH J _↠_ ⦄
-        → CartesianH _⇨_ _↠_
-      cartesianH = record { F-! = refl≈↠
-                          ; F-▵ = refl≈↠
-                          ; F-exl = ∘-assoc-elimʳ μ⁻¹∘μ   -- (exl ∘ μ⁻¹) ∘ μ ≈ exl
-                          ; F-exr = ∘-assoc-elimʳ μ⁻¹∘μ   -- (exr ∘ μ⁻¹) ∘ μ ≈ exr
-                          }
+  open import Felix.MakeLawful _⇨_ _↠_
 
-      open import Felix.MakeLawful _⇨_ _↠_
+  l-category : ⦃ _ : L.Category _↠_ ⦄ → L.Category _⇨_
+  l-category = LawfulCategoryᶠ
 
-      l-category : ⦃ _ : L.Category _↠_ ⦄ → L.Category _⇨_
-      l-category = LawfulCategoryᶠ
+  l-cartesian :
+    ⦃ _ : Products obj ⦄ ⦃ _ : Cartesian _↠_ ⦄
+    ⦃ _ : Products J ⦄ ⦃ _ : ProductsH J _↠_ ⦄
+    ⦃ _ : StrongProductsH J _↠_ ⦄
+    ⦃ _ : L.Category _↠_ ⦄ ⦃ _ : L.Cartesian _↠_ ⦄ → L.Cartesian _⇨_
+  l-cartesian = LawfulCartesianᶠ
