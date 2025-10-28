@@ -4,11 +4,12 @@ open import Level
 
 module Felix.Instances.Function.Laws (ℓ : Level) where
 
-open import Function using (mk⇔)
-open import Data.Product using (_,_)
-open import Data.Sum using (inj₁; inj₂)
+open import Function as F using (mk⇔)
+open import Data.Product as × using (_,_; <_,_>)
+open import Data.Sum as ⊎ using (inj₁; inj₂)
 
-open import Felix.Raw hiding (Category; Cartesian; Distributive; CartesianClosed)
+open import Felix.Raw hiding 
+             (Category; Cartesian; Cocartesian ; Distributive; CartesianClosed)
 open import Felix.Laws
 open import Felix.Equiv
 open import Felix.Instances.Function.Raw ℓ public
@@ -39,6 +40,13 @@ module →-laws-instances where
           (λ k≈f▵g → (λ x → cong exl (k≈f▵g x)) , (λ x → cong exr (k≈f▵g x)))
           (λ (exl∘k≈f , exr∘k≈g) x → cong₂ _,_ (exl∘k≈f x) (exr∘k≈g x))
       ; ▵≈ = λ h≈k f≈g x → cong₂ _,_ (h≈k x) (f≈g x)
+      }
+
+    cocartesian : Cocartesian _⇾_
+    cocartesian = record 
+      { ∀⊥ = λ () 
+      ; ∀⊎ = mk⇔ < F._∘ ⊎.inj₁ , F._∘ ⊎.inj₂ > (×.uncurry ⊎.[_,_]) 
+      ; ▿≈ = λ h≈k f≈g → ⊎.[ h≈k , f≈g ]
       }
 
     distributive : Distributive _⇾_

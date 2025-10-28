@@ -8,7 +8,7 @@ open import Function using () renaming (id to id′; _∘_ to _∘̇_)
 
 open import Felix.Equiv  public
 open import Felix.Raw
-open import Felix.Laws as L hiding (Category; Cartesian; CartesianClosed)
+open import Felix.Laws as L hiding (Category; Cartesian; Cocartesian ; CartesianClosed)
 open import Felix.Reasoning
 
 private
