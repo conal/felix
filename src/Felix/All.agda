@@ -22,4 +22,5 @@ import Felix.Construct.Arrow
 import Felix.Instances.Function
 import Felix.Instances.Function.Lift
 import Felix.Instances.Identity
+import Felix.Instances.Pred
 import Felix.Instances.Setoids
