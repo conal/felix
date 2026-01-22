@@ -14,7 +14,14 @@ module Felix.Construct.Comma.Vertical
    {o₁}{obj₁ : Set o₁} {ℓ₁} {_⇨₁_ : obj₁ → obj₁ → Set ℓ₁} ⦃ _ : Category _⇨₁_ ⦄
    {o₂}{obj₂ : Set o₂} {ℓ₂} {_⇨₂_ : obj₂ → obj₂ → Set ℓ₂} ⦃ _ : Category _⇨₂_ ⦄
    {o₃}{obj₃ : Set o₃} {ℓ₃} {_⇨₃_ : obj₃ → obj₃ → Set ℓ₃} ⦃ _ : Category _⇨₃_ ⦄
-   {q} ⦃ _ : Equivalent q _⇨₀_ ⦄ ⦃ _ : L.Category _⇨₀_ ⦄
+   {q} ⦃ _ : Equivalent q _⇨₀_ ⦄
+   {q₁} ⦃ _ : Equivalent q₁ _⇨₁_ ⦄
+   {q₂} ⦃ _ : Equivalent q₂ _⇨₂_ ⦄
+   {q₃} ⦃ _ : Equivalent q₃ _⇨₃_ ⦄
+   ⦃ _ : L.Category _⇨₀_ ⦄
+   ⦃ _ : L.Category _⇨₁_ ⦄
+   ⦃ _ : L.Category _⇨₂_ ⦄
+   ⦃ _ : L.Category _⇨₃_ ⦄
    ⦃ _ : Homomorphismₒ obj₁ obj₀ ⦄ ⦃ _ : Homomorphism _⇨₁_ _⇨₀_ ⦄
      ⦃ catH₁ : CategoryH _⇨₁_ _⇨₀_ ⦄
    ⦃ _ : Homomorphismₒ obj₂ obj₀ ⦄ ⦃ _ : Homomorphism _⇨₂_ _⇨₀_ ⦄
@@ -34,10 +41,10 @@ infixr 9 _◎_
 _◎_ : ∀ {τ₁ τ₂ : obj₁} {τ₁′ τ₂′ : obj₂} {τ₁″ τ₂″ : obj₃}
         {h : Fₒ τ₁  ⇨₀ Fₒ τ₁′} {h′ : Fₒ τ₂  ⇨₀ Fₒ τ₂′}
         {k : Fₒ τ₁′ ⇨₀ Fₒ τ₁″} {k′ : Fₒ τ₂′ ⇨₀ Fₒ τ₂″}
-        ((B.mk fₖ₁ _ _) : k B.⇉ k′) ((A.mk _ fₕ₂ _) : h A.⇉ h′) → ⦃ Fₘ fₖ₁ ≡ Fₘ fₕ₂ ⦄
+        ((B.mkᵐ fₖ₁ _ _) : k B.⇉ k′) ((A.mkᵐ _ fₕ₂ _) : h A.⇉ h′) → ⦃ Fₘ fₖ₁ ≡ Fₘ fₕ₂ ⦄
     → k ∘ h C.⇉ k′ ∘ h′
-_◎_ {h = h}{h′}{k}{k′} (B.mk fₖ₁ fₖ₂ is-g) (A.mk fₕ₁ fₕ₂ is-f) ⦃ eq ⦄ =
-  C.mk fₕ₁ fₖ₂
+_◎_ {h = h}{h′}{k}{k′} (B.mkᵐ fₖ₁ fₖ₂ is-g) (A.mkᵐ fₕ₁ fₕ₂ is-f) ⦃ eq ⦄ =
+  C.mkᵐ fₕ₁ fₖ₂
     (begin
        (k′ ∘ h′) ∘ Fₘ fₕ₁
      ≈⟨ ∘-assocʳˡ′ is-f ⟩
