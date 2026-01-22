@@ -27,7 +27,7 @@ open import Relation.Binary.Structures using (IsEquivalence)
 
 -- Felix
 open import Felix.Raw as Raw using (Products; Coproducts; Exponentials)
-open import Felix.Equiv 
+open import Felix.Equiv
 open import Felix.Laws
 
 open Setoid
@@ -43,7 +43,7 @@ _⟶_ : Zoid → Zoid → Set ℓ
 _⟶_ = Func
 
 private
-  variable 
+  variable
     A : Zoid
 
 pattern tt = lift ⊤₀.tt
@@ -59,10 +59,10 @@ private
   𝟘 : Zoid
   𝟘 .Carrier = ⊥
   𝟘 ._≈_ = λ ()
-  𝟘 .isEquivalence = record 
-    { refl = λ { {()} } 
-    ; sym = λ { {()} } 
-    ; trans = λ { {()} } 
+  𝟘 .isEquivalence = record
+    { refl = λ { {()} }
+    ; sym = λ { {()} }
+    ; trans = λ { {()} }
     }
 
   -- Unit Setoid
@@ -81,7 +81,7 @@ instance
 
   products : Products Zoid
   products = record { ⊤ = 𝟙 ; _×_ = _×ₛ_ }
-  
+
   coproducts : Coproducts Zoid
   coproducts = record { ⊥ = 𝟘 ; _⊎_ = _⊎ₛ_ }
 
@@ -100,7 +100,7 @@ instance
     }
 
   rawCartesian : Raw.Cartesian _⟶_
-  rawCartesian = record 
+  rawCartesian = record
     { !   = K.function _ 𝟙 tt
     ; _▵_ = <_,_>ₛ
     ; exl = proj₁ₛ
@@ -108,39 +108,39 @@ instance
     }
 
   rawCocartesian : Raw.Cocartesian _⟶_
-  rawCocartesian = record 
-    { ¡   = absurd 
+  rawCocartesian = record
+    { ¡   = absurd
     ; _▿_ = [_,_]ₛ
     ; inl = inj₁ₛ
     ; inr = inj₂ₛ
     }
-  
+
   rawCartesianClosed : Raw.CartesianClosed _⟶_
-  rawCartesianClosed = record 
-    { curry = λ { {A} {B} {C} (f ⊨ p) → 
-               (λ a → ×.curry f a ⊨ λ x≈y → p (Setoid.refl A , x≈y)) 
+  rawCartesianClosed = record
+    { curry = λ { {A} {B} {C} (f ⊨ p) →
+               (λ a → ×.curry f a ⊨ λ x≈y → p (Setoid.refl A , x≈y))
               ⊨ λ x≈y _ → p (x≈y , Setoid.refl B) }
-    ; apply = λ {_} {B} → ×.uncurry _⟨$⟩_ ⊨ 
+    ; apply = λ {_} {B} → ×.uncurry _⟨$⟩_ ⊨
        λ { {_} {g , y} (f≈g , x≈y) → Setoid.trans B (f≈g _) (cong g x≈y) }
     }
 
   rawDistributive : Raw.Distributive _⟶_
-  rawDistributive = record 
-    { distribˡ⁻¹ = 
-       (λ { (x , ⊎.inj₁ y) → ⊎.inj₁ (x , y) ; (x , ⊎.inj₂ z) → ⊎.inj₂ (x , z) }) 
+  rawDistributive = record
+    { distribˡ⁻¹ =
+       (λ { (x , ⊎.inj₁ y) → ⊎.inj₁ (x , y) ; (x , ⊎.inj₂ z) → ⊎.inj₂ (x , z) })
       ⊨ λ { (p , inj₁ q) → inj₁ (p , q) ; (p , inj₂ r) → inj₂ (p , r) }
-    ; distribʳ⁻¹ = 
+    ; distribʳ⁻¹ =
         (λ { (⊎.inj₁ x , z) → ⊎.inj₁ (x , z) ; (⊎.inj₂ y , z) → ⊎.inj₂ (y , z) })
       ⊨ (λ { (inj₁ x , z) → inj₁ (x , z) ; (inj₂ y , z) → inj₂ (y , z) })
     }
-  
+
   -- TODO?
   -- rawTraced : Raw.Traced _⟶_
-  -- rawTraced = record 
-  --   { WF = λ {A} {S} {B} f → 
-  --                 ∀ (x : Carrier A) 
-  --               → ×.∃₂ λ (y : Carrier B) (z : Carrier S) 
-  --               → {!   !} -- _≈_ (B * S) (to f (x , z)) (y , z) 
+  -- rawTraced = record
+  --   { WF = λ {A} {S} {B} f →
+  --                 ∀ (x : Carrier A)
+  --               → ×.∃₂ λ (y : Carrier B) (z : Carrier S)
+  --               → {!   !} -- _≈_ (B * S) (to f (x , z)) (y , z)
   --   -- ∀ (x : a) → ∃₂ λ (y : b) (z : s) → f (x , z) ≡ (y , z)
   --   ; trace = λ {A} {S} {B} f g → (×.proj₁ ∘ g) ⊨ λ { {x} {y} x≈y → {!   !} }
   --   }
@@ -149,11 +149,11 @@ instance
 -- Equiv
 
 instance
-  
+
   equivalent : Equivalent ℓ _⟶_
-  equivalent = record 
-    { _≈_   = λ {A} {B} → E._≈_ A B 
-    ; equiv = λ {A} {B} → E.isEquivalence A B 
+  equivalent = record
+    { _≈_   = λ {A} {B} → E._≈_ A B
+    ; equiv = λ {A} {B} → E.isEquivalence A B
     }
 
 module ⟶-Reasoning where open ≈-Reasoning public
@@ -168,22 +168,22 @@ instance
     { identityˡ = λ {_} {B} _ → refl B
     ; identityʳ = λ {_} {B} _ → refl B
     ; assoc     = λ {_} {_} {_} {D} _ → refl D
-    ; ∘≈        = λ {_} {_} {C} {_} {_} {_} {k} h≈k f≈g x → 
+    ; ∘≈        = λ {_} {_} {C} {_} {_} {_} {k} h≈k f≈g x →
                     trans C (h≈k _) (cong k (f≈g x))
     }
 
   cartesian : Cartesian _⟶_
   cartesian = record
     { ∀⊤ = λ _ → tt
-    ; ∀× = λ {A} {B} {C} {f} {g} {k} → mk⇔ 
-        < cong (Raw.exl {a = B} {b = C}) ∘_ , cong (Raw.exr {a = B} {b = C}) ∘_ > 
+    ; ∀× = λ {A} {B} {C} {f} {g} {k} → mk⇔
+        < cong (Raw.exl {a = B} {b = C}) ∘_ , cong (Raw.exr {a = B} {b = C}) ∘_ >
         (×.uncurry <_,_>)
     ; ▵≈ = <_,_>
     }
-  
+
   cocartesian : Cocartesian _⟶_
-  cocartesian = record 
-    { ∀⊥ = λ () 
+  cocartesian = record
+    { ∀⊥ = λ ()
     ; ∀⊎ = λ {A} {B} {C} {f} {g} {k} → mk⇔
         < _∘ ⊎.inj₁ , _∘ ⊎.inj₂ >
         (×.uncurry ⊎.[_,_])
@@ -197,7 +197,7 @@ instance
       (λ f≈uncurry-g → sym C ∘₂ ×.curry f≈uncurry-g)
     ; curry≈ = ×.curry
     }
-   
+
   distributive : Distributive _⟶_
   distributive = record
    { distribˡ∘distribˡ⁻¹ = λ where

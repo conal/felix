@@ -8,7 +8,7 @@ open import Function as F using (mk⇔)
 open import Data.Product as × using (_,_; <_,_>)
 open import Data.Sum as ⊎ using (inj₁; inj₂)
 
-open import Felix.Raw hiding 
+open import Felix.Raw hiding
              (Category; Cartesian; Cocartesian ; Distributive; CartesianClosed)
 open import Felix.Laws
 open import Felix.Equiv
@@ -43,9 +43,9 @@ module →-laws-instances where
       }
 
     cocartesian : Cocartesian _⇾_
-    cocartesian = record 
-      { ∀⊥ = λ () 
-      ; ∀⊎ = mk⇔ < F._∘ ⊎.inj₁ , F._∘ ⊎.inj₂ > (×.uncurry ⊎.[_,_]) 
+    cocartesian = record
+      { ∀⊥ = λ ()
+      ; ∀⊎ = mk⇔ < F._∘ ⊎.inj₁ , F._∘ ⊎.inj₂ > (×.uncurry ⊎.[_,_])
       ; ▿≈ = λ h≈k f≈g → ⊎.[ h≈k , f≈g ]
       }
 
